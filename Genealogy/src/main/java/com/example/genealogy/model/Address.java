@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "Address")
+@Table(name = "address")
 @Data
 public class Address {
 
@@ -37,6 +37,6 @@ public class Address {
 
     private long latitude;
 
-    @OneToMany(mappedBy = "Address")
+    @OneToMany(mappedBy = "place")
     private Set<Document> documents;
 }

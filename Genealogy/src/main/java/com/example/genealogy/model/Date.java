@@ -20,6 +20,6 @@ public class Date {
 
     private int day;
 
-    @OneToMany(mappedBy = "Date") // Odwrotna strona relacji ManyToOne
+    @OneToMany(mappedBy = "date") // Odwrotna strona relacji ManyToOne
     private Set<Document> documents;
 }

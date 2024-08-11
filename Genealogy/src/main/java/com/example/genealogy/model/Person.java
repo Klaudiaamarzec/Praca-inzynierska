@@ -40,6 +40,6 @@ public class Person {
     @Column(name = "birthdate", columnDefinition = "Date")
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "person") // Relacja do `PersonDocument`
+    @OneToMany(mappedBy = "personID") // Relacja do `PersonDocument`
     private Set<PersonDocument> personDocuments;
 }

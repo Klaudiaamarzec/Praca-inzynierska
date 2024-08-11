@@ -55,9 +55,9 @@ public class Document {
 
     // Relacja odwrotna
 
-    @OneToMany(mappedBy = "photography")
+    @OneToMany(mappedBy = "photographyID")
     private Set<Document> photos;
 
-    @OneToMany(mappedBy = "document") // Relacja do `PersonInDocument`
+    @OneToMany(mappedBy = "documentID") // Relacja do `PersonInDocument`
     private Set<PersonDocument> peopleDocuments;
 }

@@ -27,9 +27,9 @@ public class User {
     @Column(name="mail", columnDefinition = "TEXT")
     private String mail;
 
-    @OneToMany(mappedBy = "User")
+    @OneToMany(mappedBy = "ownerId")
     private Set<Document> documents;
 
-    @OneToMany(mappedBy = "User")
+    @OneToMany(mappedBy = "userID")
     private Set<PhysicalLocations> physicalLocations;
 }

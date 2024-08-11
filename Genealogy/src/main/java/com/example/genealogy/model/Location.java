@@ -20,12 +20,12 @@ public class Location {
     @Column(name = "idurl")
     private long urlID;
 
-    @OneToOne(mappedBy = "location")
+    @OneToOne(mappedBy = "localization")
     private Document document;
 
-    @OneToMany(mappedBy = "location") // Odwrotna strona relacji jeden do jednego
+    @OneToMany(mappedBy = "urlID") // Odwrotna strona relacji jeden do jednego
     private Set<URLs> urls;
 
-    @OneToMany(mappedBy = "location") // Odwrotna strona relacji jeden do jednego
+    @OneToMany(mappedBy = "physicalID") // Odwrotna strona relacji jeden do jednego
     private Set<PhysicalLocations> physicalLocations;
 }
