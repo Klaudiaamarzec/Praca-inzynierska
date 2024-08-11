@@ -39,7 +39,7 @@ public class Document {
 
     @ManyToOne
     @JoinColumn(name = "ownerid")
-    private User ownerId;
+    private User ownerID;
 
     @ManyToOne
     @JoinColumn(name = "type")
@@ -57,6 +57,12 @@ public class Document {
 
     @OneToMany(mappedBy = "photographyID")
     private Set<Document> photos;
+
+    @OneToMany(mappedBy = "documentID")
+    private Set<Notification> notifications;
+
+//    @OneToMany(mappedBy = "newDocumentID")
+//    private Set<Notification> editNotifications;
 
     @OneToMany(mappedBy = "documentID") // Relacja do `PersonInDocument`
     private Set<PersonDocument> peopleDocuments;
