@@ -39,7 +39,7 @@ public class Document {
 
     @ManyToOne
     @JoinColumn(name = "ownerid")
-    private User ownerID;
+    private User owner;
 
     @ManyToOne
     @JoinColumn(name = "type")
@@ -51,19 +51,19 @@ public class Document {
 
     @ManyToOne
     @JoinColumn(name = "photography")
-    private Document photographyID;
+    private Document photography;
 
     // Relacja odwrotna
 
-    @OneToMany(mappedBy = "photographyID")
+    @OneToMany(mappedBy = "photography")
     private Set<Document> photos;
 
-    @OneToMany(mappedBy = "documentID")
+    @OneToMany(mappedBy = "document")
     private Set<Notification> notifications;
 
 //    @OneToMany(mappedBy = "newDocumentID")
 //    private Set<Notification> editNotifications;
 
-    @OneToMany(mappedBy = "documentID") // Relacja do `PersonInDocument`
+    @OneToMany(mappedBy = "document") // Relacja do `PersonInDocument`
     private Set<PersonDocument> peopleDocuments;
 }

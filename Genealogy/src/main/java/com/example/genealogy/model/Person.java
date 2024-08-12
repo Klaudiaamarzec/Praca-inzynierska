@@ -18,28 +18,22 @@ public class Person {
 
     private String surname;
 
-    @OneToOne
-    @JoinColumn(name = "mid")
-    private Person mid;
-
-    @OneToOne
-    @JoinColumn(name = "fid")
-    private Person fid;
-
-    @ManyToOne
-    @JoinColumn(name = "cid")
-    private Person cid;
-
-    // Relacja odwrotna
-
-    @OneToMany(mappedBy = "cid")
-    private Set<Person> kids;
-
-    private long rid;
+    @Column(name = "rin")
+    private long rin;
 
     @Column(name = "birthdate", columnDefinition = "Date")
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "personID") // Relacja do `PersonDocument`
+    @OneToMany(mappedBy = "person") // Relacja do `PersonDocument`
     private Set<PersonDocument> personDocuments;
+
+    @OneToMany(mappedBy = "child") // Relacja do `Family`
+    private Set<Family> childFamilies;
+
+    @OneToMany(mappedBy = "father")
+    private Set<Family> fatherFamilies;
+
+    @OneToMany(mappedBy = "mother")
+    private Set<Family> motherFamilies;
+
 }

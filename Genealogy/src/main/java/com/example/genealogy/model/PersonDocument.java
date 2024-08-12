@@ -15,11 +15,11 @@ public class PersonDocument {
 
     @ManyToOne
     @JoinColumn(name = "personid")
-    private Person personID;
+    private Person person;
 
     @ManyToOne
     @JoinColumn(name = "document")
-    private Document documentID;
+    private Document document;
 
     @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;

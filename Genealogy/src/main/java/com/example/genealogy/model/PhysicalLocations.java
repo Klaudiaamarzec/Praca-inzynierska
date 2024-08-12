@@ -31,13 +31,13 @@ public class PhysicalLocations {
 
     @ManyToOne
     @JoinColumn(name = "idphys") // Kolumna w tabeli URLS, która jest kluczem obcym do tabeli Location
-    private Location physicalID;
+    private Location physical;
 
     @ManyToOne
     @JoinColumn(name = "localaddressid")
-    private LocalAddress localaddressID;
+    private LocalAddress localaddress;
 
     @ManyToOne
     @JoinColumn(name = "User")
-    private User userID;
+    private User user;
 }

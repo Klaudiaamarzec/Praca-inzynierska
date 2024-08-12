@@ -27,12 +27,12 @@ public class User {
     @Column(name="mail", columnDefinition = "TEXT")
     private String mail;
 
-    @OneToMany(mappedBy = "ownerID")
+    @OneToMany(mappedBy = "owner")
     private Set<Document> documents;
 
-    @OneToMany(mappedBy = "userID")
+    @OneToMany(mappedBy = "user")
     private Set<Notification> notifications;
 
-    @OneToMany(mappedBy = "userID")
+    @OneToMany(mappedBy = "user")
     private Set<PhysicalLocations> physicalLocations;
 }

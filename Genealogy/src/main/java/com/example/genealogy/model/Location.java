@@ -15,17 +15,17 @@ public class Location {
     private long id;
 
     @Column(name = "idphys")
-    private long physicalID;
+    private long physical;
 
     @Column(name = "idurl")
-    private long urlID;
+    private long url;
 
     @OneToOne(mappedBy = "localization")
     private Document document;
 
-    @OneToMany(mappedBy = "urlID") // Odwrotna strona relacji jeden do jednego
+    @OneToMany(mappedBy = "url") // Odwrotna strona relacji jeden do jednego
     private Set<URLs> urls;
 
-    @OneToMany(mappedBy = "physicalID") // Odwrotna strona relacji jeden do jednego
+    @OneToMany(mappedBy = "physical") // Odwrotna strona relacji jeden do jednego
     private Set<PhysicalLocations> physicalLocations;
 }

@@ -25,13 +25,13 @@ public class Notification {
 
     @ManyToOne
     @JoinColumn(name = "User")
-    private User userID;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "document")
-    private Document documentID;
+    private Document document;
 
     @ManyToOne
     @JoinColumn(name = "newdocument")
-    private Document newDocumentID;
+    private Document newDocument;
 }
