@@ -35,7 +35,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
 
     // Searching addresses based on the postal code
     @Query("SELECT a FROM Address a WHERE a.postalCode = :postalCode")
-    List<Address> findByPostalCode(@Param("postalCode") int postalCode);
+    List<Address> findByPostalCode(@Param("postalCode") String postalCode);
 
     // Searching addresses based on the parish
     @Query("SELECT a FROM Address a WHERE a.parish = :parish")
@@ -59,7 +59,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
 
     // WSearching addresses based on country and postal code
     @Query("SELECT a FROM Address a WHERE a.country = :country AND a.postalCode = :postalCode")
-    List<Address> findByCountryAndPostalCode(@Param("country") String country, @Param("postalCode") int postalCode);
+    List<Address> findByCountryAndPostalCode(@Param("country") String country, @Param("postalCode") String postalCode);
 
     // Searching addresses based on parish and city
     @Query("SELECT a FROM Address a WHERE a.parish = :parish AND a.city = :city")
@@ -67,7 +67,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
 
     // Searching addresses based on postal code
     @Query("SELECT a FROM Address a WHERE a.postalCode BETWEEN :startPostalCode AND :endPostalCode")
-    List<Address> findByPostalCodeBetween(@Param("startPostalCode") int startPostalCode, @Param("endPostalCode") int endPostalCode);
+    List<Address> findByPostalCodeBetween(@Param("startPostalCode") String startPostalCode, @Param("endPostalCode") String endPostalCode);
 
     // Check if already exist in database
     @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END FROM Address a WHERE a.country = :country AND a.voivodeship = :voivodeship AND a.city = :city AND a.address = :address")

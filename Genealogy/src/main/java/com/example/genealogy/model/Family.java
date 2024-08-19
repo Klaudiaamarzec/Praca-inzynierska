@@ -12,7 +12,7 @@ public class Family {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "cid")
     private Person child;
 

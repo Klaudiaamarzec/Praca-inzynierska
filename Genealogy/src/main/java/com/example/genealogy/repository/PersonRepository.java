@@ -22,5 +22,4 @@ public interface PersonRepository extends JpaRepository<Person, Long>{
     // Find all persons in a specific document
     @Query("SELECT p FROM Person p JOIN p.personDocuments pd WHERE pd.document.id = :documentId")
     List<Person> findAllPersonsInDocument(@Param("documentId") long documentId);
-
 }

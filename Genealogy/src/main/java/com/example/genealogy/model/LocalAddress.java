@@ -25,7 +25,7 @@ public class LocalAddress {
 
     private String address;
 
-    private int postalcode;
+    private String postalcode;
 
     @OneToMany(mappedBy = "localaddress")
     private Set<PhysicalLocations> physicalLocations;

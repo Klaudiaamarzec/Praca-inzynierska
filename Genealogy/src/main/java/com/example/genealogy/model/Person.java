@@ -27,8 +27,8 @@ public class Person {
     @OneToMany(mappedBy = "person") // Relacja do `PersonDocument`
     private Set<PersonDocument> personDocuments;
 
-    @OneToMany(mappedBy = "child") // Relacja do `Family`
-    private Set<Family> childFamilies;
+    @OneToOne(mappedBy = "child") // Relacja do `Family`
+    private Family childFamily;
 
     @OneToMany(mappedBy = "father")
     private Set<Family> fatherFamilies;

@@ -27,7 +27,7 @@ public class Address {
     private String address;
 
     @Column(name = "postalcode")
-    private int postalCode;
+    private String postalCode;
 
     private String parish;
 

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Set;
 
 @Entity
-@Table(name="DocumentType")
+@Table(name="documenttype")
 @Data
 public class DocumentType {
 
@@ -17,9 +17,6 @@ public class DocumentType {
 
     @Column(name="typename")
     private String typeName;
-
-    //@Column(name="template", columnDefinition = "TEXT")
-    //private String template;
 
     @Lob
     @Column(name = "template", columnDefinition = "TEXT")
