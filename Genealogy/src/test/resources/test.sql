@@ -12,3 +12,6 @@ INSERT INTO document(place, ownerid, type )
 VALUES ('6', '4', '3');
 
 DELETE FROM document WHERE id IN (9,10);
+
+
+

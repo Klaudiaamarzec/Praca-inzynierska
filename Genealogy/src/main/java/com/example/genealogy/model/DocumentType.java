@@ -15,10 +15,10 @@ public class DocumentType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name="typename")
+    @Column(name="typename", length = 64)
     private String typeName;
 
-    @Lob
+    //@Lob
     @Column(name = "template", columnDefinition = "TEXT")
     private String template;
 
@@ -30,12 +30,13 @@ public class DocumentType {
 
     @PostLoad
     public void postLoad() {
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            parsedTemplate = mapper.readTree(template);
-        } catch (Exception e) {
-            System.err.println("Error parsing template JSON: " + e.getMessage());
-            e.printStackTrace(System.err);
+        if (template != null && !template.isEmpty()) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                parsedTemplate = mapper.readTree(template);
+            } catch (Exception e) {
+                System.err.println("Error parsing template JSON: " + e.getMessage());
+            }
         }
     }
 }

@@ -11,7 +11,17 @@ import java.util.List;
 public interface DateRepository extends JpaRepository<Date, Long> {
 
     @Query("SELECT d FROM Date d WHERE d.day = :day AND d.month = :month AND d.year = :year")
-    List<Date> findDate(@Param("day") int day, @Param("month") int month, @Param("year") int year);
+    Date findDate(@Param("day") int day, @Param("month") int month, @Param("year") int year);
+
+    @Query("SELECT d FROM Date d WHERE " +
+            "(d.day = :day AND d.month = :month AND d.year = :year) OR " +
+            "(d.day = :day AND d.month = :month) OR " +
+            "(d.day = :day AND d.year = :year) OR " +
+            "(d.month = :month AND d.year = :year) OR " +
+            "(d.day = :day) OR " +
+            "(d.month = :month) OR " +
+            "(d.year = :year) order by d.year desc")
+    List<Date> findDates(@Param("day") int day, @Param("month") int month, @Param("year") int year);
 
     @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM Date d WHERE d.day = :day AND d.month = :month AND d.year = :year")
     boolean exist(@Param("day") int day, @Param("month") int month, @Param("year") int year);

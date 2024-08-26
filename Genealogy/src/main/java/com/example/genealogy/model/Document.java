@@ -14,10 +14,10 @@ public class Document {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "confirmed", columnDefinition = "Boolean")
+    @Column(name = "confirmed")
     private boolean confirmed;
 
-    @Column(name="title", columnDefinition = "TEXT")
+    @Column(name="title", columnDefinition = "text")
     private String title;
 
     @Column(name="startdate", columnDefinition = "Date")
@@ -26,7 +26,7 @@ public class Document {
     @Column(name="enddate", columnDefinition = "Date")
     private LocalDate endDate;
 
-    @Column(name="description", columnDefinition = "TEXT")
+    @Column(name="description", columnDefinition = "text")
     private String description;
 
     @ManyToOne

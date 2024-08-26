@@ -17,8 +17,9 @@ public class URLs {
     @JoinColumn(name = "idurl") // Kolumna w tabeli URLS, która jest kluczem obcym do tabeli Location
     private Location urlID;
 
+    @Column(name = "url", length = 256)
     private String url;
 
-    @Column(name = "comment", columnDefinition = "TEXT")
+    @Column(name = "comment", columnDefinition = "text")
     private String comment;
 }

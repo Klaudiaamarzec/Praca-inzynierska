@@ -14,10 +14,10 @@ public class Notification {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "title", columnDefinition = "TEXT")
+    @Column(name = "title", columnDefinition = "text")
     private String title;
 
-    @Column(name = "context", columnDefinition = "TEXT")
+    @Column(name = "context", columnDefinition = "text")
     private String context;
 
     @Column(name = "Date")

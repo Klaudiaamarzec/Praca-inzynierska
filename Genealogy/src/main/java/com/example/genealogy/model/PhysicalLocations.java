@@ -20,13 +20,13 @@ public class PhysicalLocations {
     @Column(name = "isoriginal")
     private boolean isOriginal;
 
-    @Column(name = "Condition")
+    @Column(name = "condition", length = 64)
     private String condition;
 
-    @Column(name = "type", columnDefinition = "TEXT")
+    @Column(name = "type", columnDefinition = "text")
     private String type;
 
-    @Column(name = "description", columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "text")
     private String description;
 
     @ManyToOne

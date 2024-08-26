@@ -15,16 +15,22 @@ public class LocalAddress {
     @Column(name = "id")
     private long id;
 
+    @Column(name = "country", length = 128)
     private String country;
 
+    @Column(name = "voivodeship", length = 128)
     private String voivodeship;
 
+    @Column(name = "community", length = 128)
     private String community;
 
+    @Column(name = "city", length = 128)
     private String city;
 
+    @Column(name = "address", columnDefinition = "text")
     private String address;
 
+    @Column(name = "postalcode", length = 15)
     private String postalcode;
 
     @OneToMany(mappedBy = "localaddress")

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "User") // Upewnienie się, że nazwa tabeli odpowiada nazwie w bazie danych
+@Table(name = "Users") // Upewnienie się, że nazwa tabeli odpowiada nazwie w bazie danych
 @Data
 public class User {
     @Id
@@ -18,13 +18,13 @@ public class User {
     @JoinColumn(name="idrole")
     private Role idRole;
 
-    @Column(name="username")
+    @Column(name="username", length = 64)
     private String userName;
 
-    @Column(name="password")
+    @Column(name="password", length = 256)
     private String password;
 
-    @Column(name="mail", columnDefinition = "TEXT")
+    @Column(name="mail", columnDefinition = "text")
     private String mail;
 
     @OneToMany(mappedBy = "owner")

@@ -21,10 +21,10 @@ public class PersonDocument {
     @JoinColumn(name = "document")
     private Document document;
 
-    @Column(name = "comment", columnDefinition = "TEXT")
+    @Column(name = "comment", columnDefinition = "text")
     private String comment;
 
-    private int x;
+    private Integer x;
 
-    private int y;
+    private Integer y;
 }

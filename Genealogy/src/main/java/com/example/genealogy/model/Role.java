@@ -11,9 +11,9 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
-    @Column(name="rolename")
+    @Column(name="rolename", length = 64)
     private String roleName;
 
     @OneToMany(mappedBy = "idRole")

@@ -1,32 +1,41 @@
 INSERT INTO role (id, rolename) VALUES (1, 'genealogist');
 INSERT INTO role (id, rolename) VALUES (2, 'user');
 
-INSERT INTO "User" (idrole, username, password, mail) VALUES (1, 'admin', 'password', 'admin@onet.pl');
-INSERT INTO "User" (idrole, username, password, mail) VALUES (2, 'iwona', 'password', 'iwona@onet.pl');
-INSERT INTO "User" (idrole, username, password, mail) VALUES (2, 'basia', 'password', 'basia@onet.pl');
-INSERT INTO "User" (idrole, username, password, mail) VALUES (2, 'zenek', 'password', 'zenek@onet.pl');
-INSERT INTO "User" (idrole, username, password, mail) VALUES (1, 'genealog', 'password', 'genealog@onet.pl');
+INSERT INTO Users (idrole, username, password, mail) VALUES (1, 'admin', 'password', 'admin@onet.pl');
+INSERT INTO Users (idrole, username, password, mail) VALUES (2, 'iwona', 'password', 'iwona@onet.pl');
+INSERT INTO Users (idrole, username, password, mail) VALUES (2, 'basia', 'password', 'basia@onet.pl');
+INSERT INTO Users (idrole, username, password, mail) VALUES (2, 'zenek', 'password', 'zenek@onet.pl');
+INSERT INTO Users (idrole, username, password, mail) VALUES (1, 'genealog', 'password', 'genealog@onet.pl');
 
-INSERT INTO documenttype (typename, template) VALUES ('photography', '');
-INSERT INTO documenttype (typename, template) VALUES ('marriage act', '');
-INSERT INTO documenttype (typename, template) VALUES ('birth act', '');
-INSERT INTO documenttype (typename, template) VALUES ('death act', '');
-INSERT INTO documenttype (typename, template) VALUES ('school report', '');
-INSERT INTO documenttype (typename, template) VALUES ('apprenticeship document', '');
-INSERT INTO documenttype (typename, template) VALUES ('posters, leaflets, placards', '');
-INSERT INTO documenttype (typename, template) VALUES ('letters and correspondence', '');
-
-UPDATE documenttype
-    set template = '{"fields": [' ||
-                   '{"name": "newWifeSurname", "type": "varchar(256)"}, ' ||
-                   '{"name": "newHusbandSurname", "type": "varchar(256)"}, ' ||
-                   '{"name": "wifeFather", "type": "varchar(256)"}, ' ||
-                   '{"name": "wifeMother", "type": "varchar(256)"}, ' ||
-                   '{"name": "husbandFather", "type": "varchar(256)"}, ' ||
-                   '{"name": "husbandMother", "type": "varchar(256)"}, ' ||
-                   '{"name": "childrenSurname", "type": "varchar(256)"}]}'
-    where id=2;
-
+INSERT INTO documenttype (typename, template) VALUES ('photography', '{"fields": [' ||
+                                                                     '{"name": "exampleField1", "type": "text"}, ' ||
+                                                                     '{"name": "exampleField2", "type": "text"}]}');
+INSERT INTO documenttype (typename, template) VALUES ('marriage act', '{"fields": [' ||
+                                                                      '{"name": "exampleField1", "type": "text"}, ' ||
+                                                                      '{"name": "exampleField2", "type": "text"}]}');
+INSERT INTO documenttype (typename, template) VALUES ('birth act', '{"fields": [' ||
+                                                                   '{"name": "exampleField1", "type": "text"}, ' ||
+                                                                   '{"name": "exampleField2", "type": "text"}]}');
+INSERT INTO documenttype (typename, template) VALUES ('death act', '{"fields": [' ||
+                                                                   '{"name": "exampleField1", "type": "text"}, ' ||
+                                                                   '{"name": "exampleField2", "type": "text"}]}');
+INSERT INTO documenttype (typename, template) VALUES ('school report', '{"fields": [' ||
+                                                                       '{"name": "exampleField1", "type": "text"}, ' ||
+                                                                       '{"name": "exampleField2", "type": "text"}]}');
+INSERT INTO documenttype (typename, template) VALUES ('apprenticeship document', '{"fields": [' ||
+                                                                                 '{"name": "exampleField1", "type": "text"}, ' ||
+                                                                                 '{"name": "exampleField2", "type": "text"}]}');
+INSERT INTO documenttype (typename, template) VALUES ('posters, leaflets, placards', '{"fields": [' ||
+                                                                                     '{"name": "exampleField1", "type": "text"}, ' ||
+                                                                                     '{"name": "exampleField2", "type": "text"}]}');
+INSERT INTO documenttype (typename, template) VALUES ('letters and correspondence', '{"fields": [' ||
+                                                                                    '{"name": "newWifeSurname", "type": "varchar(256)"}, ' ||
+                                                                                    '{"name": "newHusbandSurname", "type": "varchar(256)"}, ' ||
+                                                                                    '{"name": "wifeFather", "type": "varchar(256)"}, ' ||
+                                                                                    '{"name": "wifeMother", "type": "varchar(256)"}, ' ||
+                                                                                    '{"name": "husbandFather", "type": "varchar(256)"}, ' ||
+                                                                                    '{"name": "husbandMother", "type": "varchar(256)"}, ' ||
+                                                                                    '{"name": "childrenSurname", "type": "varchar(256)"}]}');
 
 INSERT INTO person (name, surname) VALUES ('Kris', 'Jenner');
 INSERT INTO person (name, surname) VALUES ('William', 'Jenner');
@@ -54,16 +63,16 @@ INSERT INTO address(country, city, postalcode) VALUES ('Australia', 'Sydney', '2
 INSERT INTO address(city, parish) VALUES ('Dublin', 'Christ Church Cathedral');
 INSERT INTO address(country) VALUES ('Brazil');
 
-INSERT INTO "Date" (year, month, day) VALUES (1997, 8, 10);
-INSERT INTO "Date" (year, month, day) VALUES (2017, 11, 13);
-INSERT INTO "Date" (year, month, day) VALUES (1958, 8, 18);
-INSERT INTO "Date" (year, month, day) VALUES (2001, 5, 21);
-INSERT INTO "Date" (year, month, day) VALUES (2016, 7, 11);
-INSERT INTO "Date" (year, month, day) VALUES (2003, 1, 19);
-INSERT INTO "Date" (year, month, day) VALUES (1999, 3, 27);
-INSERT INTO "Date" (year, month, day) VALUES (1970, 10, 30);
-INSERT INTO "Date" (year, month, day) VALUES (1986, 11, 2);
-INSERT INTO "Date" (year, month, day) VALUES (1969, 2, 17);
+INSERT INTO date (year, month, day) VALUES (1997, 8, 10);
+INSERT INTO date (year, month, day) VALUES (2017, 11, 13);
+INSERT INTO date (year, month, day) VALUES (1958, 8, 18);
+INSERT INTO date (year, month, day) VALUES (2001, 5, 21);
+INSERT INTO date (year, month, day) VALUES (2016, 7, 11);
+INSERT INTO date (year, month, day) VALUES (2003, 1, 19);
+INSERT INTO date (year, month, day) VALUES (1999, 3, 27);
+INSERT INTO date (year, month, day) VALUES (1970, 10, 30);
+INSERT INTO date (year, month, day) VALUES (1986, 11, 2);
+INSERT INTO date (year, month, day) VALUES (1969, 2, 17);
 
 INSERT INTO localaddress (country, city, postalcode) VALUES ('USA', 'Los Angeles', '12345');
 INSERT INTO localaddress (country, voivodeship, city, address, postalcode) VALUES ('Poland', 'Dolnośląskie', 'Wrocław', 'Adres 2/5', '54654');
@@ -102,3 +111,6 @@ INSERT INTO document(CONFIRMED, TITLE, "Date", PLACE, OWNERID, TYPE) VALUES (fal
 INSERT INTO document(CONFIRMED, TITLE, "Date", PLACE, OWNERID, TYPE) VALUES (true, 'Raport szkolny Kendalla Jenner', 6, 2, 1, 5);
 INSERT INTO document(CONFIRMED, TITLE, "Date", PLACE, OWNERID, TYPE, LOCALIZATION) VALUES (true, 'Plakat z wyjazdu Jennerów do Włoch', 7, 8, 4, 7, 3);
 
+INSERT INTO notification(TITLE, CONTEXT, DISPLAYED, "Date", "User", DOCUMENT) VALUES ('Dodano nowy dokument', 'Context', false, '10/06/2003', 3, 4);
+INSERT INTO notification(TITLE, CONTEXT, DISPLAYED, "Date", "User", DOCUMENT) VALUES ('Dodano nowy dokument', 'Context', false, '02/18/2021', 2, 5);
+INSERT INTO notification(TITLE, CONTEXT, DISPLAYED, "Date", "User", DOCUMENT) VALUES ('Dodano nowy dokument', 'Context', false, '02/20/2021', 2, 6);

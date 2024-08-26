@@ -14,11 +14,11 @@ public class Date {
     @Column(name = "dateid")
     private long id;
 
-    private int year;
+    private Integer year;
 
-    private int month;
+    private Integer month;
 
-    private int day;
+    private Integer day;
 
     @OneToMany(mappedBy = "date") // Odwrotna strona relacji ManyToOne
     private Set<Document> documents;

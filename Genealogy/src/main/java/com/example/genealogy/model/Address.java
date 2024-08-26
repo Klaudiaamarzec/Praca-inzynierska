@@ -15,27 +15,36 @@ public class Address {
     @Column(name = "placeid")
     private long id;
 
+    @Column(name = "country", length = 128)
     private String country;
 
+    @Column(name = "voivodeship", length = 128)
     private String voivodeship;
 
+    @Column(name = "community", length = 128)
     private String community;
 
+    @Column(name = "city", length = 128)
     private String city;
 
+    @Lob
     @Column(name = "address", columnDefinition = "TEXT")
     private String address;
 
-    @Column(name = "postalcode")
+    @Column(name = "postalcode", length = 15)
     private String postalCode;
 
+    @Lob
+    @Column(name = "parish", columnDefinition = "TEXT")
     private String parish;
 
+    @Lob
+    @Column(name = "secular", columnDefinition = "TEXT")
     private String secular;
 
-    private long longitude;
+    private Long longitude;
 
-    private long latitude;
+    private Long latitude;
 
     @OneToMany(mappedBy = "place")
     private Set<Document> documents;
