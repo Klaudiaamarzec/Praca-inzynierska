@@ -13,5 +13,9 @@ VALUES ('6', '4', '3');
 
 DELETE FROM document WHERE id IN (9,10);
 
+SELECT unaccent(lower('California')) = unaccent(lower('california'));
+
+
+
 
 

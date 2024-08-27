@@ -17,8 +17,8 @@ public interface LocationRepository extends JpaRepository<Location, Long>{
     List<Location> findByPhysicalID(@Param("physicalID") long physicalID);
 
     // Search locations based on URLs
-    @Query("SELECT l FROM Location l JOIN l.urls u WHERE u.id = :url")
-    List<Location> findByUrl(@Param("url") long url);
+    @Query("SELECT l FROM Location l WHERE l.url = :url")
+    List<Location> findByUrlID(@Param("url") long url);
 
     // Find all locations for a given document
     @Query("SELECT l FROM Location l WHERE l.id = (SELECT d.localization.id FROM Document d WHERE d.id = :documentId)")

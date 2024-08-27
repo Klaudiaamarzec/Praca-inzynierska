@@ -27,18 +27,15 @@ public class Address {
     @Column(name = "city", length = 128)
     private String city;
 
-    @Lob
     @Column(name = "address", columnDefinition = "TEXT")
     private String address;
 
     @Column(name = "postalcode", length = 15)
     private String postalCode;
 
-    @Lob
     @Column(name = "parish", columnDefinition = "TEXT")
     private String parish;
 
-    @Lob
     @Column(name = "secular", columnDefinition = "TEXT")
     private String secular;
 

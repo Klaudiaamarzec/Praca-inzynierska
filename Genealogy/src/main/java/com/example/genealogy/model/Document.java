@@ -30,7 +30,7 @@ public class Document {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name="Date")
+    @JoinColumn(name= "date")
     private Date date;
 
     @ManyToOne

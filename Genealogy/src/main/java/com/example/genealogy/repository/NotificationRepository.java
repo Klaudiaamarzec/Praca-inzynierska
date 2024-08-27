@@ -18,26 +18,36 @@ public interface NotificationRepository extends JpaRepository <Notification, Lon
 
     // Find notifications based on user
     @Query("SELECT n FROM Notification n WHERE n.user.id = :userID ORDER BY n.date DESC")
-    List<Notification> findNotificationByUser(@Param("userID") long userID);
+    List<Notification> findNotificationByUser(@Param("userID") Long userID);
 
     // Find notifications based on title
-    @Query("SELECT n FROM Notification n WHERE n.title LIKE %:title% ORDER BY n.date DESC")
+    @Query(value = "SELECT * FROM Notification n " +
+            "WHERE unaccent(lower(n.title)) LIKE unaccent(lower(concat('%', :title, '%'))) ORDER BY n.date DESC",
+            nativeQuery = true)
     List<Notification> findNotificationByTitle(@Param("title") String title);
 
     // Find notifications based on title or context
-    @Query("SELECT n FROM Notification n WHERE n.title LIKE %:title% OR n.context LIKE %:context% ORDER BY n.date DESC")
+    @Query(value = "SELECT * FROM Notification n " +
+            "WHERE lower(n.title) LIKE lower(concat('%', :title, '%')) " +
+            "AND lower(n.context) LIKE lower(concat('%', :context, '%')) " +
+            "ORDER BY n.date DESC",
+            nativeQuery = true)
     List<Notification> findNotificationByTitleContext(@Param("title") String title, @Param("context") String context);
 
     // Find notifications by parameter
-    @Query("SELECT n FROM Notification n WHERE n.context LIKE %:parameter% OR n.title LIKE %:parameter%")
-    List<Notification> findNotificationByParametr(@Param("parameter") String parameter);
+    @Query(value = "SELECT * FROM Notification n " +
+            "WHERE unaccent(lower(n.context)) LIKE unaccent(lower(CONCAT('%', :parameter, '%'))) " +
+            "OR unaccent(lower(n.title)) LIKE unaccent(lower(CONCAT('%', :parameter, '%'))) " +
+            "ORDER BY n.date DESC",
+            nativeQuery = true)
+    List<Notification> findNotificationByParameter(@Param("parameter") String parameter);
 
     // Find notifications about edit
-    @Query("SELECT n FROM Notification n WHERE n.newDocument.id != NULL")
+    @Query("SELECT n FROM Notification n WHERE n.newDocument.id != NULL ORDER BY n.date DESC")
     List<Notification> findNotificationsAboutEdit();
 
     // Find notifications about adding new document
-    @Query("SELECT n FROM Notification n WHERE n.newDocument.id = NULL")
+    @Query("SELECT n FROM Notification n WHERE n.newDocument.id IS NULL ORDER BY n.date DESC")
     List<Notification> findNotificationsAboutAdd();
 
 }

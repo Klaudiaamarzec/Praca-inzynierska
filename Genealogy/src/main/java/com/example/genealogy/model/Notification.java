@@ -20,11 +20,11 @@ public class Notification {
     @Column(name = "context", columnDefinition = "text")
     private String context;
 
-    @Column(name = "Date")
+    @Column(name = "date")
     private LocalDate date;
 
     @ManyToOne
-    @JoinColumn(name = "User")
+    @JoinColumn(name = "user")
     private User user;
 
     @ManyToOne

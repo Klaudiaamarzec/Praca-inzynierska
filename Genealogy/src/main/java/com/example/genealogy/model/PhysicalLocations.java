@@ -14,7 +14,7 @@ public class PhysicalLocations {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "Date", columnDefinition = "Date")
+    @Column(name = "date", columnDefinition = "Date")
     private LocalDate date;
 
     @Column(name = "isoriginal")

@@ -18,7 +18,6 @@ public class DocumentType {
     @Column(name="typename", length = 64)
     private String typeName;
 
-    //@Lob
     @Column(name = "template", columnDefinition = "TEXT")
     private String template;
 
