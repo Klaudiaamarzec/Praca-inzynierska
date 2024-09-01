@@ -50,20 +50,20 @@ public class Document {
     private Location localization;
 
     @ManyToOne
-    @JoinColumn(name = "photography")
-    private Document photography;
+    @JoinColumn(name = "photorefers")
+    private Document photoRefers;
 
-    // Relacja odwrotna
+    // Opposite relation
 
-    @OneToMany(mappedBy = "photography")
+    @OneToMany(mappedBy = "photoRefers")
     private Set<Document> photos;
 
     @OneToMany(mappedBy = "document")
     private Set<Notification> notifications;
 
-//    @OneToMany(mappedBy = "newDocumentID")
-//    private Set<Notification> editNotifications;
+    @OneToMany(mappedBy = "newDocument")
+    private Set<Notification> editNotifications;
 
-    @OneToMany(mappedBy = "document") // Relacja do `PersonInDocument`
+    @OneToMany(mappedBy = "document") // Relation to `PersonInDocument`
     private Set<PersonDocument> peopleDocuments;
 }

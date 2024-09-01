@@ -14,7 +14,7 @@ public class URLs {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "idurl") // Kolumna w tabeli URLS, która jest kluczem obcym do tabeli Location
+    @JoinColumn(name = "idurl")
     private Location urlID;
 
     @Column(name = "url", length = 256)

@@ -26,10 +26,10 @@ public class Person {
     @Column(name = "birthdate", columnDefinition = "Date")
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "person") // Relacja do `PersonDocument`
+    @OneToMany(mappedBy = "person")
     private Set<PersonDocument> personDocuments;
 
-    @OneToOne(mappedBy = "child") // Relacja do `Family`
+    @OneToOne(mappedBy = "child")
     private Family childFamily;
 
     @OneToMany(mappedBy = "father")

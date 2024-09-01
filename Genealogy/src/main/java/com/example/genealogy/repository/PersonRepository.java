@@ -13,10 +13,13 @@ public interface PersonRepository extends JpaRepository<Person, Long>{
 
     // Get simple person list
     @Query("SELECT p.name, p.surname FROM Person p")
-    List<Person> getPersonList();
+    List<Object[]> getPersonList();
 
     // Search person by parameter
-    @Query("SELECT p FROM Person p WHERE p.name LIKE %:parameter% OR p.surname LIKE %:parameter%")
+    @Query(value = "SELECT * FROM Person p " +
+            "WHERE unaccent(lower(p.name)) LIKE unaccent(lower(CONCAT('%', :parameter, '%'))) " +
+            "OR unaccent(lower(p.surname)) LIKE unaccent(lower(CONCAT('%', :parameter, '%'))) ",
+            nativeQuery = true)
     List<Person> findPersonByParameter(@Param("parameter") String parameter);
 
     // Find all persons in a specific document

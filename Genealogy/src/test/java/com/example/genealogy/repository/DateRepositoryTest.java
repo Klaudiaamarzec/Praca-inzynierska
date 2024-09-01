@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,5 +70,30 @@ public class DateRepositoryTest {
 
         boolean ifExist = dateRepository.exist( 19, 11, 2003);
         assertThat(ifExist).isEqualTo(false);
+    }
+
+    @Test
+    void testFindDatesByDateRange() {
+
+        LocalDate startDate = LocalDate.of(1985, 2, 6);
+        LocalDate endDate = LocalDate.of(2015, 11, 2);
+
+        int fromYear = startDate.getYear();
+        int fromMonth = startDate.getMonthValue();
+        int fromDay = startDate.getDayOfMonth();
+
+        int toYear = endDate.getYear();
+        int toMonth = endDate.getMonthValue();
+        int toDay = endDate.getDayOfMonth();
+
+        List<Date> dates = dateRepository.findDatesByDateRange(fromYear, fromMonth, fromDay, toYear, toMonth, toDay);
+        assertThat(dates).hasSize(5);
+
+        assertThat(dates.get(0).getId()).isEqualTo(1);
+        assertThat(dates.get(1).getId()).isEqualTo(4);
+        assertThat(dates.get(2).getId()).isEqualTo(6);
+        assertThat(dates.get(3).getId()).isEqualTo(7);
+        assertThat(dates.get(4).getId()).isEqualTo(9);
+
     }
 }

@@ -30,7 +30,7 @@ public class PhysicalLocations {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "idphys") // Kolumna w tabeli URLS, która jest kluczem obcym do tabeli Location
+    @JoinColumn(name = "idphys") // Column in URLs table that is a foreign key to Location table
     private Location physical;
 
     @ManyToOne
@@ -38,6 +38,6 @@ public class PhysicalLocations {
     private LocalAddress localaddress;
 
     @ManyToOne
-    @JoinColumn(name = "User")
+    @JoinColumn(name = "user")
     private User user;
 }

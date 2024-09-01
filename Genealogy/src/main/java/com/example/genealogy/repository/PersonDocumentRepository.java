@@ -12,12 +12,4 @@ import java.util.List;
 
 @Repository
 public interface PersonDocumentRepository extends JpaRepository<PersonDocument, Long>{
-
-    // Find all documents for Person
-    @Query("SELECT pd.document FROM PersonDocument pd WHERE pd.person.id = :personId")
-    List<Document> findDocumentsForPerson(@Param("personId") long personId);
-
-    // Find all people in Document
-    @Query("SELECT pd.person FROM PersonDocument pd WHERE pd.document.id = :documentId")
-    List<Person> findPeopleInDocument(@Param("documentId") long documentId);
 }

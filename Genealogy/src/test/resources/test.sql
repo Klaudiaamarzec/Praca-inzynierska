@@ -15,6 +15,15 @@ DELETE FROM document WHERE id IN (9,10);
 
 SELECT unaccent(lower('California')) = unaccent(lower('california'));
 
+SELECT d.* FROM Document d
+            JOIN Personindocument pd ON d.id = pd.document
+            JOIN Person p ON p.id = pd.personid
+            WHERE d.confirmed = true
+            AND unaccent(lower(p.name)) LIKE unaccent(lower(concat('%kri%')))
+            AND unaccent(lower(p.surname)) LIKE unaccent(lower(concat('Jenner')));
+
+SELECT p.name, p.surname FROM Person p;
+
 
 
 

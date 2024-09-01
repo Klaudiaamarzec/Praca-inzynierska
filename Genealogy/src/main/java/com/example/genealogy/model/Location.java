@@ -23,9 +23,9 @@ public class Location {
     @OneToOne(mappedBy = "localization")
     private Document document;
 
-    @OneToMany(mappedBy = "url") // Odwrotna strona relacji jeden do jednego
+    @OneToMany(mappedBy = "url")
     private Set<URLs> urls;
 
-    @OneToMany(mappedBy = "physical") // Odwrotna strona relacji jeden do jednego
+    @OneToMany(mappedBy = "physical")
     private Set<PhysicalLocations> physicalLocations;
 }

@@ -92,24 +92,36 @@ INSERT INTO location(idphys, idurl) VALUES (1, 1);
 INSERT INTO location(idphys, idurl) VALUES (2, 2);
 INSERT INTO location(idphys, idurl) VALUES (3, 3);
 
-INSERT INTO physicallocations(date, isoriginal, type, idphys, localaddressid, "User") VALUES ('10/08/1997', true, 'Księga urodzenia', 1, 1, 1);
-INSERT INTO physicallocations(date, isoriginal, type, idphys, localaddressid, "User") VALUES ('07/15/2006', false, 'Skan księgi urodzenia', 1, 2, 5);
-INSERT INTO physicallocations(date, isoriginal, type, idphys, localaddressid, "User") VALUES ('02/14/2010', false, 'Kopia wycinka z księgi', 1, 3, 1);
-INSERT INTO physicallocations(date, isoriginal, type, idphys, localaddressid, "User") VALUES ('08/10/2022', true, 'Akt małżeństwa Kim Kardashian oraz Kanye West', 2, 1, 5);
+INSERT INTO physicallocations(date, isoriginal, type, idphys, localaddressid, "user") VALUES ('10/08/1997', true, 'Księga urodzenia', 1, 1, 1);
+INSERT INTO physicallocations(date, isoriginal, type, idphys, localaddressid, "user") VALUES ('07/15/2006', false, 'Skan księgi urodzenia', 1, 2, 5);
+INSERT INTO physicallocations(date, isoriginal, type, idphys, localaddressid, "user") VALUES ('02/14/2010', false, 'Kopia wycinka z księgi', 1, 3, 1);
+INSERT INTO physicallocations(date, isoriginal, type, idphys, localaddressid, "user") VALUES ('08/10/2022', true, 'Akt małżeństwa Kim Kardashian oraz Kanye West', 2, 1, 5);
 
 INSERT INTO urls(IDURL, URL, COMMENT) VALUES (1, 'https://www.drive.com/user/catalog', 'Zdjęcie aktu z księgi');
 INSERT INTO urls(IDURL, URL, COMMENT) VALUES (2, 'https://www.drive.com/user/catalog/kim_kanye_marriage_certificate', 'Akt małżeństwa Kim Kardashian i Kanye Westa');
 INSERT INTO urls(IDURL, URL, COMMENT) VALUES (3, 'https://www.drive.com/user/catalog/jenner_family_trip_italy_poster', 'Plakat z wyjazdu Jennerów do Włoch');
 INSERT INTO urls(IDURL, URL, COMMENT) VALUES (2, 'https://www.drive.com/user/catalog/kim', 'Akt małżeństwa Kim Kardashian');
 
-INSERT INTO document(CONFIRMED, TITLE, DATE, PLACE, OWNERID, TYPE) VALUES (true, 'Zdjęcie rodzinne z chrztu kylie Jenner', 7, 2, 3, 1);
-INSERT INTO document(CONFIRMED, TITLE, DATE, PLACE, OWNERID, TYPE, LOCALIZATION)VALUES (true, 'Akt małżeństwa Kim Kardashian i Kanye Westa', 2, 7, 4, 2, 2);
+INSERT INTO document(CONFIRMED, TITLE, DATE, PLACE, OWNERID, TYPE) VALUES (true, 'Zdjęcie rodzinne z chrztu Kylie Jenner', 7, 2, 3, 1);
+INSERT INTO document(CONFIRMED, TITLE, STARTDATE, ENDDATE, PLACE, OWNERID, TYPE, LOCALIZATION)VALUES (true, 'Akt małżeństwa Kim Kardashian i Kanye Westa', '02/09/2010', '02/12/2011', 7, 4, 2, 2);
 INSERT INTO document(CONFIRMED, TITLE, DATE, PLACE, OWNERID, TYPE)VALUES (false, 'List od Kim Kardashian', 4, 6, 3, 8);
 INSERT INTO document(CONFIRMED, TITLE, DATE, PLACE, OWNERID, TYPE)VALUES (false, 'Akt urodzenia Stormi Webster', 2, 1, 2, 3);
 INSERT INTO document(CONFIRMED, TITLE, DATE, PLACE, OWNERID, TYPE)VALUES (false, 'Zdjęcie aktu urodzenia Stormi Webster', 2, 1, 2, 1);
 INSERT INTO document(CONFIRMED, TITLE, DATE, PLACE, OWNERID, TYPE)VALUES (true, 'Raport szkolny Kendalla Jenner', 6, 2, 1, 5);
-INSERT INTO document(CONFIRMED, TITLE, DATE, PLACE, OWNERID, TYPE, LOCALIZATION)VALUES (true, 'Plakat z wyjazdu Jennerów do Włoch', 7, 8, 4, 7, 3);
+INSERT INTO document(CONFIRMED, TITLE, STARTDATE, ENDDATE, PLACE, OWNERID, TYPE, LOCALIZATION)VALUES (true, 'Plakat z wyjazdu Jennerów do Włoch', '07/01/2009', '07/12/2012', 8, 4, 7, 3);
 
 INSERT INTO notification(TITLE, CONTEXT, DISPLAYED, date, "user", DOCUMENT) VALUES ('Dodano nowy dokument', 'Dokument 4', false, '10/06/2003', 3, 4);
 INSERT INTO notification(TITLE, CONTEXT, DISPLAYED, date, "user", DOCUMENT) VALUES ('Dodano nowy dokument', 'Uzytkownik', false, '02/18/2021', 2, 5);
 INSERT INTO notification(TITLE, CONTEXT, DISPLAYED, date, "user", DOCUMENT) VALUES ('Dodano nowy dokument', 'Context', false, '02/20/2021', 2, 6);
+
+INSERT INTO personindocument(personid, document) VALUES (8, 1);
+INSERT INTO personindocument(personid, document) VALUES (8, 2);
+INSERT INTO personindocument(personid, document) VALUES (8, 3);
+INSERT INTO personindocument(personid, document) VALUES (8, 7);
+INSERT INTO personindocument(personid, document) VALUES (1, 1);
+INSERT INTO personindocument(personid, document) VALUES (1, 2);
+INSERT INTO personindocument(personid, document) VALUES (1, 7);
+INSERT INTO personindocument(personid, document) VALUES (4, 1);
+INSERT INTO personindocument(personid, document) VALUES (4, 2);
+INSERT INTO personindocument(personid, document) VALUES (4, 6);
+INSERT INTO personindocument(personid, document) VALUES (4, 7);
