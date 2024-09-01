@@ -1,6 +1,5 @@
 package com.example.genealogy.repository;
 
-import com.example.genealogy.model.Address;
 import com.example.genealogy.model.LocalAddress;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
