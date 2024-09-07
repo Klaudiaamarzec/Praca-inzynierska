@@ -2,38 +2,33 @@ package com.example.genealogy.mapper;
 
 import com.example.genealogy.dto.*;
 import com.example.genealogy.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 
 @Component
 public class DocumentMapper {
 
-    private final AddressMapper addressMapper;
-    private final UserMapper userMapper;
-    private final DocumentTypeMapper documentTypeMapper;
-    private final LocationMapper locationMapper;
-    private final DateMapper dateMapper;
-    private final NotificationMapper notificationMapper;
-    private final PersonDocumentMapper personDocumentMapper;
+    @Autowired
+    private AddressMapper addressMapper;
 
-    // Constructor-based injection
-    public DocumentMapper(
-            AddressMapper addressMapper,
-            UserMapper userMapper,
-            DocumentTypeMapper documentTypeMapper,
-            LocationMapper locationMapper,
-            DateMapper dateMapper,
-            NotificationMapper notificationMapper,
-            PersonDocumentMapper personDocumentMapper
-    ) {
-        this.addressMapper = addressMapper;
-        this.userMapper = userMapper;
-        this.documentTypeMapper = documentTypeMapper;
-        this.locationMapper = locationMapper;
-        this.dateMapper = dateMapper;
-        this.notificationMapper = notificationMapper;
-        this.personDocumentMapper = personDocumentMapper;
-    }
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private DocumentTypeMapper documentTypeMapper;
+
+    @Autowired
+    private LocationMapper locationMapper;
+
+    @Autowired
+    private DateMapper dateMapper;
+
+    @Autowired
+    private NotificationMapper notificationMapper;
+
+    @Autowired
+    private PersonDocumentMapper personDocumentMapper;
 
     // Mapping from Document to DocumentDTO
     public DocumentDTO mapToDTO(Document document) {

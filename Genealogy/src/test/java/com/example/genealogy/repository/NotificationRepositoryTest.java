@@ -68,6 +68,13 @@ public class NotificationRepositoryTest {
     }
 
     @Test
+    void testFindNotificationsNotDisplayed() {
+
+        List<Notification> notifications = notificationRepository.findNotificationsNotDisplayed();
+        assertThat(notifications).hasSize(4);
+    }
+
+    @Test
     void testFindNotificationByTitle() {
 
         List<Notification> notifications = notificationRepository.findNotificationByTitle("dodano");

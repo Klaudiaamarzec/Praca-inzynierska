@@ -2,29 +2,21 @@ package com.example.genealogy.mapper;
 
 import com.example.genealogy.dto.UserDTO;
 import com.example.genealogy.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 
 @Component
 public class UserMapper {
 
-    private final RoleMapper roleMapper;
-    private final DocumentMapper documentMapper;
-    private final NotificationMapper notificationMapper;
-    private final PhysicalLocationsMapper physicalLocationsMapper;
+    @Autowired
+    private RoleMapper roleMapper;
 
-    // Constructor-based injection
-    public UserMapper(
-            RoleMapper roleMapper,
-            DocumentMapper documentMapper,
-            NotificationMapper notificationMapper,
-            PhysicalLocationsMapper physicalLocationsMapper
-    ) {
-        this.roleMapper = roleMapper;
-        this.documentMapper = documentMapper;
-        this.notificationMapper = notificationMapper;
-        this.physicalLocationsMapper = physicalLocationsMapper;
-    }
+    @Autowired
+    private NotificationMapper notificationMapper;
+
+    @Autowired
+    private PhysicalLocationsMapper physicalLocationsMapper;
 
     // Mapping from User to UserDTO
     public UserDTO mapToDTO(User user) {
@@ -42,7 +34,7 @@ public class UserMapper {
         // Convert sets of documents, notifications, and physicalLocations
         if (user.getDocuments() != null) {
             dto.setDocuments(user.getDocuments().stream()
-                    .map(documentMapper::mapToDTO)
+                    .map(document -> new DocumentMapper().mapToDTO(document))
                     .collect(Collectors.toSet()));
         }
 
@@ -77,7 +69,7 @@ public class UserMapper {
         // Convert sets of documents, notifications, and physicalLocations
         if (dto.getDocuments() != null) {
             user.setDocuments(dto.getDocuments().stream()
-                    .map(documentMapper::mapToEntity)
+                    .map(documentDTO -> new DocumentMapper().mapToEntity(documentDTO))
                     .collect(Collectors.toSet()));
         }
 

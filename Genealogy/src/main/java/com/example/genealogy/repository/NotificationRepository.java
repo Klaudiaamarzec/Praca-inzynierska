@@ -19,6 +19,10 @@ public interface NotificationRepository extends JpaRepository <Notification, Lon
     @Query("SELECT n FROM Notification n WHERE n.user.id = :userID ORDER BY n.date DESC")
     List<Notification> findNotificationByUser(@Param("userID") Long userID);
 
+    // Find notifications that are not displayed
+    @Query("SELECT n FROM Notification n WHERE n.displayed = false ORDER BY n.date DESC")
+    List<Notification> findNotificationsNotDisplayed();
+
     // Find notifications based on title
     @Query(value = "SELECT * FROM Notification n " +
             "WHERE unaccent(lower(n.title)) LIKE unaccent(lower(concat('%', :title, '%'))) ORDER BY n.date DESC",

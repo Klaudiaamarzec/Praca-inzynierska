@@ -20,6 +20,9 @@ public class Notification {
     @Column(name = "context", columnDefinition = "text")
     private String context;
 
+    @Column(name = "displayed")
+    private boolean displayed;
+
     @Column(name = "date")
     private LocalDate date;
 
