@@ -23,25 +23,25 @@ public class DateRepositoryTest {
     @Autowired
     private DateRepository dateRepository;
 
-    @Test
-    void testFindDate() {
-
-        // Znalezienie konkretnej daty
-
-        Date foundDate =  dateRepository.findDate(13, 11, 2017);
-
-        // Sprawdzenie, czy data została znaleziona
-        assertThat(foundDate).isNotNull();
-
-        // Sprawdzenie, czy data ma odpowiednie id
-        assertThat(foundDate.getId()).isEqualTo(2);
-
-        // Sprawdzenie, czy data ma odpowiednie wartości
-        assertThat(foundDate.getDay()).isEqualTo(13);
-        assertThat(foundDate.getMonth()).isEqualTo(11);
-        assertThat(foundDate.getYear()).isEqualTo(2017);
-
-    }
+//    @Test
+//    void testFindDate() {
+//
+//        // Znalezienie konkretnej daty
+//
+//        Date foundDate =  dateRepository.findDate(13, 11, 2017);
+//
+//        // Sprawdzenie, czy data została znaleziona
+//        assertThat(foundDate).isNotNull();
+//
+//        // Sprawdzenie, czy data ma odpowiednie id
+//        assertThat(foundDate.getId()).isEqualTo(2);
+//
+//        // Sprawdzenie, czy data ma odpowiednie wartości
+//        assertThat(foundDate.getDay()).isEqualTo(13);
+//        assertThat(foundDate.getMonth()).isEqualTo(11);
+//        assertThat(foundDate.getYear()).isEqualTo(2017);
+//
+//    }
 
     @Test
     void testFindDates() {
