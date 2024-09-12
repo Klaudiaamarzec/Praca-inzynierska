@@ -80,7 +80,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long>{
     List<Document> findDocumentsPersonByTypeIds(@Param("name") String name, @Param("surname") String surname, @Param("typeIds") List<Integer> typeIds);
 
     // Return all documents based on date range
-    //@Query("SELECT d FROM Document d WHERE d.startDate >= :fromDate AND d.endDate <= :toDate ")
     @Query("""
     SELECT d FROM Document d
     WHERE (d.startDate <= :toDate AND d.endDate >= :fromDate)

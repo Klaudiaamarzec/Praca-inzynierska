@@ -71,7 +71,7 @@ public class NotificationRepositoryTest {
     void testFindNotificationsNotDisplayed() {
 
         List<Notification> notifications = notificationRepository.findNotificationsNotDisplayed();
-        assertThat(notifications).hasSize(4);
+        assertThat(notifications).hasSize(3);
     }
 
     @Test

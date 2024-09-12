@@ -1,5 +1,6 @@
 package com.example.genealogy.model;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import jakarta.persistence.*;
 
@@ -15,10 +16,12 @@ public class PersonDocument {
 
     @ManyToOne
     @JoinColumn(name = "personid")
+    @NotNull(message = "Osoba nie może być pusta")
     private Person person;
 
     @ManyToOne
     @JoinColumn(name = "document")
+    @NotNull(message = "Dokument nie może być pusty")
     private Document document;
 
     @Column(name = "comment", columnDefinition = "text")

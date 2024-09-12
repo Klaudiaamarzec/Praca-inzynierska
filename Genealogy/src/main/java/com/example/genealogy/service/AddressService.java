@@ -1,6 +1,5 @@
 package com.example.genealogy.service;
 
-import com.example.genealogy.dto.AddressDTO;
 import com.example.genealogy.model.Address;
 
 import java.util.List;
@@ -8,9 +7,15 @@ import java.util.List;
 public interface AddressService {
 
     // Save = add or update an address
-    void saveAddress(AddressDTO addressDTO);
+    boolean saveAddress(Address address);
 
-    boolean deleteAddress(AddressDTO addressDTO);
+    boolean updateAddress(Address address);
+
+    boolean existsById(long id);
+
+    boolean deleteAddress(Address address);
+
+    List<Address> getAllAddresses();
 
     List<Address> findByCountry(String country);
 
@@ -41,10 +46,10 @@ public interface AddressService {
     List<Address> findByPostalCodeBetween(String startPostalCode, String endPostalCode);
 
     // My  method from repository
-    boolean addressExists(AddressDTO addressDTO);
+    boolean addressExists(Address address);
 
     // Method from JPA
-    boolean exists(AddressDTO addressDTO);
+    boolean exists(Address address);
 
     List<Address> getAddress(String country, String voivodeship, String city, String address);
 

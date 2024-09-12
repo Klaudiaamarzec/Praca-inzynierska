@@ -1,5 +1,6 @@
 package com.example.genealogy.model;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import jakarta.persistence.*;
 import java.util.Set;
@@ -18,6 +19,7 @@ public class Location {
     private long physical;
 
     @Column(name = "idurl")
+    @NotNull(message = "Pole 'URL' nie może być puste")
     private long url;
 
     @OneToOne(mappedBy = "localization")

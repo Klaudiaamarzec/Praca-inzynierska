@@ -29,7 +29,7 @@ public interface NotificationRepository extends JpaRepository <Notification, Lon
             nativeQuery = true)
     List<Notification> findNotificationByTitle(@Param("title") String title);
 
-    // Find notifications based on title or context
+    // Find notifications based on title and context
     @Query(value = "SELECT * FROM Notification n " +
             "WHERE lower(n.title) LIKE lower(concat('%', :title, '%')) " +
             "AND lower(n.context) LIKE lower(concat('%', :context, '%')) " +

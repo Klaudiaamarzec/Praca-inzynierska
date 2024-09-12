@@ -1,5 +1,7 @@
 package com.example.genealogy.model;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -15,9 +17,13 @@ public class Person {
     private long id;
 
     @Column(name = "name", length = 256)
+    @NotNull(message = "Imię nie może być puste")
+    @Size(max = 256, message = "Imię może mieć maksymalnie 256 znaków")
     private String name;
 
     @Column(name = "surname", length = 256)
+    @NotNull(message = "Nazwisko nie może być puste")
+    @Size(max = 256, message = "Nazwisko może mieć maksymalnie 256 znaków")
     private String surname;
 
     @Column(name = "rin")

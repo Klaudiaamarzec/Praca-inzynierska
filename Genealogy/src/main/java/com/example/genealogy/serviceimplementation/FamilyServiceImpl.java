@@ -1,64 +1,116 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.dto.FamilyDTO;
-import com.example.genealogy.dto.PersonDTO;
-import com.example.genealogy.mapper.FamilyMapper;
-import com.example.genealogy.mapper.PersonMapper;
 import com.example.genealogy.model.Family;
 import com.example.genealogy.model.Person;
 import com.example.genealogy.repository.FamilyRepository;
 import com.example.genealogy.service.FamilyService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
+@Service
 public class FamilyServiceImpl implements FamilyService {
 
     private final FamilyRepository familyRepository;
+    private final Validator validator;
 
-    private final FamilyMapper familyMapper;
-    private final PersonMapper personMapper;
-
-    public FamilyServiceImpl(FamilyRepository familyRepository, FamilyMapper familyMapper, PersonMapper personMapper) {
+    public FamilyServiceImpl(FamilyRepository familyRepository, Validator validator) {
         this.familyRepository = familyRepository;
-        this.familyMapper = familyMapper;
-        this.personMapper = personMapper;
-    }
-    @Override
-    public void saveFamily(FamilyDTO familyDTO) {
-        Family family = familyMapper.mapToEntity(familyDTO);
-        familyRepository.save(family);
+        this.validator = validator;
     }
 
     @Override
-    public boolean deleteFamily(FamilyDTO familyDTO) {
-        if (familyRepository.existsById(familyDTO.getId())) {
-            familyRepository.deleteById(familyDTO.getId());
+    public boolean saveFamily(@NotNull Family family) {
+        if (existsById(family.getId())) {
+            return false;
+        }
+
+        validateFamily(family);
+
+        try {
+            familyRepository.save(family);
             return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateFamily(@NotNull Family family) {
+        if (!existsById(family.getId())) {
+            return false;
+        }
+
+        validateFamily(family);
+
+        try {
+            familyRepository.save(family);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean existsById(long id) {
+        return familyRepository.existsById(id);
+    }
+
+    @Override
+    public List<Family> getAllFamilies() {
+        return familyRepository.findAll();
+    }
+
+    @Override
+    public boolean deleteFamily(Family family) {
+        try {
+            if (existsById(family.getId())) {
+                familyRepository.deleteById(family.getId());
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
         }
         return false;
     }
 
     @Override
-    public List<Family> findFamiliesByChild(PersonDTO childDTO) {
-        Person child = personMapper.mapToEntity(childDTO);
+    public List<Family> findFamiliesByChild(Person child) {
         return familyRepository.findFamiliesByChild(child);
     }
 
     @Override
-    public List<Family> findFamiliesByMother(PersonDTO motherDTO) {
-        Person mother = personMapper.mapToEntity(motherDTO);
+    public List<Family> findFamiliesByMother(Person mother) {
         return familyRepository.findFamiliesByMother(mother);
     }
 
     @Override
-    public List<Family> findFamiliesByFather(PersonDTO fatherDTO) {
-        Person father = personMapper.mapToEntity(fatherDTO);
+    public List<Family> findFamiliesByFather(Person father) {
         return familyRepository.findFamiliesByFather(father);
     }
 
     @Override
-    public List<Family> findFamiliesByParent(PersonDTO parentDTO) {
-        Person parent = personMapper.mapToEntity(parentDTO);
+    public List<Family> findFamiliesByParent(Person parent) {
         return familyRepository.findFamiliesByParent(parent);
+    }
+
+    private void validateFamily(Family family) {
+        Set<ConstraintViolation<Family>> violations = validator.validate(family);
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<Family> violation : violations) {
+                sb.append(violation.getPropertyPath())
+                        .append(": ")
+                        .append(violation.getMessage())
+                        .append("\n");
+            }
+            throw new ConstraintViolationException("Walidacja rodziny nie powiodła się:\n" + sb.toString(), violations);
+        }
     }
 }

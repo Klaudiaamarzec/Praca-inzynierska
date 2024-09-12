@@ -1,42 +1,87 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.dto.AddressDTO;
-import com.example.genealogy.mapper.AddressMapper;
 import com.example.genealogy.model.Address;
 import com.example.genealogy.repository.AddressRepository;
 import com.example.genealogy.service.AddressService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ConstraintViolationException;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
+@Validated
 public class AddressServiceImpl implements AddressService {
 
     private final AddressRepository addressRepository;
-    private final AddressMapper addressMapper;
+    private final Validator validator;
 
     @Autowired
-    public AddressServiceImpl(AddressRepository addressRepository, AddressMapper addressMapper) {
+    public AddressServiceImpl(AddressRepository addressRepository, Validator validator) {
         this.addressRepository = addressRepository;
-        this.addressMapper = addressMapper;
+        this.validator = validator;
     }
 
     @Override
-    public void saveAddress(AddressDTO addressDTO) {
-        Address address = addressMapper.mapToEntity(addressDTO);
-        addressRepository.save(address);
-    }
+    public boolean saveAddress(Address address) {
+        if (addressExists(address)) {
+            return false;
+        }
 
-    @Override
-    public boolean deleteAddress(AddressDTO addressDTO) {
-        if (addressRepository.existsById(addressDTO.getId())) {
-            addressRepository.deleteById(addressDTO.getId());
+        validateAddress(address);
+
+        try {
+            addressRepository.save(address);
             return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updateAddress(@NotNull Address address) {
+        if (!existsById(address.getId())) {
+            return false;
+        }
+
+        validateAddress(address);
+
+        try {
+            addressRepository.save(address);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean existsById(long id) {
+        return addressRepository.existsById(id);
+    }
+
+    @Override
+    public boolean deleteAddress(Address address) {
+        try {
+            if (existsById(address.getId())) {
+                addressRepository.deleteById(address.getId());
+                return true;
+            }
+        } catch (Exception e) {
+            return false;
         }
         return false;
     }
 
+    @Override
+    public List<Address> getAllAddresses() {
+        return addressRepository.findAll();
+    }
 
     @Override
     public List<Address> findByCountry(String country) {
@@ -109,12 +154,11 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public boolean addressExists(AddressDTO addressDTO) {
-        return addressRepository.addressExists(addressDTO.getCountry(), addressDTO.getVoivodeship(), addressDTO.getCity(), addressDTO.getAddress());
+    public boolean addressExists(@NotNull Address address) {
+        return addressRepository.addressExists(address.getCountry(), address.getVoivodeship(), address.getCity(), address.getAddress());
     }
 
-    public boolean exists(AddressDTO addressDTO) {
-        Address address = addressMapper.mapToEntity(addressDTO);
+    public boolean exists(@NotNull Address address) {
         return addressRepository.existsById(address.getId());
     }
 
@@ -131,5 +175,19 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public List<Address> getAddressesByAllParams(String country, String voivodeship, String community, String city, Long longitude, Long latitude, String address, String postalCode, String parish, String secular) {
         return addressRepository.getAddressesByAllParams(country, voivodeship, community, city, longitude, latitude, address, postalCode, parish, secular);
+    }
+
+    private void validateAddress(Address address) {
+        Set<ConstraintViolation<Address>> violations = validator.validate(address);
+        if (!violations.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (ConstraintViolation<Address> violation : violations) {
+                sb.append(violation.getPropertyPath())
+                        .append(": ")
+                        .append(violation.getMessage())
+                        .append("\n");
+            }
+            throw new ConstraintViolationException("Walidacja adresu nie powiodła się:\n" + sb.toString(), violations);
+        }
     }
 }

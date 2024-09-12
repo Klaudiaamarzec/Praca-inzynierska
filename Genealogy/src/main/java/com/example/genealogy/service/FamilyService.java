@@ -1,23 +1,28 @@
 package com.example.genealogy.service;
 
-import com.example.genealogy.dto.FamilyDTO;
-import com.example.genealogy.dto.PersonDTO;
 import com.example.genealogy.model.Family;
+import com.example.genealogy.model.Person;
 
 import java.util.List;
 
 public interface FamilyService {
 
     // Add or update a date
-    void saveFamily(FamilyDTO familyDTO);
+    boolean saveFamily(Family family);
 
-    boolean deleteFamily(FamilyDTO familyDTO);
+    boolean updateFamily(Family family);
 
-    List<Family> findFamiliesByChild(PersonDTO child);
+    boolean existsById(long id);
 
-    List<Family> findFamiliesByMother(PersonDTO mother);
+    List<Family> getAllFamilies();
 
-    List<Family> findFamiliesByFather(PersonDTO father);
+    boolean deleteFamily(Family family);
 
-    List<Family> findFamiliesByParent(PersonDTO parent);
+    List<Family> findFamiliesByChild(Person child);
+
+    List<Family> findFamiliesByMother(Person mother);
+
+    List<Family> findFamiliesByFather(Person father);
+
+    List<Family> findFamiliesByParent(Person parent);
 }

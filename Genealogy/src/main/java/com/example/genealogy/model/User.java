@@ -1,5 +1,7 @@
 package com.example.genealogy.model;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import jakarta.persistence.*;
 
@@ -17,15 +19,21 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name="idrole")
+    @NotNull(message = "Rola ID nie może być pusta")
     private Role idRole;
 
     @Column(name="username", length = 64)
+    @Size(max = 64, message = "Nazwa użytkownika nie może mieć więcej niż 64 znaki")
+    @NotNull(message = "Nazwa użytkownika nie może być pusta")
     private String userName;
 
     @Column(name="password", length = 256)
+    @Size(max = 256, message = "Hasło nie może mieć więcej niż 256 znaków")
+    @NotNull(message = "Hasło nie może być puste")
     private String password;
 
     @Column(name="mail", columnDefinition = "text")
+    @NotNull(message = "Email nie może być pusty")
     private String mail;
 
     @OneToMany(mappedBy = "owner")

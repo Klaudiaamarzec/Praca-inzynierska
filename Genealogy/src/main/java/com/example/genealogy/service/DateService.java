@@ -1,6 +1,5 @@
 package com.example.genealogy.service;
 
-import com.example.genealogy.dto.DateDTO;
 import com.example.genealogy.model.Date;
 
 import java.time.LocalDate;
@@ -8,9 +7,15 @@ import java.util.List;
 public interface DateService {
 
     // Add or update a date
-    void saveDate(DateDTO dateDTO);
+    boolean saveDate(Date date);
 
-    boolean deleteDate(DateDTO dateDTO);
+    boolean updateDate(Date date);
+
+    boolean existsById(long id);
+
+    boolean deleteDate(Date date);
+
+    List<Date> getAllDates();
 
     List<Date> findDates(int day, int month, int year);
 

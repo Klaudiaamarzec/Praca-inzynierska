@@ -1,5 +1,7 @@
 package com.example.genealogy.model;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.Data;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -15,15 +17,18 @@ public class Document {
     private long id;
 
     @Column(name = "confirmed")
+    @NotNull(message = "Potwierdzenie nie może być puste")
     private boolean confirmed;
 
     @Column(name="title", columnDefinition = "text")
     private String title;
 
     @Column(name="startdate", columnDefinition = "Date")
+    @PastOrPresent(message = "Data rozpoczęcia musi być w przeszłości lub dzisiaj")
     private LocalDate startDate;
 
     @Column(name="enddate", columnDefinition = "Date")
+    @PastOrPresent(message = "Data zakończenia musi być w przeszłości lub dzisiaj")
     private LocalDate endDate;
 
     @Column(name="description", columnDefinition = "text")
@@ -35,14 +40,17 @@ public class Document {
 
     @ManyToOne
     @JoinColumn(name = "place")
+    @NotNull(message = "Adres nie może być pusty")
     private Address place;
 
     @ManyToOne
     @JoinColumn(name = "ownerid")
+    @NotNull(message = "Pole 'Właściciel' nie może być puste")
     private User owner;
 
     @ManyToOne
     @JoinColumn(name = "type")
+    @NotNull(message = "Typ nie może być pusty")
     private DocumentType type;
 
     @OneToOne

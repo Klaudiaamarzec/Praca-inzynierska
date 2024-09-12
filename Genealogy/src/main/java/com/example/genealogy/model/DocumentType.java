@@ -1,5 +1,7 @@
 package com.example.genealogy.model;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,9 +18,12 @@ public class DocumentType {
     private int id;
 
     @Column(name="typename", length = 64)
+    @NotBlank(message = "Nazwa typu nie może być pusta")
+    @Size(max = 64, message = "Nazwa typu nie może być dłuższa niż 64 znaki")
     private String typeName;
 
     @Column(name = "template", columnDefinition = "TEXT")
+    @NotBlank(message = "Szablon nie może być pusty")
     private String template;
 
     @OneToMany(mappedBy = "type")
