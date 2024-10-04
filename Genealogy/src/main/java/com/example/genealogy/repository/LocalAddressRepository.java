@@ -56,4 +56,20 @@ public interface LocalAddressRepository extends JpaRepository<LocalAddress, Long
                              @Param("voivodeship") String voivodeship,
                              @Param("city") String city,
                              @Param("address") String address);
+
+    @Query(value = """
+        SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM localaddress la
+        WHERE (:country IS NULL OR unaccent(lower(la.country)) LIKE unaccent(lower(CONCAT('%', :country, '%'))))
+        AND (:voivodeship IS NULL OR unaccent(lower(la.voivodeship)) LIKE unaccent(lower(CONCAT('%', :voivodeship, '%'))))
+        AND (:community IS NULL OR unaccent(lower(la.community)) LIKE unaccent(lower(CONCAT('%', :community, '%'))))
+        AND (:city IS NULL OR unaccent(lower(la.city)) = unaccent(lower(:city)))
+        AND (:address IS NULL OR unaccent(lower(la.address)) = unaccent(lower(:address)))
+        AND (:postalcode IS NULL OR unaccent(lower(la.postalcode)) = unaccent(lower(:postalcode)))
+    """, nativeQuery = true)
+    boolean existsLocalAddress(@Param("country") String country,
+                               @Param("voivodeship") String voivodeship,
+                               @Param("community") String community,
+                               @Param("city") String city,
+                               @Param("address") String address,
+                               @Param("postalcode") String postalcode);
 }

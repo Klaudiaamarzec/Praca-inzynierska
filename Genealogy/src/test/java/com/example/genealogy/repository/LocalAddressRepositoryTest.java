@@ -20,6 +20,12 @@ public class LocalAddressRepositoryTest {
     private LocalAddressRepository localAddressRepository;
 
     @Test
+    void checkIfLocalAddressExist() {
+        boolean result = localAddressRepository.existsLocalAddress("USA", null, null, "Los Angeles", null, "12345");
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
     void testFindLocalAddressByCountry() {
 
         List<LocalAddress> addresses = localAddressRepository.findLocalAddressByCountry("poland");

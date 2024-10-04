@@ -166,6 +166,16 @@ public class AddressRepositoryTest {
     }
 
     @Test
+    void testFindByCoordinates2() {
+
+        List<Address> addresses = addressRepository.findByCoordinates(140L, null);
+        assertThat(addresses).hasSize(1);
+
+        // ID Check
+        assertThat(addresses.get(0).getId()).isEqualTo(5L);
+    }
+
+    @Test
     void testFindByLongitudeBetween() {
 
         List<Address> addresses = addressRepository.findByLongitudeBetween(-15L, 160L);
@@ -265,14 +275,14 @@ public class AddressRepositoryTest {
     @Test
     void testIfExists() {
 
-        boolean result = addressRepository.addressExists("USA", "california", "Los Angeles", "Main St");
+        boolean result = addressRepository.addressExists(null, null, null, "Dublin", null, null, "Christ Church Cathedral", null, null, null);
         assertThat(result).isEqualTo(true);
     }
 
     @Test
     void testIfNotExists() {
 
-        boolean result = addressRepository.addressExists("usa", "Los Angeles", "Los Angeles", "Main St");
+        boolean result = addressRepository.addressExists("usa", "Los Angeles", "Los Angeles", "Main St", null, null, null, null, null, null);
         assertThat(result).isEqualTo(false);
     }
 

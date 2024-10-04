@@ -10,7 +10,9 @@ public interface UserService {
 
     boolean updateUser(User user);
 
-    boolean existsById(long id);
+    boolean existsById(User user);
+
+    boolean userExist(User user);
 
     boolean deleteUser(User user);
 

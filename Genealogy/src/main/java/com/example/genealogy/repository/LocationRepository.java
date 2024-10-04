@@ -23,4 +23,11 @@ public interface LocationRepository extends JpaRepository<Location, Long>{
     @Query("SELECT l FROM Location l WHERE l.id = (SELECT d.localization.id FROM Document d WHERE d.id = :documentId)")
     List<Location> findLocationByDocument(@Param("documentId") long documentId);
 
+    @Query(value = """
+        SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM location l
+        WHERE (:physical IS NULL OR l.idphys = :physical)
+        AND (l.idurl = :url)
+    """, nativeQuery = true)
+    boolean existsLocation(@Param("physical") Long physical,
+                           @Param("url") Long url);
 }

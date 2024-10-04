@@ -12,7 +12,9 @@ public interface FamilyService {
 
     boolean updateFamily(Family family);
 
-    boolean existsById(long id);
+    boolean existsById(Family family);
+
+    boolean familyExists(Family family);
 
     List<Family> getAllFamilies();
 

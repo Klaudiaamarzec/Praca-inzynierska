@@ -26,8 +26,18 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
+    public boolean existsById(@NotNull Family family) {
+        return familyRepository.existsById(family.getId());
+    }
+
+    @Override
+    public boolean familyExists(@NotNull Family family) {
+        return familyRepository.existsFamily(family.getChild().getId(), family.getFather().getId(), family.getMother().getId());
+    }
+
+    @Override
     public boolean saveFamily(@NotNull Family family) {
-        if (existsById(family.getId())) {
+        if (familyExists(family)) {
             return false;
         }
 
@@ -43,7 +53,7 @@ public class FamilyServiceImpl implements FamilyService {
 
     @Override
     public boolean updateFamily(@NotNull Family family) {
-        if (!existsById(family.getId())) {
+        if (!existsById(family)) {
             return false;
         }
 
@@ -58,11 +68,6 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public boolean existsById(long id) {
-        return familyRepository.existsById(id);
-    }
-
-    @Override
     public List<Family> getAllFamilies() {
         return familyRepository.findAll();
     }
@@ -70,7 +75,7 @@ public class FamilyServiceImpl implements FamilyService {
     @Override
     public boolean deleteFamily(Family family) {
         try {
-            if (existsById(family.getId())) {
+            if (existsById(family)) {
                 familyRepository.deleteById(family.getId());
                 return true;
             }

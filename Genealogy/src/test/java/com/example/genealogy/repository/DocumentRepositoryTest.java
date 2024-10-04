@@ -23,6 +23,31 @@ public class DocumentRepositoryTest {
     private DocumentRepository documentRepository;
 
     @Test
+    void testExist() {
+        boolean result = documentRepository.documentExists(false, "List od Kim Kardashian", null, null, null, 4L,6L,3L,8, null, null);
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void testNotExist() {
+        boolean result = documentRepository.documentExists(true, "Kardashian", null, null, null, 4L,null,3L,8, null, null);
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    void testFindByNameAndSurname() {
+
+        List<Document> confirmedDocuments = documentRepository.findByNameAndSurname("Kim", "kardashian");
+        assertThat(confirmedDocuments).hasSize(4);
+
+        // IDs check
+        assertThat(confirmedDocuments.get(0).getId()).isEqualTo(1L);
+        assertThat(confirmedDocuments.get(1).getId()).isEqualTo(2L);
+        assertThat(confirmedDocuments.get(2).getId()).isEqualTo(3L);
+        assertThat(confirmedDocuments.get(3).getId()).isEqualTo(7L);
+    }
+
+    @Test
     void testFindConfirmedDocuments() {
 
         List<Document> confirmedDocuments = documentRepository.findConfirmedDocuments();

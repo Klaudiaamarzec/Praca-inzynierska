@@ -11,15 +11,14 @@ public interface DateService {
 
     boolean updateDate(Date date);
 
-    boolean existsById(long id);
+    boolean existsById(Date date);
+    boolean existDate(int day, int month, int year);
 
     boolean deleteDate(Date date);
 
     List<Date> getAllDates();
 
     List<Date> findDates(int day, int month, int year);
-
-    boolean exist(int day, int month, int year);
 
     List<Date> findDatesByDateRange(LocalDate fromDate, LocalDate toDate);
 }

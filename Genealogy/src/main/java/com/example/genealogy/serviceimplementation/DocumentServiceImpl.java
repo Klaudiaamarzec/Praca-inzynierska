@@ -31,9 +31,19 @@ public class DocumentServiceImpl implements DocumentService {
         this.dateService = dateService;
         this.validator = validator;
     }
+
+    @Override
+    public boolean existsById(@NotNull Document document) {
+        return documentRepository.existsById(document.getId());
+    }
+
+    @Override
+    public boolean existDocument(@NotNull Document document) {
+        return documentRepository.documentExists(document.isConfirmed(), document.getTitle(), document.getStartDate(), document.getEndDate(), document.getDescription(), document.getDate().getId(), document.getPlace().getId(), document.getOwner().getId(), document.getType().getId(), document.getLocalization().getId(), document.getPhotoRefers().getId());
+    }
     @Override
     public boolean saveDocument(@NotNull Document document) {
-        if (existsById(document.getId())) {
+        if (existDocument(document)) {
             return false;
         }
 
@@ -49,7 +59,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public boolean updateDocument(@NotNull Document document) {
-        if (!existsById(document.getId())) {
+        if (!existsById(document)) {
             return false;
         }
 
@@ -64,14 +74,9 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public boolean existsById(long id) {
-        return documentRepository.existsById(id);
-    }
-
-    @Override
     public boolean deleteDocument(Document document) {
         try {
-            if (existsById(document.getId())) {
+            if (existsById(document)) {
                 documentRepository.deleteById(document.getId());
                 return true;
             }
@@ -87,12 +92,13 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public List<Document> findConfirmedDocuments(String name, String surname) {
-        if (name != null && !name.isEmpty() && surname != null && !surname.isEmpty()) {
-            return documentRepository.findConfirmedDocumentsPerson(name, surname);
-        } else {
-            return documentRepository.findConfirmedDocuments();
-        }
+    public List<Document> findByNameAndSurname(String name, String surname) {
+        return documentRepository.findByNameAndSurname(name, surname);
+    }
+
+    @Override
+    public List<Document> findConfirmedDocuments() {
+        return documentRepository.findConfirmedDocuments();
     }
 
     @Override
@@ -103,15 +109,6 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public List<Document> findDocumentsForPerson(@NotNull Person person) {
         return documentRepository.findDocumentsForPerson(person.getId());
-    }
-
-    @Override
-    public List<Document> findPhotographs(String name, String surname) {
-        if (name != null && !name.isEmpty() && surname != null && !surname.isEmpty()) {
-            return documentRepository.findPersonPhotographs(name, surname);
-        } else {
-            return documentRepository.findPhotographs();
-        }
     }
 
     @Override
@@ -174,6 +171,40 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    public List<Document> searchDocuments(String name, String surname, List<Integer> typeIds,
+                                          LocalDate fromDate, LocalDate toDate, List<Long> placeIds) {
+
+        List<Document> documents;
+
+        // Searching by name and surname
+        if (name != null && !name.isEmpty() && surname != null && !surname.isEmpty()) {
+            documents = findByNameAndSurname(name, surname);
+        } else {
+            documents = getAllDocuments();
+        }
+
+        // Filtering by document types
+        if (typeIds != null && !typeIds.isEmpty()) {
+            List<Document> typeFilteredDocuments = findDocumentsByTypeIds(name, surname, typeIds);
+            documents.retainAll(typeFilteredDocuments);
+        }
+
+        // Filtering by date range
+        if (fromDate != null && toDate != null) {
+            List<Document> dateFilteredDocuments = findDocumentsByDateRange(name, surname, fromDate, toDate);
+            documents.retainAll(dateFilteredDocuments);
+        }
+
+        // Filtering by places
+        if (placeIds != null && !placeIds.isEmpty()) {
+            List<Document> placesFilteredDocuments = findDocumentsByPlaces(name, surname, placeIds);
+            documents.retainAll(placesFilteredDocuments);
+        }
+
+        return documents;
+    }
+
+    @Override
     public boolean addPhotoToDocument(@NotNull Document document, Document photo) {
 
         if (!documentRepository.existsById(document.getId())) {
@@ -194,7 +225,7 @@ public class DocumentServiceImpl implements DocumentService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja dokumentu nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja dokumentu nie powiodła się:\n" + sb, violations);
         }
     }
 }

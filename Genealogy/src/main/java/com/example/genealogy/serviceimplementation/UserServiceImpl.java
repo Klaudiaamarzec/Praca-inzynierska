@@ -26,8 +26,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean existsById(@NotNull User user) {
+        return userRepository.existsById(user.getId());
+    }
+
+    @Override
+    public boolean userExist(@NotNull User user) {
+        return userRepository.existsUser(user.getIdRole().getId(), user.getUserName(), user.getMail());
+    }
+
+    @Override
     public boolean saveUser(@NotNull User user) {
-        if (existsById(user.getId())) {
+        if (userExist(user)) {
             return false;
         }
 
@@ -43,7 +53,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updateUser(@NotNull User user) {
-        if (!existsById(user.getId())) {
+        if (!existsById(user)) {
             return false;
         }
 
@@ -58,14 +68,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsById(long id) {
-        return userRepository.existsById(id);
-    }
-
-    @Override
     public boolean deleteUser(User user) {
         try {
-            if (existsById(user.getId())) {
+            if (existsById(user)) {
                 userRepository.delete(user);
                 return true;
             }

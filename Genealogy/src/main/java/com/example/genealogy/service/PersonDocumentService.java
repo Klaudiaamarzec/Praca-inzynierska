@@ -10,7 +10,9 @@ public interface PersonDocumentService {
 
     boolean updatePersonDocument(PersonDocument personDocument);
 
-    boolean existsById(long id);
+    boolean existsById(PersonDocument personDocument);
+
+    boolean personDocumentExist(PersonDocument personDocument);
 
     boolean deletePersonDocument(PersonDocument personDocument);
 

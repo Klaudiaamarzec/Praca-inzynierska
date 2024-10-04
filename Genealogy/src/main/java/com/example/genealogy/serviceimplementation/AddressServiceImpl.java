@@ -4,7 +4,6 @@ import com.example.genealogy.model.Address;
 import com.example.genealogy.repository.AddressRepository;
 import com.example.genealogy.service.AddressService;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ConstraintViolationException;
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +27,15 @@ public class AddressServiceImpl implements AddressService {
         this.validator = validator;
     }
 
+    public boolean existsById(@NotNull Address address) {
+        return addressRepository.existsById(address.getId());
+    }
+
+    @Override
+    public boolean addressExists(@NotNull Address address) {
+        return addressRepository.addressExists(address.getCountry(), address.getVoivodeship(), address.getCommunity(), address.getCity(), address.getAddress(), address.getPostalCode(), address.getParish(), address.getLongitude(), address.getLatitude(), address.getSecular());
+    }
+
     @Override
     public boolean saveAddress(Address address) {
         if (addressExists(address)) {
@@ -46,7 +54,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public boolean updateAddress(@NotNull Address address) {
-        if (!existsById(address.getId())) {
+        if (!existsById(address)) {
             return false;
         }
 
@@ -61,14 +69,9 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public boolean existsById(long id) {
-        return addressRepository.existsById(id);
-    }
-
-    @Override
     public boolean deleteAddress(Address address) {
         try {
-            if (existsById(address.getId())) {
+            if (existsById(address)) {
                 addressRepository.deleteById(address.getId());
                 return true;
             }
@@ -134,6 +137,69 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    public List<Address> searchAddress(String country, String voivodeship, String community, String city, String address, String postalCode, String parish,
+                                       Long longitude, Long latitude, Long minLongitude, Long maxLongitude, Long minLatitude, Long maxLatitude) {
+
+        List<Address> addresses = getAllAddresses();
+
+        // Searching by country
+        if (country != null && !country.isEmpty()) {
+            List<Address> countryFilteredAddresses = findByCountry(country);
+            addresses.retainAll(countryFilteredAddresses);
+        }
+
+        // Searching by voivodeship
+        if (voivodeship != null && !voivodeship.isEmpty()) {
+            List<Address> voivodeshipFilteredAddresses = findByVoivodeship(voivodeship);
+            addresses.retainAll(voivodeshipFilteredAddresses);
+        }
+
+        // Searching by community
+        if (community != null && !community.isEmpty()) {
+            List<Address> communityFilteredAddresses = findByCommunity(community);
+            addresses.retainAll(communityFilteredAddresses);
+        }
+
+        // Searching by address
+        if (address != null && !address.isEmpty()) {
+            List<Address> addressFilteredAddresses = findByAddress(address);
+            addresses.retainAll(addressFilteredAddresses);
+        }
+
+        // Searching by postal code
+        if (postalCode != null && !postalCode.isEmpty()) {
+            List<Address> postalCodeFilteredAddresses = findByPostalCode(postalCode);
+            addresses.retainAll(postalCodeFilteredAddresses);
+        }
+
+        // Searching by parish
+        if (parish != null && !parish.isEmpty()) {
+            List<Address> parishFilteredAddresses = findByParish(parish);
+            addresses.retainAll(parishFilteredAddresses);
+        }
+
+        // Searching by coordinates
+        if (longitude != null && latitude != null) {
+            List<Address> coordinateFilteredAddresses = findByCoordinates(longitude, latitude);
+            addresses.retainAll(coordinateFilteredAddresses);
+        }
+
+        // Searching by longitude range
+        if (minLongitude != null && maxLongitude != null) {
+            List<Address> longitudeFilteredAddresses = findByLongitudeBetween(minLongitude, maxLongitude);
+            addresses.retainAll(longitudeFilteredAddresses);
+        }
+
+        // Searching by latitude range
+        if (minLatitude != null && maxLatitude != null) {
+            List<Address> latitudeFilteredAddresses = findByLatitudeBetween(minLatitude, maxLatitude);
+            addresses.retainAll(latitudeFilteredAddresses);
+        }
+
+        return addresses;
+    }
+
+    @Override
     public List<Address> findByCityAndVoivodeship(String city, String voivodeship) {
         return addressRepository.findByCityAndVoivodeship(city, voivodeship);
     }
@@ -151,15 +217,6 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public List<Address> findByPostalCodeBetween(String startPostalCode, String endPostalCode) {
         return addressRepository.findByPostalCodeBetween(startPostalCode, endPostalCode);
-    }
-
-    @Override
-    public boolean addressExists(@NotNull Address address) {
-        return addressRepository.addressExists(address.getCountry(), address.getVoivodeship(), address.getCity(), address.getAddress());
-    }
-
-    public boolean exists(@NotNull Address address) {
-        return addressRepository.existsById(address.getId());
     }
 
     @Override
@@ -187,7 +244,7 @@ public class AddressServiceImpl implements AddressService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja adresu nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja adresu nie powiodła się:\n" + sb, violations);
         }
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,6 +20,13 @@ public class NotificationRepositoryTest {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Test
+    void checkIfExist() {
+
+        boolean result = notificationRepository.existsNotification("Dodano nowy dokument", "Dokument 4", false, 3L, 4L, null);
+        assertThat(result).isEqualTo(true);
+    }
 
     @Test
     void testFindNotificationByDocumentList() {

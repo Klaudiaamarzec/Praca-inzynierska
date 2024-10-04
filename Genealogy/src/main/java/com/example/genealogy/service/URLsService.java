@@ -10,7 +10,9 @@ public interface URLsService {
 
     boolean updateURL(URLs url);
 
-    boolean existsById(long id);
+    boolean existsById(URLs url);
+
+    boolean urlExist(URLs url);
 
     boolean deleteURL(URLs url);
 

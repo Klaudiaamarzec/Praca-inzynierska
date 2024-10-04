@@ -10,7 +10,9 @@ public interface LocationService {
 
     boolean updateLocation(Location location);
 
-    boolean existsById(long id);
+    boolean existsById(Location location);
+
+    boolean locationExist(Location location);
 
     List<Location> getAllLocations();
 

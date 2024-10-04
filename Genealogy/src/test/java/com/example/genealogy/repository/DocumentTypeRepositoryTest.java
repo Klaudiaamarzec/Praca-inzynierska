@@ -20,6 +20,13 @@ public class DocumentTypeRepositoryTest {
     private DocumentTypeRepository documentTypeRepository;
 
     @Test
+    void testIfExist() {
+
+        boolean result = documentTypeRepository.existsDocumentType("death act", "{\"fields\": [{\"name\": \"exampleField1\", \"type\": \"text\"}, {\"name\": \"exampleField2\", \"type\": \"text\"}]}");
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
     void testGetTemplate() {
 
         Optional<DocumentType> optionalDocType = documentTypeRepository.findById(2);

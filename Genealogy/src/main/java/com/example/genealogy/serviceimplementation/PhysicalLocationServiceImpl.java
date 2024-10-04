@@ -25,9 +25,20 @@ public class PhysicalLocationServiceImpl implements PhysicalLocationService {
         this.physicalLocationRepository = physicalLocationRepository;
         this.validator = validator;
     }
+
+    @Override
+    public boolean existsById(@NotNull PhysicalLocations physicalLocation) {
+        return physicalLocationRepository.existsById(physicalLocation.getId());
+    }
+
+    @Override
+    public boolean physicalLocationExist(@NotNull PhysicalLocations physicalLocation) {
+        return physicalLocationRepository.existsPhysicalLocation(physicalLocation.isOriginal(), physicalLocation.getCondition(), physicalLocation.getType(), physicalLocation.getDescription(), physicalLocation.getPhysical().getId(), physicalLocation.getLocaladdress().getId(), physicalLocation.getUser().getId());
+    }
+
     @Override
     public boolean savePhysicalLocation(@NotNull PhysicalLocations physicalLocation) {
-        if (existsById(physicalLocation.getId())) {
+        if (physicalLocationExist(physicalLocation)) {
             return false;
         }
 
@@ -43,7 +54,7 @@ public class PhysicalLocationServiceImpl implements PhysicalLocationService {
 
     @Override
     public boolean updatePhysicalLocation(@NotNull PhysicalLocations physicalLocation) {
-        if (!existsById(physicalLocation.getId())) {
+        if (!existsById(physicalLocation)) {
             return false;
         }
 
@@ -58,14 +69,9 @@ public class PhysicalLocationServiceImpl implements PhysicalLocationService {
     }
 
     @Override
-    public boolean existsById(long id) {
-        return physicalLocationRepository.existsById(id);
-    }
-
-    @Override
     public boolean deletePhysicalLocation(PhysicalLocations physicalLocation) {
         try {
-            if (existsById(physicalLocation.getId())) {
+            if (existsById(physicalLocation)) {
                 physicalLocationRepository.delete(physicalLocation);
                 return true;
             }

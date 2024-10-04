@@ -10,11 +10,15 @@ public interface LocalAddressService {
 
     boolean updateLocalAddress(LocalAddress localAddress);
 
-    boolean existsById(long id);
+    boolean existsById(LocalAddress localAddress);
+
+    boolean localAddressExist(LocalAddress localAddress);
 
     List<LocalAddress> getAllLocalAddresses();
 
     boolean deleteLocalAddress(LocalAddress localAddress);
+
+    List<LocalAddress> searchLocalAddress(String country, String voivodeship, String city);
 
     List<LocalAddress> findLocalAddressByCountry(String country);
 

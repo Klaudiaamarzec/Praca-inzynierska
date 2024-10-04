@@ -24,6 +24,13 @@ public class FamilyRepositoryTest {
     private PersonRepository personRepository;
 
     @Test
+    void checkIfExist() {
+
+        boolean result = familyRepository.existsFamily(4L, 2L, 1L);
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
     void testFindFamiliesByChild() {
 
         Optional<Person> optChild = personRepository.findById(6L);

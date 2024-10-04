@@ -26,8 +26,18 @@ public class DateServiceImpl implements DateService {
     }
 
     @Override
+    public boolean existsById(@NotNull Date date) {
+        return dateRepository.existsById(date.getId());
+    }
+
+    @Override
+    public boolean existDate(int day, int month, int year) {
+        return dateRepository.exist(day, month, year);
+    }
+
+    @Override
     public boolean saveDate(@NotNull Date date) {
-        if (existsById(date.getId())) {
+        if (existDate(date.getDay(), date.getMonth(), date.getYear())) {
             return false;
         }
 
@@ -43,7 +53,7 @@ public class DateServiceImpl implements DateService {
 
     @Override
     public boolean updateDate(@NotNull Date date) {
-        if (!existsById(date.getId())) {
+        if (!existsById(date)) {
             return false;
         }
 
@@ -58,14 +68,9 @@ public class DateServiceImpl implements DateService {
     }
 
     @Override
-    public boolean existsById(long id) {
-        return dateRepository.existsById(id);
-    }
-
-    @Override
     public boolean deleteDate(Date date) {
         try {
-            if (existsById(date.getId())) {
+            if (existsById(date)) {
                 dateRepository.deleteById(date.getId());
                 return true;
             }
@@ -83,11 +88,6 @@ public class DateServiceImpl implements DateService {
     @Override
     public List<Date> findDates(int day, int month, int year) {
         return dateRepository.findDates(day, month, year);
-    }
-
-    @Override
-    public boolean exist(int day, int month, int year) {
-        return dateRepository.exist(day, month, year);
     }
 
     @Override

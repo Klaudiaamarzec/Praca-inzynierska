@@ -14,6 +14,15 @@ import java.util.List;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long>{
 
+    // Return all documents based on name and surname
+    @Query(value = "SELECT d.* FROM Document d " +
+            "JOIN Personindocument pd ON d.id = pd.document " +
+            "JOIN Person p ON p.id = pd.personid " +
+            "WHERE unaccent(lower(p.name)) LIKE unaccent(lower(concat('%', :name, '%'))) " +
+            "AND unaccent(lower(p.surname)) LIKE unaccent(lower(concat('%', :surname, '%'))) ",
+            nativeQuery = true)
+    List<Document> findByNameAndSurname(@Param("name") String name, @Param("surname") String surname);
+
     //Return all confirmed documents
     @Query("SELECT d FROM Document d WHERE d.confirmed = true")
     List<Document> findConfirmedDocuments();
@@ -156,6 +165,34 @@ public interface DocumentRepository extends JpaRepository<Document, Long>{
             "AND d.localization IN :localizationIDs",
             nativeQuery = true)
     List<Document> findDocumentsPersonByLocalization(@Param("name") String name, @Param("surname") String surname, @Param("localizationIDs") List<Long> localizationIDs);
+
+    // Find if exist
+    @Query(value = """
+    SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM Document d
+    WHERE (:title IS NULL OR unaccent(lower(d.title)) = unaccent(lower(:title)))
+    AND (d.confirmed = :confirmed)
+    AND (:startDate IS NULL OR d.startDate = :startDate)
+    AND (:endDate IS NULL OR d.endDate = :endDate)
+    AND (:description IS NULL OR unaccent(lower(d.description)) = unaccent(lower(:description)))
+    AND (d.type = :typeId)
+    AND (d.place = :placeId)
+    AND (d.ownerid = :ownerId)
+    AND (:dateId IS NULL OR d.date = :dateId)
+    AND (:localizationId IS NULL OR d.localization = :localizationId)
+    AND (:photoId IS NULL OR d.photorefers = :photoId)
+""", nativeQuery = true)
+    boolean documentExists(@Param("confirmed") Boolean confirmed,
+                           @Param("title") String title,
+                           @Param("startDate") LocalDate startDate,
+                           @Param("endDate") LocalDate endDate,
+                           @Param("description") String description,
+                           @Param("dateId") Long dateId,
+                           @Param("placeId") Long placeId,
+                           @Param("ownerId") Long ownerId,
+                           @Param("typeId") Integer typeId,
+                           @Param("localizationId") Long localizationId,
+                           @Param("photoId") Long photoId);
+
 
     // Add photography to existing document
     @Modifying

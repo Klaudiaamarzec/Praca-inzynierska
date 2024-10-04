@@ -10,7 +10,9 @@ public interface RoleService {
 
     boolean updateRole(Role role);
 
-    boolean existsById(long id);
+    boolean existsById(Role role);
+
+    boolean roleExist(Role role);
 
     boolean deleteRole(Role role);
 

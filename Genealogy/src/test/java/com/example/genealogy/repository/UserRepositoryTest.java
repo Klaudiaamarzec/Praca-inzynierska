@@ -21,6 +21,13 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Test
+    void checkIfExist() {
+
+        boolean result = userRepository.existsUser(2, "iwona", "iwona@onet.pl");
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
     void testFindGenealogist() {
 
         List<User> genealogists = userRepository.findGenealogist();

@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,6 +20,13 @@ public class PersonRepositoryTest {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Test
+    void checkIfExist() {
+
+        boolean result = personRepository.existsPerson("Kris", "Jenner", null, LocalDate.of(1970, 10, 9));
+        assertThat(result).isEqualTo(true);
+    }
 
     @Test
     void testGetPersonList() {

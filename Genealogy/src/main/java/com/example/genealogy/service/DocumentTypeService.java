@@ -10,11 +10,11 @@ public interface DocumentTypeService {
 
     boolean updateDocumentType(DocumentType documentType);
 
-    boolean existsById(int id);
+    boolean existsById(DocumentType documentType);
+
+    boolean documentTypeExist(DocumentType documentType);
 
     boolean deleteDocumentType(DocumentType documentType);
-
-    boolean existsById(Integer id);
 
     List<DocumentType> getAllDocumentTypes();
 

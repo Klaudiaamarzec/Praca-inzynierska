@@ -91,12 +91,28 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     List<Address> findByPostalCodeBetween(@Param("startPostalCode") String startPostalCode, @Param("endPostalCode") String endPostalCode);
 
     // Check if already exist in database
-    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM Address a " +
-            "WHERE unaccent(lower(a.country)) LIKE unaccent(lower(CONCAT('%', :country, '%'))) " +
-            "AND unaccent(lower(a.voivodeship)) LIKE unaccent(lower(CONCAT('%', :voivodeship, '%'))) " +
-            "AND unaccent(lower(a.city)) LIKE unaccent(lower(CONCAT('%', :city, '%'))) " +
-            "AND unaccent(lower(a.address)) LIKE unaccent(lower(CONCAT('%', :address, '%')))", nativeQuery = true)
-    boolean addressExists(@Param("country") String country, @Param("voivodeship") String voivodeship, @Param("city") String city, @Param("address") String address);
+    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM address a " +
+            "WHERE (:country IS NULL OR unaccent(lower(a.country)) = unaccent(lower(:country)) ) " +
+            "AND (:voivodeship IS NULL OR unaccent(lower(a.voivodeship)) = unaccent(lower(:voivodeship)) ) " +
+            "AND (:community IS NULL OR unaccent(lower(a.community)) = unaccent(lower(:community)) ) " +
+            "AND (:city IS NULL OR unaccent(lower(a.city)) = unaccent(lower(:city)) ) " +
+            "AND (:address IS NULL OR unaccent(lower(a.address)) = unaccent(lower(:address)) ) " +
+            "AND (:postalCode IS NULL OR unaccent(lower(a.postalcode)) = unaccent(lower(:postalCode)) ) " +
+            "AND (:parish IS NULL OR unaccent(lower(a.parish)) = unaccent(lower(:parish)) ) " +
+            "AND (:longitude IS NULL OR a.longitude = :longitude) " +
+            "AND (:latitude IS NULL OR a.latitude = :latitude) " +
+            "AND (:secular IS NULL OR unaccent(lower(a.secular)) = unaccent(lower(:secular)))",
+            nativeQuery = true)
+    boolean addressExists(@Param("country") String country,
+                          @Param("voivodeship") String voivodeship,
+                          @Param("community") String community,
+                          @Param("city") String city,
+                          @Param("address") String address,
+                          @Param("postalCode") String postalCode,
+                          @Param("parish") String parish,
+                          @Param("longitude") Long longitude,
+                          @Param("latitude") Long latitude,
+                          @Param("secular") String secular);
 
     // Return address
     @Query(value = "SELECT * FROM Address a " +

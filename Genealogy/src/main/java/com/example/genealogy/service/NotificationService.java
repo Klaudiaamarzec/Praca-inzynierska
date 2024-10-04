@@ -11,11 +11,13 @@ public interface NotificationService {
 
     boolean updateNotification(Notification notification);
 
-    boolean existsById(long id);
+    boolean existsById(Notification notification);
+
+    boolean notificationExist(Notification notification);
 
     boolean deleteNotification(Notification notification);
 
-    List<Notification> getAllnotifications();
+    List<Notification> getAllNotifications();
 
     List<Notification> findNotificationByDocumentList(List<Long> documentIDs);
 

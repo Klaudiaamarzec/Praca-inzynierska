@@ -22,6 +22,13 @@ public class RoleRepositoryTest {
     private RoleRepository roleRepository;
 
     @Test
+    void checkIfExist() {
+
+        boolean result = roleRepository.existsRole("genealogist");
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
     void testCheckAddedRoles() {
 
         // Pobranie wszystkich roli z repozytorium

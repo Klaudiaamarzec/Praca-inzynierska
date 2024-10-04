@@ -1,5 +1,6 @@
 package com.example.genealogy.serviceimplementation;
 
+import com.example.genealogy.model.LocalAddress;
 import com.example.genealogy.model.Location;
 import com.example.genealogy.repository.LocationRepository;
 import com.example.genealogy.service.LocationService;
@@ -24,9 +25,20 @@ public class LocationServiceImpl implements LocationService {
         this.locationRepository = locationRepository;
         this.validator = validator;
     }
+
+    @Override
+    public boolean existsById(@NotNull Location location) {
+        return locationRepository.existsById(location.getId());
+    }
+
+    @Override
+    public boolean locationExist(@NotNull Location location) {
+        return locationRepository.existsLocation(location.getPhysical(), location.getUrl());
+    }
+
     @Override
     public boolean saveLocation(@NotNull Location location) {
-        if (existsById(location.getId())) {
+        if (locationExist(location)) {
             return false;
         }
 
@@ -42,7 +54,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public boolean updateLocation(@NotNull Location location) {
-        if (!existsById(location.getId())) {
+        if (!existsById(location)) {
             return false;
         }
 
@@ -57,11 +69,6 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public boolean existsById(long id) {
-        return locationRepository.existsById(id);
-    }
-
-    @Override
     public List<Location> getAllLocations() {
         return locationRepository.findAll();
     }
@@ -69,7 +76,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public boolean deleteLocation(Location location) {
         try {
-            if (existsById(location.getId())) {
+            if (existsById(location)) {
                 locationRepository.delete(location);
                 return true;
             }

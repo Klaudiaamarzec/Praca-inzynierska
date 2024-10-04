@@ -26,8 +26,18 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public boolean existsById(@NotNull Role role) {
+        return roleRepository.existsById(role.getId());
+    }
+
+    @Override
+    public boolean roleExist(@NotNull Role role) {
+        return roleRepository.existsRole(role.getRoleName());
+    }
+
+    @Override
     public boolean saveRole(@NotNull Role role) {
-        if (existsById(role.getId())) {
+        if (roleExist(role)) {
             return false;
         }
 
@@ -43,7 +53,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public boolean updateRole(@NotNull Role role) {
-        if (!existsById(role.getId())) {
+        if (!existsById(role)) {
             return false;
         }
 
@@ -58,14 +68,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public boolean existsById(long id) {
-        return roleRepository.existsById(id);
-    }
-
-    @Override
     public boolean deleteRole(Role role) {
         try {
-            if (existsById(role.getId())) {
+            if (existsById(role)) {
                 roleRepository.delete(role);
                 return true;
             }

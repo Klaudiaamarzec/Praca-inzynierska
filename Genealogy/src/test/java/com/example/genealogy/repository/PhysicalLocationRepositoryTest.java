@@ -21,6 +21,13 @@ public class PhysicalLocationRepositoryTest {
     private PhysicalLocationRepository physicalLocationRepository;
 
     @Test
+    void checkIfExist() {
+
+        boolean result = physicalLocationRepository.existsPhysicalLocation(true, null, "Księga urodzenia", null, 1L, 1L, 1L);
+        assertThat(result).isEqualTo(true);
+    }
+
+    @Test
     void testFindAllByUserId() {
 
         List<PhysicalLocations> physicalLocations = physicalLocationRepository.findAllByUserId(1L);

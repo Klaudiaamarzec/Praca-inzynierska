@@ -26,8 +26,18 @@ public class URLsServiceImpl implements URLsService {
     }
 
     @Override
+    public boolean existsById(@NotNull URLs url) {
+        return urlsRepository.existsById(url.getId());
+    }
+
+    @Override
+    public boolean urlExist(@NotNull URLs url) {
+        return urlsRepository.existsURL(url.getUrlID().getUrl(), url.getUrl(), url.getComment());
+    }
+
+    @Override
     public boolean saveURL(@NotNull URLs url) {
-        if (existsById(url.getId())) {
+        if (urlExist(url)) {
             return false;
         }
 
@@ -43,7 +53,7 @@ public class URLsServiceImpl implements URLsService {
 
     @Override
     public boolean updateURL(@NotNull URLs url) {
-        if (!existsById(url.getId())) {
+        if (!existsById(url)) {
             return false;
         }
 
@@ -58,14 +68,9 @@ public class URLsServiceImpl implements URLsService {
     }
 
     @Override
-    public boolean existsById(long id) {
-        return urlsRepository.existsById(id);
-    }
-
-    @Override
     public boolean deleteURL(URLs url) {
         try {
-            if (existsById(url.getId())) {
+            if (existsById(url)) {
                 urlsRepository.delete(url);
                 return true;
             }

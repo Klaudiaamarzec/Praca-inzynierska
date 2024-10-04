@@ -24,8 +24,18 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     }
 
     @Override
+    public boolean existsById(@NotNull DocumentType documentType) {
+        return documentTypeRepository.existsById(documentType.getId());
+    }
+
+    @Override
+    public boolean documentTypeExist(@NotNull DocumentType documentType) {
+        return documentTypeRepository.existsDocumentType(documentType.getTypeName(), documentType.getTemplate());
+    }
+
+    @Override
     public boolean saveDocumentType(@NotNull DocumentType documentType) {
-        if (existsById(documentType.getId())) {
+        if (documentTypeExist(documentType)) {
             return false;
         }
 
@@ -41,7 +51,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
     @Override
     public boolean updateDocumentType(@NotNull DocumentType documentType) {
-        if (!existsById(documentType.getId())) {
+        if (!existsById(documentType)) {
             return false;
         }
 
@@ -56,14 +66,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     }
 
     @Override
-    public boolean existsById(int id) {
-        return documentTypeRepository.existsById(id);
-    }
-
-    @Override
     public boolean deleteDocumentType(DocumentType documentType) {
         try {
-            if (existsById(documentType.getId())) {
+            if (existsById(documentType)) {
                 documentTypeRepository.deleteById(documentType.getId());
                 return true;
             }
@@ -71,11 +76,6 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
             return false;
         }
         return false;
-    }
-
-    @Override
-    public boolean existsById(Integer id) {
-        return documentTypeRepository.existsById(id);
     }
 
     @Override

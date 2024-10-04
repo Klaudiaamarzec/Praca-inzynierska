@@ -24,9 +24,20 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
         this.personDocumentRepository = personDocumentRepository;
         this.validator = validator;
     }
+
+    @Override
+    public boolean existsById(@NotNull PersonDocument personDocument) {
+        return personDocumentRepository.existsById(personDocument.getId());
+    }
+
+    @Override
+    public boolean personDocumentExist(@NotNull PersonDocument personDocument) {
+        return personDocumentRepository.existsPersonDocument(personDocument.getPerson().getId(), personDocument.getDocument().getId(), personDocument.getComment(), personDocument.getX(), personDocument.getY());
+    }
+
     @Override
     public boolean savePersonDocument(@NotNull PersonDocument personDocument) {
-        if (existsById(personDocument.getId())) {
+        if (personDocumentExist(personDocument)) {
             return false;
         }
 
@@ -42,7 +53,7 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
 
     @Override
     public boolean updatePersonDocument(@NotNull PersonDocument personDocument) {
-        if (!existsById(personDocument.getId())) {
+        if (!existsById(personDocument)) {
             return false;
         }
 
@@ -57,14 +68,9 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
     }
 
     @Override
-    public boolean existsById(long id) {
-        return personDocumentRepository.existsById(id);
-    }
-
-    @Override
     public boolean deletePersonDocument(PersonDocument personDocument) {
         try {
-            if (existsById(personDocument.getId())) {
+            if (existsById(personDocument)) {
                 personDocumentRepository.delete(personDocument);
                 return true;
             }

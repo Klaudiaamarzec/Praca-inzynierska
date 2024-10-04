@@ -27,4 +27,15 @@ public interface FamilyRepository extends JpaRepository<Family, Long> {
     // Find all families where Person is a parent
     @Query("SELECT f FROM Family f WHERE f.father = :person OR f.mother = :person")
     List<Family> findFamiliesByParent(@Param("person") Person person);
+
+    // Check if exist
+    @Query(value = """
+        SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM family f
+        WHERE (f.cid = :childId)
+        AND (f.fid = :fatherId)
+        AND (f.mid = :motherId)
+    """, nativeQuery = true)
+    boolean existsFamily(@Param("childId") Long childId,
+                         @Param("fatherId") Long fatherId,
+                         @Param("motherId") Long motherId);
 }

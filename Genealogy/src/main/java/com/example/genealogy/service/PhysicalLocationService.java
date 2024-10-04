@@ -11,7 +11,9 @@ public interface PhysicalLocationService {
 
     boolean updatePhysicalLocation(PhysicalLocations physicalLocation);
 
-    boolean existsById(long id);
+    boolean existsById(PhysicalLocations physicalLocation);
+
+    boolean physicalLocationExist(PhysicalLocations physicalLocation);
 
     boolean deletePhysicalLocation(PhysicalLocations physicalLocation);
 

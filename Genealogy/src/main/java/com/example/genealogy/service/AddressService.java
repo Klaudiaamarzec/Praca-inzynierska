@@ -6,12 +6,15 @@ import java.util.List;
 
 public interface AddressService {
 
+    boolean existsById(Address address);
+
+    // My  method from repository
+    boolean addressExists(Address address);
+
     // Save = add or update an address
     boolean saveAddress(Address address);
 
     boolean updateAddress(Address address);
-
-    boolean existsById(long id);
 
     boolean deleteAddress(Address address);
 
@@ -37,6 +40,8 @@ public interface AddressService {
 
     List<Address> findByLatitudeBetween(Long minLatitude, Long maxLatitude);
 
+    List<Address> searchAddress(String country, String voivodeship, String community, String city, String address, String postalCode, String parish, Long longitude, Long latitude, Long minLongitude, Long maxLongitude, Long minLatitude, Long maxLatitude);
+
     List<Address> findByCityAndVoivodeship(String city, String voivodeship);
 
     List<Address> findByCountryAndPostalCode(String country, String postalCode);
@@ -44,12 +49,6 @@ public interface AddressService {
     List<Address> findByParishAndCity(String parish, String city);
 
     List<Address> findByPostalCodeBetween(String startPostalCode, String endPostalCode);
-
-    // My  method from repository
-    boolean addressExists(Address address);
-
-    // Method from JPA
-    boolean exists(Address address);
 
     List<Address> getAddress(String country, String voivodeship, String city, String address);
 

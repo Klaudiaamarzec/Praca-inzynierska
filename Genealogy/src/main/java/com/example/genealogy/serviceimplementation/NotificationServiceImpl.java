@@ -28,9 +28,20 @@ public class NotificationServiceImpl implements NotificationService {
         this.notificationRepository = notificationRepository;
         this.validator = validator;
     }
+
+    @Override
+    public boolean existsById(@NotNull Notification notification) {
+        return notificationRepository.existsById(notification.getId());
+    }
+
+    @Override
+    public boolean notificationExist(@NotNull Notification notification) {
+        return notificationRepository.existsNotification(notification.getTitle(), notification.getContext(), notification.isDisplayed(), notification.getUser().getId(), notification.getDocument().getId(), notification.getNewDocument().getId());
+    }
+
     @Override
     public boolean saveNotification(@NotNull Notification notification) {
-        if (existsById(notification.getId())) {
+        if (notificationExist(notification)) {
             return false;
         }
 
@@ -46,7 +57,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public boolean updateNotification(@NotNull Notification notification) {
-        if (!existsById(notification.getId())) {
+        if (!existsById(notification)) {
             return false;
         }
 
@@ -61,14 +72,9 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public boolean existsById(long id) {
-        return notificationRepository.existsById(id);
-    }
-
-    @Override
     public boolean deleteNotification(Notification notification) {
         try {
-            if (existsById(notification.getId())) {
+            if (existsById(notification)) {
                 notificationRepository.delete(notification);
                 return true;
             }
@@ -79,7 +85,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Observed
-    public List<Notification> getAllnotifications() {
+    public List<Notification> getAllNotifications() {
         return notificationRepository.findAll();
     }
 
