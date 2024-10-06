@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -26,15 +27,17 @@ public interface PhysicalLocationRepository extends JpaRepository<PhysicalLocati
     // Check if exist
     @Query(value = """
     SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM physicallocations pl
-    WHERE (pl.isoriginal = :isOriginal)
+    WHERE (pl.date = :date)
+    AND (pl.isoriginal = :isOriginal)
     AND (:condition IS NULL OR lower(pl.condition) = lower(:condition))
     AND (:type IS NULL OR lower(pl.type) = lower(:type))
     AND (:description IS NULL OR lower(pl.description) = lower(:description))
     AND (pl.idphys = :physicalId)
     AND (pl.localaddressid = :localAddressId)
-    AND (pl.user = :userId)
+    AND (pl.userid = :userId)
 """, nativeQuery = true)
     boolean existsPhysicalLocation(
+            @Param("date") LocalDate date,
             @Param("isOriginal") Boolean isOriginal,
             @Param("condition") String condition,
             @Param("type") String type,

@@ -1,8 +1,10 @@
 package com.example.genealogy.serviceimplementation;
 
+import com.example.genealogy.model.URLs;
 import com.example.genealogy.model.User;
 import com.example.genealogy.repository.UserRepository;
 import com.example.genealogy.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -26,18 +28,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsById(@NotNull User user) {
-        return userRepository.existsById(user.getId());
+    public boolean existsById(@NotNull Long id) {
+        return userRepository.existsById(id);
     }
 
     @Override
-    public boolean userExist(@NotNull User user) {
-        return userRepository.existsUser(user.getIdRole().getId(), user.getUserName(), user.getMail());
+    public boolean userExists(@NotNull User user) {
+        return userRepository.existsUser(user.getIdRole() != null ? user.getIdRole().getId() : null, user.getUserName(), user.getMail());
+    }
+
+    @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono użytkownika o id: " + id));
     }
 
     @Override
     public boolean saveUser(@NotNull User user) {
-        if (userExist(user)) {
+        if (userExists(user)) {
             return false;
         }
 
@@ -53,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updateUser(@NotNull User user) {
-        if (!existsById(user)) {
+        if (!existsById(user.getId())) {
             return false;
         }
 
@@ -70,7 +78,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean deleteUser(User user) {
         try {
-            if (existsById(user)) {
+            if (existsById(user.getId())) {
                 userRepository.delete(user);
                 return true;
             }
@@ -81,17 +89,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAllUsers() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public List<User> findGenealogists() {
+    public List<User> getGenealogists() {
         return userRepository.findGenealogist();
     }
 
     @Override
-    public List<User> findUsers() {
+    public List<User> getUsers() {
         return userRepository.findUsers();
     }
 

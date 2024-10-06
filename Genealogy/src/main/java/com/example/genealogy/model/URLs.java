@@ -1,5 +1,6 @@
 package com.example.genealogy.model;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -13,7 +14,7 @@ public class URLs {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "idurl")
@@ -21,7 +22,7 @@ public class URLs {
     private Location urlID;
 
     @Column(name = "url", length = 256)
-    @NotNull(message = "URL nie może być pusta")
+    @NotBlank(message = "URL nie może być pusty")
     private String url;
 
     @Column(name = "comment", columnDefinition = "text")

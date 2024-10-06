@@ -3,6 +3,7 @@ package com.example.genealogy.serviceimplementation;
 import com.example.genealogy.model.Date;
 import com.example.genealogy.repository.DateRepository;
 import com.example.genealogy.service.DateService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -26,18 +27,24 @@ public class DateServiceImpl implements DateService {
     }
 
     @Override
-    public boolean existsById(@NotNull Date date) {
-        return dateRepository.existsById(date.getId());
+    public boolean existsById(@NotNull Long id) {
+        return dateRepository.existsById(id);
     }
 
     @Override
-    public boolean existDate(int day, int month, int year) {
-        return dateRepository.exist(day, month, year);
+    public boolean dateExists(@NotNull Date date) {
+        return dateRepository.exist(date.getDay(), date.getMonth(), date.getYear());
+    }
+
+    @Override
+    public Date getDateById(Long id) {
+        return dateRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono daty o id: " + id));
     }
 
     @Override
     public boolean saveDate(@NotNull Date date) {
-        if (existDate(date.getDay(), date.getMonth(), date.getYear())) {
+        if (dateExists(date)) {
             return false;
         }
 
@@ -53,7 +60,7 @@ public class DateServiceImpl implements DateService {
 
     @Override
     public boolean updateDate(@NotNull Date date) {
-        if (!existsById(date)) {
+        if (!existsById(date.getId())) {
             return false;
         }
 
@@ -70,7 +77,7 @@ public class DateServiceImpl implements DateService {
     @Override
     public boolean deleteDate(Date date) {
         try {
-            if (existsById(date)) {
+            if (existsById(date.getId())) {
                 dateRepository.deleteById(date.getId());
                 return true;
             }

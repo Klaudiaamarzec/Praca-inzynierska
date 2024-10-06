@@ -1,10 +1,12 @@
 package com.example.genealogy.serviceimplementation;
 
+import com.example.genealogy.model.Location;
 import com.example.genealogy.model.Notification;
 import com.example.genealogy.model.User;
 import com.example.genealogy.repository.NotificationRepository;
 import com.example.genealogy.service.NotificationService;
 import io.micrometer.observation.annotation.Observed;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -30,18 +32,31 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public boolean existsById(@NotNull Notification notification) {
-        return notificationRepository.existsById(notification.getId());
+    public boolean existsById(@NotNull Long id) {
+        return notificationRepository.existsById(id);
     }
 
     @Override
-    public boolean notificationExist(@NotNull Notification notification) {
-        return notificationRepository.existsNotification(notification.getTitle(), notification.getContext(), notification.isDisplayed(), notification.getUser().getId(), notification.getDocument().getId(), notification.getNewDocument().getId());
+    public boolean notificationExists(@NotNull Notification notification) {
+        return notificationRepository.existsNotification(
+                notification.getTitle(),
+                notification.getContext(),
+                notification.getDisplayed(),
+                notification.getDate(),
+                notification.getUser() != null ? notification.getUser().getId() : null,
+                notification.getDocument() != null ? notification.getDocument().getId() : null,
+                notification.getNewDocument() != null ? notification.getNewDocument().getId() : null);
+    }
+
+    @Override
+    public Notification getNotificationById(Long id) {
+        return notificationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono powiadomienia o id: " + id));
     }
 
     @Override
     public boolean saveNotification(@NotNull Notification notification) {
-        if (notificationExist(notification)) {
+        if (notificationExists(notification)) {
             return false;
         }
 
@@ -57,7 +72,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public boolean updateNotification(@NotNull Notification notification) {
-        if (!existsById(notification)) {
+        if (!existsById(notification.getId())) {
             return false;
         }
 
@@ -74,7 +89,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public boolean deleteNotification(Notification notification) {
         try {
-            if (existsById(notification)) {
+            if (existsById(notification.getId())) {
                 notificationRepository.delete(notification);
                 return true;
             }
@@ -108,21 +123,21 @@ public class NotificationServiceImpl implements NotificationService {
     public List<Notification> findNotifications(@NotNull String parameter) {
 
         String[] keywords = parameter.split("\\s+");
-        List<Notification> results = new ArrayList<>();
+        List<Notification> notifications = new ArrayList<>();
 
         for (String keyword : keywords) {
-            results.addAll(notificationRepository.findNotificationByTitle(keyword));
+            notifications.addAll(notificationRepository.findNotificationByTitleContext(keyword, keyword));
         }
 
         for (String keyword : keywords) {
-            results.addAll(notificationRepository.findNotificationByTitleContext(keyword, keyword));
+            notifications.addAll(notificationRepository.findNotificationByTitle(keyword));
         }
 
         for (String keyword : keywords) {
-            results.addAll(notificationRepository.findNotificationByParameter(keyword));
+            notifications.addAll(notificationRepository.findNotificationByParameter(keyword));
         }
 
-        return results.stream().distinct().collect(Collectors.toList());
+        return notifications.stream().distinct().collect(Collectors.toList());
     }
 
     @Override

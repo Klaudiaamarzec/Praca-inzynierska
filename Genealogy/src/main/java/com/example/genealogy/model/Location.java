@@ -13,14 +13,14 @@ public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name = "idphys")
-    private long physical;
+    private Long physical;
 
     @Column(name = "idurl")
     @NotNull(message = "Pole 'URL' nie może być puste")
-    private long url;
+    private Long url;
 
     @OneToOne(mappedBy = "localization")
     private Document document;

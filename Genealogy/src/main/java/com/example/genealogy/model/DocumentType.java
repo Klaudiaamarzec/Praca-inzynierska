@@ -15,7 +15,7 @@ public class DocumentType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(name="typename", length = 64)
     @NotBlank(message = "Nazwa typu nie może być pusta")

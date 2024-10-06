@@ -6,10 +6,12 @@ import java.util.List;
 
 public interface AddressService {
 
-    boolean existsById(Address address);
+    boolean existsById(Long id);
 
     // My  method from repository
     boolean addressExists(Address address);
+
+    Address getAddressById(Long id);
 
     // Save = add or update an address
     boolean saveAddress(Address address);
@@ -40,19 +42,7 @@ public interface AddressService {
 
     List<Address> findByLatitudeBetween(Long minLatitude, Long maxLatitude);
 
-    List<Address> searchAddress(String country, String voivodeship, String community, String city, String address, String postalCode, String parish, Long longitude, Long latitude, Long minLongitude, Long maxLongitude, Long minLatitude, Long maxLatitude);
-
-    List<Address> findByCityAndVoivodeship(String city, String voivodeship);
-
-    List<Address> findByCountryAndPostalCode(String country, String postalCode);
-
-    List<Address> findByParishAndCity(String parish, String city);
-
     List<Address> findByPostalCodeBetween(String startPostalCode, String endPostalCode);
 
-    List<Address> getAddress(String country, String voivodeship, String city, String address);
-
-    List<Address> getAddressesByParam(String parameter);
-
-    List<Address> getAddressesByAllParams(String country, String voivodeship, String community, String city, Long longitude, Long latitude, String address, String postalCode, String parish, String secular);
+    List<Address> searchAddress(String country, String voivodeship, String community, String city, String address, String postalCode, String startPostalCode, String endPostalCode, String parish, Long longitude, Long latitude, Long minLongitude, Long maxLongitude, Long minLatitude, Long maxLatitude);
 }

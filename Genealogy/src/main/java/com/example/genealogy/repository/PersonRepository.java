@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,6 +17,12 @@ public interface PersonRepository extends JpaRepository<Person, Long>{
     // Get simple person list
     @Query("SELECT p.name, p.surname FROM Person p")
     List<Object[]> getPersonList();
+
+    @Query(value = "SELECT * FROM Person p " +
+            "WHERE unaccent(lower(p.name)) LIKE unaccent(lower(CONCAT('%', :name, '%'))) " +
+            "AND unaccent(lower(p.surname)) LIKE unaccent(lower(CONCAT('%', :surname, '%'))) ",
+            nativeQuery = true)
+    List<Person> findPersonByNameAndSurname(@Param("name") String name, @Param("surname") String surname);
 
     // Search person by parameter
     @Query(value = "SELECT * FROM Person p " +
@@ -33,7 +40,7 @@ public interface PersonRepository extends JpaRepository<Person, Long>{
     WHERE (:name IS NULL OR lower(p.name) LIKE lower(CONCAT('%', :name, '%')))
     AND (:surname IS NULL OR lower(p.surname) LIKE lower(CONCAT('%', :surname, '%')))
     AND (:rin IS NULL OR p.rin = :rin)
-    AND (:birthdate IS NULL OR p.birthDate = CAST(:birthdate AS date))
+    AND (p.birthDate = :birthdate OR CAST(:birthdate AS DATE) IS NULL)
 """)
     boolean existsPerson(@Param("name") String name,
                          @Param("surname") String surname,

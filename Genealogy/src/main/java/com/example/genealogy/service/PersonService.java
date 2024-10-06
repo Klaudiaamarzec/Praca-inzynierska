@@ -2,22 +2,27 @@ package com.example.genealogy.service;
 
 import com.example.genealogy.model.Document;
 import com.example.genealogy.model.Person;
+import com.example.genealogy.model.PersonDocument;
 
 import java.util.List;
 
 public interface PersonService {
 
+    boolean existsById(Long id);
+
+    boolean personExists(Person person);
+
+    Person getPersonById(Long id);
+
     boolean savePerson(Person person);
 
     boolean updatePerson(Person person);
 
-    boolean existsById(long id);
-
     boolean deletePerson(Person person);
 
-    List<Object[]> getPersonList();
-
     List<Person> getAllPeople();
+
+    List<Object[]> getPersonList();
 
     List<Person> findPersonByParameter(String parameter);
 

@@ -3,6 +3,7 @@ package com.example.genealogy.serviceimplementation;
 import com.example.genealogy.model.Address;
 import com.example.genealogy.repository.AddressRepository;
 import com.example.genealogy.service.AddressService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jakarta.validation.ConstraintViolationException;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -27,13 +29,19 @@ public class AddressServiceImpl implements AddressService {
         this.validator = validator;
     }
 
-    public boolean existsById(@NotNull Address address) {
-        return addressRepository.existsById(address.getId());
+    public boolean existsById(@NotNull Long id) {
+        return addressRepository.existsById(id);
     }
 
     @Override
     public boolean addressExists(@NotNull Address address) {
         return addressRepository.addressExists(address.getCountry(), address.getVoivodeship(), address.getCommunity(), address.getCity(), address.getAddress(), address.getPostalCode(), address.getParish(), address.getLongitude(), address.getLatitude(), address.getSecular());
+    }
+
+    @Override
+    public Address getAddressById(Long id) {
+        return addressRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono adresu o id: " + id));
     }
 
     @Override
@@ -54,7 +62,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public boolean updateAddress(@NotNull Address address) {
-        if (!existsById(address)) {
+        if (!existsById(address.getId())) {
             return false;
         }
 
@@ -71,7 +79,7 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public boolean deleteAddress(Address address) {
         try {
-            if (existsById(address)) {
+            if (existsById(address.getId())) {
                 addressRepository.deleteById(address.getId());
                 return true;
             }
@@ -137,7 +145,12 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public List<Address> searchAddress(String country, String voivodeship, String community, String city, String address, String postalCode, String parish,
+    public List<Address> findByPostalCodeBetween(String startPostalCode, String endPostalCode) {
+        return addressRepository.findByPostalCodeBetween(startPostalCode, endPostalCode);
+    }
+
+    @Override
+    public List<Address> searchAddress(String country, String voivodeship, String community, String city, String address, String postalCode, String startPostalCode, String endPostalCode, String parish,
                                        Long longitude, Long latitude, Long minLongitude, Long maxLongitude, Long minLatitude, Long maxLatitude) {
 
         List<Address> addresses = getAllAddresses();
@@ -160,6 +173,12 @@ public class AddressServiceImpl implements AddressService {
             addresses.retainAll(communityFilteredAddresses);
         }
 
+        // Searching by city
+        if (city != null && !city.isEmpty()) {
+            List<Address> cityFilteredAddresses = findByCity(city);
+            addresses.retainAll(cityFilteredAddresses);
+        }
+
         // Searching by address
         if (address != null && !address.isEmpty()) {
             List<Address> addressFilteredAddresses = findByAddress(address);
@@ -170,6 +189,12 @@ public class AddressServiceImpl implements AddressService {
         if (postalCode != null && !postalCode.isEmpty()) {
             List<Address> postalCodeFilteredAddresses = findByPostalCode(postalCode);
             addresses.retainAll(postalCodeFilteredAddresses);
+        }
+
+        // Searching by postal code between
+        if (startPostalCode != null && endPostalCode != null) {
+            List<Address> postalCodeBetweenFilteredAddresses = findByPostalCodeBetween(startPostalCode, endPostalCode);
+            addresses.retainAll(postalCodeBetweenFilteredAddresses);
         }
 
         // Searching by parish
@@ -197,41 +222,6 @@ public class AddressServiceImpl implements AddressService {
         }
 
         return addresses;
-    }
-
-    @Override
-    public List<Address> findByCityAndVoivodeship(String city, String voivodeship) {
-        return addressRepository.findByCityAndVoivodeship(city, voivodeship);
-    }
-
-    @Override
-    public List<Address> findByCountryAndPostalCode(String country, String postalCode) {
-        return addressRepository.findByCountryAndPostalCode(country, postalCode);
-    }
-
-    @Override
-    public List<Address> findByParishAndCity(String parish, String city) {
-        return addressRepository.findByParishAndCity(parish, city);
-    }
-
-    @Override
-    public List<Address> findByPostalCodeBetween(String startPostalCode, String endPostalCode) {
-        return addressRepository.findByPostalCodeBetween(startPostalCode, endPostalCode);
-    }
-
-    @Override
-    public List<Address> getAddress(String country, String voivodeship, String city, String address) {
-        return addressRepository.getAddress(country, voivodeship, city, address);
-    }
-
-    @Override
-    public List<Address> getAddressesByParam(String parameter) {
-        return addressRepository.getAddressesByParam(parameter);
-    }
-
-    @Override
-    public List<Address> getAddressesByAllParams(String country, String voivodeship, String community, String city, Long longitude, Long latitude, String address, String postalCode, String parish, String secular) {
-        return addressRepository.getAddressesByAllParams(country, voivodeship, community, city, longitude, latitude, address, postalCode, parish, secular);
     }
 
     private void validateAddress(Address address) {

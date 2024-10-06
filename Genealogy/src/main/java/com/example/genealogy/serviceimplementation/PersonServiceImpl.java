@@ -2,8 +2,10 @@ package com.example.genealogy.serviceimplementation;
 
 import com.example.genealogy.model.Document;
 import com.example.genealogy.model.Person;
+import com.example.genealogy.model.PersonDocument;
 import com.example.genealogy.repository.PersonRepository;
 import com.example.genealogy.service.PersonService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -27,8 +30,24 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public boolean existsById(@NotNull Long id) {
+        return personRepository.existsById(id);
+    }
+
+    @Override
+    public boolean personExists(@NotNull Person person) {
+        return  personRepository.existsPerson(person.getName(), person.getSurname(), person.getRin(), person.getBirthDate());
+    }
+
+    @Override
+    public Person getPersonById(Long id) {
+        return personRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono osoby o id: " + id));
+    }
+
+    @Override
     public boolean savePerson(@NotNull Person person) {
-        if (existsById(person.getId())) {
+        if (personExists(person)) {
             return false;
         }
 
@@ -59,11 +78,6 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public boolean existsById(long id) {
-        return personRepository.existsById(id);
-    }
-
-    @Override
     public boolean deletePerson(Person person) {
         try {
             if (existsById(person.getId())) {
@@ -88,8 +102,17 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public List<Person> findPersonByParameter(String parameter) {
-        return personRepository.findPersonByParameter(parameter);
+        if (parameter.contains(" ")) {
+            String[] parts = parameter.split(" ");
+            String name = parts[0];
+            String surname = parts[1];
+
+            return personRepository.findPersonByNameAndSurname(name, surname);
+        } else {
+            return personRepository.findPersonByParameter(parameter);
+        }
     }
+
 
     @Override
     public List<Person> findAllPersonsInDocument(@NotNull Document document) {
@@ -99,14 +122,12 @@ public class PersonServiceImpl implements PersonService {
     private void validatePerson(Person person) {
         Set<ConstraintViolation<Person>> violations = validator.validate(person);
         if (!violations.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            for (ConstraintViolation<Person> violation : violations) {
-                sb.append(violation.getPropertyPath())
-                        .append(": ")
-                        .append(violation.getMessage())
-                        .append("\n");
-            }
-            throw new ConstraintViolationException("Walidacja osoby nie powiodła się:\n" + sb.toString(), violations);
+            String messages = violations.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining("\n"));
+
+            throw new ConstraintViolationException("Walidacja osoby nie powiodła się:\n" + messages, violations);
         }
     }
+
 }

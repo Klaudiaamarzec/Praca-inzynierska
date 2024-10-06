@@ -1,9 +1,11 @@
 package com.example.genealogy.serviceimplementation;
 
+import com.example.genealogy.model.Person;
 import com.example.genealogy.model.PhysicalLocations;
 import com.example.genealogy.model.User;
 import com.example.genealogy.repository.PhysicalLocationRepository;
 import com.example.genealogy.service.PhysicalLocationService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -27,18 +29,32 @@ public class PhysicalLocationServiceImpl implements PhysicalLocationService {
     }
 
     @Override
-    public boolean existsById(@NotNull PhysicalLocations physicalLocation) {
-        return physicalLocationRepository.existsById(physicalLocation.getId());
+    public boolean existsById(@NotNull Long id) {
+        return physicalLocationRepository.existsById(id);
     }
 
     @Override
-    public boolean physicalLocationExist(@NotNull PhysicalLocations physicalLocation) {
-        return physicalLocationRepository.existsPhysicalLocation(physicalLocation.isOriginal(), physicalLocation.getCondition(), physicalLocation.getType(), physicalLocation.getDescription(), physicalLocation.getPhysical().getId(), physicalLocation.getLocaladdress().getId(), physicalLocation.getUser().getId());
+    public boolean physicalLocationExists(@NotNull PhysicalLocations physicalLocation) {
+        return physicalLocationRepository.existsPhysicalLocation(
+                physicalLocation.getDate(),
+                physicalLocation.getIsOriginal(),
+                physicalLocation.getCondition(),
+                physicalLocation.getType(),
+                physicalLocation.getDescription(),
+                physicalLocation.getPhysical() != null ? physicalLocation.getPhysical().getId() : null,
+                physicalLocation.getLocaladdress() != null ? physicalLocation.getLocaladdress().getId() : null,
+                physicalLocation.getUser() != null ? physicalLocation.getUser().getId() : null);
+    }
+
+    @Override
+    public PhysicalLocations getPhysicalLocationsById(Long id) {
+        return physicalLocationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono fizycznego adresu o id: " + id));
     }
 
     @Override
     public boolean savePhysicalLocation(@NotNull PhysicalLocations physicalLocation) {
-        if (physicalLocationExist(physicalLocation)) {
+        if (physicalLocationExists(physicalLocation)) {
             return false;
         }
 
@@ -54,7 +70,7 @@ public class PhysicalLocationServiceImpl implements PhysicalLocationService {
 
     @Override
     public boolean updatePhysicalLocation(@NotNull PhysicalLocations physicalLocation) {
-        if (!existsById(physicalLocation)) {
+        if (!existsById(physicalLocation.getId())) {
             return false;
         }
 
@@ -71,7 +87,7 @@ public class PhysicalLocationServiceImpl implements PhysicalLocationService {
     @Override
     public boolean deletePhysicalLocation(PhysicalLocations physicalLocation) {
         try {
-            if (existsById(physicalLocation)) {
+            if (existsById(physicalLocation.getId())) {
                 physicalLocationRepository.delete(physicalLocation);
                 return true;
             }

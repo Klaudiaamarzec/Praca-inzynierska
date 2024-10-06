@@ -12,8 +12,8 @@ public interface DocumentTypeRepository extends JpaRepository<DocumentType, Inte
     // Find if exist
     @Query(value = """
         SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM documenttype dt
-        WHERE (:typeName IS NULL OR unaccent(lower(dt.typename)) = unaccent(lower(:typeName)))
-        AND (:template IS NULL OR unaccent(lower(dt.template)) = unaccent(lower(:template)))
+        WHERE (unaccent(lower(dt.typename)) = unaccent(lower(:typeName)))
+        AND (unaccent(lower(dt.template)) = unaccent(lower(:template)))
     """, nativeQuery = true)
     boolean existsDocumentType(@Param("typeName") String typeName,
                                @Param("template") String template);

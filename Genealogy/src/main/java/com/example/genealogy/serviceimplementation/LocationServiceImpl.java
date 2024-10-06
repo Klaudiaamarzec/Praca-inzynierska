@@ -1,9 +1,11 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.model.LocalAddress;
-import com.example.genealogy.model.Location;
+import com.example.genealogy.model.*;
 import com.example.genealogy.repository.LocationRepository;
 import com.example.genealogy.service.LocationService;
+import com.example.genealogy.service.PhysicalLocationService;
+import com.example.genealogy.service.URLsService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -27,34 +29,24 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public boolean existsById(@NotNull Location location) {
-        return locationRepository.existsById(location.getId());
+    public boolean existsById(@NotNull Long id) {
+        return locationRepository.existsById(id);
     }
 
     @Override
-    public boolean locationExist(@NotNull Location location) {
+    public boolean locationExists(@NotNull Location location) {
         return locationRepository.existsLocation(location.getPhysical(), location.getUrl());
     }
 
     @Override
-    public boolean saveLocation(@NotNull Location location) {
-        if (locationExist(location)) {
-            return false;
-        }
-
-        validateLocation(location);
-
-        try {
-            locationRepository.save(location);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public Location getLocationById(Long id) {
+        return locationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono lokalizacji o id: " + id));
     }
 
     @Override
-    public boolean updateLocation(@NotNull Location location) {
-        if (!existsById(location)) {
+    public boolean saveLocation(@NotNull Location location) {
+        if (locationExists(location)) {
             return false;
         }
 
@@ -76,7 +68,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public boolean deleteLocation(Location location) {
         try {
-            if (existsById(location)) {
+            if (existsById(location.getId())) {
                 locationRepository.delete(location);
                 return true;
             }
@@ -97,8 +89,8 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public List<Location> findLocationByDocument(long documentId) {
-        return locationRepository.findLocationByDocument(documentId);
+    public List<Location> findLocationByDocument(Document document) {
+        return locationRepository.findLocationByDocument(document.getId());
     }
 
     private void validateLocation(Location location) {

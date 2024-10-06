@@ -1,8 +1,10 @@
 package com.example.genealogy.serviceimplementation;
 
+import com.example.genealogy.model.Document;
 import com.example.genealogy.model.DocumentType;
 import com.example.genealogy.repository.DocumentTypeRepository;
 import com.example.genealogy.service.DocumentTypeService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.jetbrains.annotations.NotNull;
@@ -24,18 +26,24 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     }
 
     @Override
-    public boolean existsById(@NotNull DocumentType documentType) {
-        return documentTypeRepository.existsById(documentType.getId());
+    public boolean existsById(@NotNull Integer id) {
+        return documentTypeRepository.existsById(id);
     }
 
     @Override
-    public boolean documentTypeExist(@NotNull DocumentType documentType) {
+    public boolean documentTypeExists(@NotNull DocumentType documentType) {
         return documentTypeRepository.existsDocumentType(documentType.getTypeName(), documentType.getTemplate());
     }
 
     @Override
+    public DocumentType getDocumentTypeById(Integer id) {
+        return documentTypeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono typu dokumentu o id: " + id));
+    }
+
+    @Override
     public boolean saveDocumentType(@NotNull DocumentType documentType) {
-        if (documentTypeExist(documentType)) {
+        if (documentTypeExists(documentType)) {
             return false;
         }
 
@@ -51,7 +59,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 
     @Override
     public boolean updateDocumentType(@NotNull DocumentType documentType) {
-        if (!existsById(documentType)) {
+        if (!existsById(documentType.getId())) {
             return false;
         }
 
@@ -68,7 +76,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
     @Override
     public boolean deleteDocumentType(DocumentType documentType) {
         try {
-            if (existsById(documentType)) {
+            if (existsById(documentType.getId())) {
                 documentTypeRepository.deleteById(documentType.getId());
                 return true;
             }

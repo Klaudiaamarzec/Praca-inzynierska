@@ -2,10 +2,6 @@ package com.example.genealogy.model;
 
 import lombok.Data;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.Set;
@@ -18,7 +14,7 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "placeid")
-    private long id;
+    private Long id;
 
     @Column(name = "country", length = 128)
     @Size(max = 128, message = "Nazwa kraju nie może mieć więcej niż 128 znaków")

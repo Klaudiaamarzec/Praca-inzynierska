@@ -6,13 +6,15 @@ import java.time.LocalDate;
 import java.util.List;
 public interface DateService {
 
-    // Add or update a date
+    boolean existsById(Long id);
+
+    boolean dateExists(Date date);
+
+    Date getDateById(Long id);
+
     boolean saveDate(Date date);
 
     boolean updateDate(Date date);
-
-    boolean existsById(Date date);
-    boolean existDate(int day, int month, int year);
 
     boolean deleteDate(Date date);
 

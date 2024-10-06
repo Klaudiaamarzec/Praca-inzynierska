@@ -1,5 +1,6 @@
 package com.example.genealogy.service;
 
+import com.example.genealogy.model.Location;
 import com.example.genealogy.model.Notification;
 import com.example.genealogy.model.User;
 
@@ -7,13 +8,15 @@ import java.util.List;
 
 public interface NotificationService {
 
+    boolean existsById(Long id);
+
+    boolean notificationExists(Notification notification);
+
+    Notification getNotificationById(Long id);
+
     boolean saveNotification(Notification notification);
 
     boolean updateNotification(Notification notification);
-
-    boolean existsById(Notification notification);
-
-    boolean notificationExist(Notification notification);
 
     boolean deleteNotification(Notification notification);
 

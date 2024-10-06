@@ -24,7 +24,7 @@ public class NotificationRepositoryTest {
     @Test
     void checkIfExist() {
 
-        boolean result = notificationRepository.existsNotification("Dodano nowy dokument", "Dokument 4", false, 3L, 4L, null);
+        boolean result = notificationRepository.existsNotification("Dodano nowy dokument", "Dokument 4", false, LocalDate.of(2003,10,6),3L, 4L, null);
         assertThat(result).isEqualTo(true);
     }
 

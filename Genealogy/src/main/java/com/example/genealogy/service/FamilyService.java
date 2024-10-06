@@ -1,5 +1,6 @@
 package com.example.genealogy.service;
 
+import com.example.genealogy.model.DocumentType;
 import com.example.genealogy.model.Family;
 import com.example.genealogy.model.Person;
 
@@ -7,18 +8,19 @@ import java.util.List;
 
 public interface FamilyService {
 
-    // Add or update a date
+    boolean existsById(Long id);
+
+    boolean familyExists(Family family);
+
+    Family getFamilyById(Long id);
+
     boolean saveFamily(Family family);
 
     boolean updateFamily(Family family);
 
-    boolean existsById(Family family);
-
-    boolean familyExists(Family family);
+    boolean deleteFamily(Family family);
 
     List<Family> getAllFamilies();
-
-    boolean deleteFamily(Family family);
 
     List<Family> findFamiliesByChild(Person child);
 

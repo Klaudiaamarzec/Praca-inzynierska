@@ -1,8 +1,10 @@
 package com.example.genealogy.serviceimplementation;
 
+import com.example.genealogy.model.Role;
 import com.example.genealogy.model.URLs;
 import com.example.genealogy.repository.URLsRepository;
 import com.example.genealogy.service.URLsService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -26,18 +28,24 @@ public class URLsServiceImpl implements URLsService {
     }
 
     @Override
-    public boolean existsById(@NotNull URLs url) {
-        return urlsRepository.existsById(url.getId());
+    public boolean existsById(@NotNull Long id) {
+        return urlsRepository.existsById(id);
     }
 
     @Override
-    public boolean urlExist(@NotNull URLs url) {
+    public boolean urlExists(@NotNull URLs url) {
         return urlsRepository.existsURL(url.getUrlID().getUrl(), url.getUrl(), url.getComment());
     }
 
     @Override
+    public URLs getURLById(Long id) {
+        return urlsRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono adresu URL o id: " + id));
+    }
+
+    @Override
     public boolean saveURL(@NotNull URLs url) {
-        if (urlExist(url)) {
+        if (urlExists(url)) {
             return false;
         }
 
@@ -53,7 +61,7 @@ public class URLsServiceImpl implements URLsService {
 
     @Override
     public boolean updateURL(@NotNull URLs url) {
-        if (!existsById(url)) {
+        if (!existsById(url.getId())) {
             return false;
         }
 
@@ -70,7 +78,7 @@ public class URLsServiceImpl implements URLsService {
     @Override
     public boolean deleteURL(URLs url) {
         try {
-            if (existsById(url)) {
+            if (existsById(url.getId())) {
                 urlsRepository.delete(url);
                 return true;
             }

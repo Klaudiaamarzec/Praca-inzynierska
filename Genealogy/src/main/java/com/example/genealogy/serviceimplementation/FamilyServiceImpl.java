@@ -1,9 +1,11 @@
 package com.example.genealogy.serviceimplementation;
 
+import com.example.genealogy.model.DocumentType;
 import com.example.genealogy.model.Family;
 import com.example.genealogy.model.Person;
 import com.example.genealogy.repository.FamilyRepository;
 import com.example.genealogy.service.FamilyService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validation;
@@ -26,13 +28,22 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public boolean existsById(@NotNull Family family) {
-        return familyRepository.existsById(family.getId());
+    public boolean existsById(@NotNull Long id) {
+        return familyRepository.existsById(id);
     }
 
     @Override
     public boolean familyExists(@NotNull Family family) {
-        return familyRepository.existsFamily(family.getChild().getId(), family.getFather().getId(), family.getMother().getId());
+        return familyRepository.existsFamily(
+                family.getChild() != null ? family.getChild().getId() : null,
+                family.getFather() != null ? family.getFather().getId() : null,
+                family.getMother() != null ? family.getMother().getId() : null );
+    }
+
+    @Override
+    public Family getFamilyById(Long id) {
+        return familyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono rodziny o id: " + id));
     }
 
     @Override
@@ -53,7 +64,7 @@ public class FamilyServiceImpl implements FamilyService {
 
     @Override
     public boolean updateFamily(@NotNull Family family) {
-        if (!existsById(family)) {
+        if (!existsById(family.getId())) {
             return false;
         }
 
@@ -75,7 +86,7 @@ public class FamilyServiceImpl implements FamilyService {
     @Override
     public boolean deleteFamily(Family family) {
         try {
-            if (existsById(family)) {
+            if (existsById(family.getId())) {
                 familyRepository.deleteById(family.getId());
                 return true;
             }

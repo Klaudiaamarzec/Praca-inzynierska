@@ -53,10 +53,10 @@ public class DocumentRepositoryTest {
         List<Document> confirmedDocuments = documentRepository.findConfirmedDocuments();
         assertThat(confirmedDocuments).hasSize(4);
 
-        assertThat(confirmedDocuments.get(0).isConfirmed()).isTrue();
-        assertThat(confirmedDocuments.get(1).isConfirmed()).isTrue();
-        assertThat(confirmedDocuments.get(2).isConfirmed()).isTrue();
-        assertThat(confirmedDocuments.get(3).isConfirmed()).isTrue();
+        assertThat(confirmedDocuments.get(0).getConfirmed()).isTrue();
+        assertThat(confirmedDocuments.get(1).getConfirmed()).isTrue();
+        assertThat(confirmedDocuments.get(2).getConfirmed()).isTrue();
+        assertThat(confirmedDocuments.get(3).getConfirmed()).isTrue();
 
         // IDs check
         assertThat(confirmedDocuments.get(0).getId()).isEqualTo(1L);

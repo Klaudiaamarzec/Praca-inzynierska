@@ -82,8 +82,8 @@ public interface DocumentRepository extends JpaRepository<Document, Long>{
     @Query(value = "SELECT d.* FROM Document d " +
             "JOIN Personindocument pd ON d.id = pd.document " +
             "JOIN Person p ON p.id = pd.personid " +
-            "WHERE unaccent(lower(p.name)) LIKE unaccent(lower(concat('%', :name, '%'))) " +
-            "AND unaccent(lower(p.surname)) LIKE unaccent(lower(concat('%', :surname, '%'))) " +
+            "WHERE (unaccent(lower(p.name)) LIKE unaccent(lower(concat('%', :name, '%'))) OR :name IS NULL) " +
+            "AND (unaccent(lower(p.surname)) LIKE unaccent(lower(concat('%', :surname, '%'))) OR :surname IS NULL) " +
             "AND d.type IN :typeIds",
             nativeQuery = true)
     List<Document> findDocumentsPersonByTypeIds(@Param("name") String name, @Param("surname") String surname, @Param("typeIds") List<Integer> typeIds);
@@ -107,8 +107,8 @@ public interface DocumentRepository extends JpaRepository<Document, Long>{
     FROM Document d
     JOIN Personindocument pd ON d.id = pd.document
     JOIN Person p ON p.id = pd.personid
-    WHERE unaccent(lower(p.name)) LIKE unaccent(lower(concat('%', :name, '%')))
-    AND unaccent(lower(p.surname)) LIKE unaccent(lower(concat('%', :surname, '%')))
+    WHERE (unaccent(lower(p.name)) LIKE unaccent(lower(concat('%', :name, '%'))) OR :name IS NULL)
+    AND (unaccent(lower(p.surname)) LIKE unaccent(lower(concat('%', :surname, '%'))) OR :surname IS NULL)
     AND (d.startdate <= :toDate AND d.enddate >= :fromDate)
     ORDER BY
         CASE
@@ -127,8 +127,8 @@ public interface DocumentRepository extends JpaRepository<Document, Long>{
     @Query(value = "SELECT d.* FROM Document d " +
             "JOIN Personindocument pd ON d.id = pd.document " +
             "JOIN Person p ON p.id = pd.personid " +
-            "WHERE unaccent(lower(p.name)) LIKE unaccent(lower(concat('%', :name, '%'))) " +
-            "AND unaccent(lower(p.surname)) LIKE unaccent(lower(concat('%', :surname, '%'))) " +
+            "WHERE (unaccent(lower(p.name)) LIKE unaccent(lower(concat('%', :name, '%'))) OR :name IS NULL) " +
+            "AND (unaccent(lower(p.surname)) LIKE unaccent(lower(concat('%', :surname, '%'))) OR :surname IS NULL) " +
             "AND d.date IN :dateIds",
             nativeQuery = true)
     //@Query("SELECT d FROM Document d JOIN d.peopleDocuments pd JOIN pd.person p WHERE p.name = :name AND p.surname = :surname AND d.date.id IN :date")
@@ -142,8 +142,8 @@ public interface DocumentRepository extends JpaRepository<Document, Long>{
     @Query(value = "SELECT d.* FROM Document d " +
             "JOIN Personindocument pd ON d.id = pd.document " +
             "JOIN Person p ON p.id = pd.personid " +
-            "WHERE unaccent(lower(p.name)) LIKE unaccent(lower(concat('%', :name, '%'))) " +
-            "AND unaccent(lower(p.surname)) LIKE unaccent(lower(concat('%', :surname, '%'))) " +
+            "WHERE (unaccent(lower(p.name)) LIKE unaccent(lower(concat('%', :name, '%'))) OR :name IS NULL) " +
+            "AND (unaccent(lower(p.surname)) LIKE unaccent(lower(concat('%', :surname, '%'))) OR :surname IS NULL) " +
             "AND d.place IN :placeIds",
             nativeQuery = true)
     List<Document> findDocumentsPersonByPlaces(@Param("name") String name, @Param("surname") String surname, @Param("placeIds") List<Long> placeIds);

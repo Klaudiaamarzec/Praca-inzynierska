@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "notification")
@@ -14,7 +15,7 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name = "title", columnDefinition = "text")
     @NotBlank(message = "Tytuł nie może być pusty")
@@ -25,22 +26,36 @@ public class Notification {
     private String context;
 
     @Column(name = "displayed")
-    @NotNull(message = "Pole 'Wyświetlone/Niewyświetlone' nie może być pusta")
-    private boolean displayed;
+    @NotNull(message = "Pole 'Wyświetlone/Niewyświetlone' nie może być puste")
+    private Boolean displayed;
 
     @Column(name = "date")
     @NotNull(message = "Data nie może być pusta")
     private LocalDate date;
 
     @ManyToOne
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "userid")
+    @NotNull(message = "Pole 'Użytkownik' nie może być puste")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "document")
+    @NotNull(message = "Pole 'Dokument' nie może być puste")
     private Document document;
 
     @ManyToOne
     @JoinColumn(name = "newdocument")
     private Document newDocument;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Notification other)) return false;
+        return Objects.equals(id, other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
 }

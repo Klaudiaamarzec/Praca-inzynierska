@@ -58,12 +58,14 @@ public interface NotificationRepository extends JpaRepository <Notification, Lon
             "WHERE (:title IS NULL OR LOWER(n.title) = LOWER(:title)) " +
             "AND (:context IS NULL OR LOWER(n.context) = LOWER(:context)) " +
             "AND (n.displayed = :displayed) " +
+            "AND (n.date = :date OR CAST(:date AS DATE) IS NULL)" +
             "AND (:userId IS NULL OR n.user.id = :userId) " +
             "AND (:documentId IS NULL OR n.document.id = :documentId) " +
             "AND (:newDocumentId IS NULL OR n.newDocument.id = :newDocumentId)")
     boolean existsNotification(@Param("title") String title,
                                @Param("context") String context,
                                @Param("displayed") Boolean displayed,
+                               @Param("date") LocalDate date,
                                @Param("userId") Long userId,
                                @Param("documentId") Long documentId,
                                @Param("newDocumentId") Long newDocumentId);

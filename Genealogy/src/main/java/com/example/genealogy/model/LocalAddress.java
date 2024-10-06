@@ -14,7 +14,7 @@ public class LocalAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name = "country", length = 128)
     @Size(max = 128, message = "Nazwa kraju może mieć maksymalnie 128 znaków")

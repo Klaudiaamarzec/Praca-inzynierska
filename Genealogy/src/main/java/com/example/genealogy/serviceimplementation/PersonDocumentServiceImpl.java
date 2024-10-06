@@ -1,8 +1,10 @@
 package com.example.genealogy.serviceimplementation;
 
+import com.example.genealogy.model.Notification;
 import com.example.genealogy.model.PersonDocument;
 import com.example.genealogy.repository.PersonDocumentRepository;
 import com.example.genealogy.service.PersonDocumentService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -26,18 +28,30 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
     }
 
     @Override
-    public boolean existsById(@NotNull PersonDocument personDocument) {
-        return personDocumentRepository.existsById(personDocument.getId());
+    public boolean existsById(@NotNull Long id) {
+        return personDocumentRepository.existsById(id);
     }
 
     @Override
-    public boolean personDocumentExist(@NotNull PersonDocument personDocument) {
-        return personDocumentRepository.existsPersonDocument(personDocument.getPerson().getId(), personDocument.getDocument().getId(), personDocument.getComment(), personDocument.getX(), personDocument.getY());
+    public boolean personDocumentExists(@NotNull PersonDocument personDocument) {
+        return personDocumentRepository.existsPersonDocument(
+                personDocument.getPerson() != null ? personDocument.getPerson().getId() : null,
+                personDocument.getDocument() != null ? personDocument.getDocument().getId() : null,
+                personDocument.getComment(),
+                personDocument.getX(),
+                personDocument.getY());
     }
+
+    @Override
+    public PersonDocument getPersonDocumentById(Long id) {
+        return personDocumentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono osoby w dokumencie o id: " + id));
+    }
+
 
     @Override
     public boolean savePersonDocument(@NotNull PersonDocument personDocument) {
-        if (personDocumentExist(personDocument)) {
+        if (personDocumentExists(personDocument)) {
             return false;
         }
 
@@ -53,7 +67,7 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
 
     @Override
     public boolean updatePersonDocument(@NotNull PersonDocument personDocument) {
-        if (!existsById(personDocument)) {
+        if (!existsById(personDocument.getId())) {
             return false;
         }
 
@@ -70,7 +84,7 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
     @Override
     public boolean deletePersonDocument(PersonDocument personDocument) {
         try {
-            if (existsById(personDocument)) {
+            if (existsById(personDocument.getId())) {
                 personDocumentRepository.delete(personDocument);
                 return true;
             }

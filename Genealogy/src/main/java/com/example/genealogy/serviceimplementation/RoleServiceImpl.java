@@ -1,8 +1,10 @@
 package com.example.genealogy.serviceimplementation;
 
+import com.example.genealogy.model.PhysicalLocations;
 import com.example.genealogy.model.Role;
 import com.example.genealogy.repository.RoleRepository;
 import com.example.genealogy.service.RoleService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -26,18 +28,24 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public boolean existsById(@NotNull Role role) {
-        return roleRepository.existsById(role.getId());
+    public boolean existsById(@NotNull Integer id) {
+        return roleRepository.existsById(id);
     }
 
     @Override
-    public boolean roleExist(@NotNull Role role) {
+    public boolean roleExists(@NotNull Role role) {
         return roleRepository.existsRole(role.getRoleName());
     }
 
     @Override
+    public Role getRoleById(Integer id) {
+        return roleRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono roli o id: " + id));
+    }
+
+    @Override
     public boolean saveRole(@NotNull Role role) {
-        if (roleExist(role)) {
+        if (roleExists(role)) {
             return false;
         }
 
@@ -53,7 +61,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public boolean updateRole(@NotNull Role role) {
-        if (!existsById(role)) {
+        if (!existsById(role.getId())) {
             return false;
         }
 
@@ -70,7 +78,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public boolean deleteRole(Role role) {
         try {
-            if (existsById(role)) {
+            if (existsById(role.getId())) {
                 roleRepository.delete(role);
                 return true;
             }

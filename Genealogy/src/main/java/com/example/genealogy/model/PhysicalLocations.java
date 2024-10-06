@@ -14,7 +14,7 @@ public class PhysicalLocations {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Column(name = "date", columnDefinition = "Date")
     @NotNull(message = "Data nie może być pusta")
@@ -22,7 +22,7 @@ public class PhysicalLocations {
 
     @Column(name = "isoriginal")
     @NotNull(message = "Pole 'Oryginalne/Nieoryginalne' nie może być puste")
-    private boolean isOriginal;
+    private Boolean isOriginal;
 
     @Column(name = "condition", length = 64)
     @Size(max = 64, message = "Kondycja nie może mieć więcej niż 64 znaki")
@@ -45,7 +45,7 @@ public class PhysicalLocations {
     private LocalAddress localaddress;
 
     @ManyToOne
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "userid")
     @NotNull(message = "Pole 'Użytkownik' nie może być puste")
     private User user;
 }

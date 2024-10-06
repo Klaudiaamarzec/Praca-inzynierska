@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import org.springframework.lang.Nullable;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,7 +24,9 @@ public class PersonRepositoryTest {
     @Test
     void checkIfExist() {
 
-        boolean result = personRepository.existsPerson("Kris", "Jenner", null, LocalDate.of(1970, 10, 9));
+        LocalDate birthDate = LocalDate.of(1970, 10, 9);
+
+        boolean result = personRepository.existsPerson("Kris", "Jenner", null, birthDate);
         assertThat(result).isEqualTo(true);
     }
 

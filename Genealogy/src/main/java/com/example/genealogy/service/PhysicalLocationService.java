@@ -1,5 +1,6 @@
 package com.example.genealogy.service;
 
+import com.example.genealogy.model.Person;
 import com.example.genealogy.model.PhysicalLocations;
 import com.example.genealogy.model.User;
 
@@ -7,13 +8,15 @@ import java.util.List;
 
 public interface PhysicalLocationService {
 
+    boolean existsById(Long id);
+
+    boolean physicalLocationExists(PhysicalLocations physicalLocation);
+
+    PhysicalLocations getPhysicalLocationsById(Long id);
+
     boolean savePhysicalLocation(PhysicalLocations physicalLocation);
 
     boolean updatePhysicalLocation(PhysicalLocations physicalLocation);
-
-    boolean existsById(PhysicalLocations physicalLocation);
-
-    boolean physicalLocationExist(PhysicalLocations physicalLocation);
 
     boolean deletePhysicalLocation(PhysicalLocations physicalLocation);
 

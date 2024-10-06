@@ -5,6 +5,7 @@ import jakarta.validation.constraints.PastOrPresent;
 import lombok.Data;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -14,11 +15,11 @@ public class Document {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "confirmed")
     @NotNull(message = "Potwierdzenie nie może być puste")
-    private boolean confirmed;
+    private Boolean confirmed;
 
     @Column(name="title", columnDefinition = "text")
     private String title;
@@ -74,4 +75,16 @@ public class Document {
 
     @OneToMany(mappedBy = "document") // Relation to `PersonInDocument`
     private Set<PersonDocument> peopleDocuments;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof Document other)) return false;
+        return Objects.equals(id, other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

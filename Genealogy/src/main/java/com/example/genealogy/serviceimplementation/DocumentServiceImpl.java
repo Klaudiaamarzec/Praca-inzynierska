@@ -7,6 +7,7 @@ import com.example.genealogy.model.User;
 import com.example.genealogy.repository.DocumentRepository;
 import com.example.genealogy.service.DateService;
 import com.example.genealogy.service.DocumentService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -33,17 +34,37 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public boolean existsById(@NotNull Document document) {
-        return documentRepository.existsById(document.getId());
+    public boolean existsById(@NotNull Long id) {
+        return documentRepository.existsById(id);
     }
 
     @Override
-    public boolean existDocument(@NotNull Document document) {
-        return documentRepository.documentExists(document.isConfirmed(), document.getTitle(), document.getStartDate(), document.getEndDate(), document.getDescription(), document.getDate().getId(), document.getPlace().getId(), document.getOwner().getId(), document.getType().getId(), document.getLocalization().getId(), document.getPhotoRefers().getId());
+    public boolean documentExists(@NotNull Document document) {
+
+        return documentRepository.documentExists(
+                document.getConfirmed(),
+                document.getTitle(),
+                document.getStartDate(),
+                document.getEndDate(),
+                document.getDescription(),
+                document.getDate() != null ? document.getDate().getId() : null,
+                document.getPlace() != null ? document.getPlace().getId() : null,
+                document.getOwner() != null ? document.getOwner().getId() : null,
+                document.getType() != null ? document.getType().getId() : null,
+                document.getLocalization() != null ? document.getLocalization().getId() : null,
+                document.getPhotoRefers() != null ? document.getPhotoRefers().getId() : null
+        );
     }
+
+    @Override
+    public Document getDocumentById(Long id) {
+        return documentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono dokumentu o id: " + id));
+    }
+
     @Override
     public boolean saveDocument(@NotNull Document document) {
-        if (existDocument(document)) {
+        if (documentExists(document)) {
             return false;
         }
 
@@ -59,7 +80,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public boolean updateDocument(@NotNull Document document) {
-        if (!existsById(document)) {
+        if (!existsById(document.getId())) {
             return false;
         }
 
@@ -76,7 +97,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public boolean deleteDocument(Document document) {
         try {
-            if (existsById(document)) {
+            if (existsById(document.getId())) {
                 documentRepository.deleteById(document.getId());
                 return true;
             }
@@ -107,13 +128,8 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public List<Document> findDocumentsForPerson(@NotNull Person person) {
-        return documentRepository.findDocumentsForPerson(person.getId());
-    }
-
-    @Override
     public List<Document> findDocumentsByTypeIds(String name, String surname, List<Integer> typeIds) {
-        if (name != null && !name.isEmpty() && surname != null && !surname.isEmpty()) {
+        if (name != null && !name.isEmpty() || surname != null && !surname.isEmpty()) {
             return documentRepository.findDocumentsPersonByTypeIds(name, surname, typeIds);
         } else {
             return documentRepository.findDocumentsByTypeIds(typeIds);
@@ -126,18 +142,17 @@ public class DocumentServiceImpl implements DocumentService {
         List<Date> datesInRange = dateService.findDatesByDateRange(fromDate, toDate);
         List<Long> dateIds = datesInRange.stream().map(Date::getId).collect(Collectors.toList());
 
-        // Inicjalizuj listę dokumentów
         List<Document> documents = new ArrayList<>();
 
         // Wyszukaj dokumenty na podstawie identyfikatorów dat
-        if (name != null && !name.isEmpty() && surname != null && !surname.isEmpty()) {
+        if (name != null && !name.isEmpty() || surname != null && !surname.isEmpty()) {
             documents.addAll(documentRepository.findDocumentsPersonByDates(name, surname, dateIds));
         } else {
             documents.addAll(documentRepository.findDocumentsByDates(dateIds));
         }
 
         // Dodaj dokumenty znalezione w przedziale dat
-        if (name != null && !name.isEmpty() && surname != null && !surname.isEmpty()) {
+        if (name != null && !name.isEmpty() || surname != null && !surname.isEmpty()) {
             documents.addAll(documentRepository.findDocumentsPersonByDateRangeStartEnd(name, surname, fromDate, toDate));
         } else {
             documents.addAll(documentRepository.findDocumentsByDateRangeStartEnd(fromDate, toDate));
@@ -149,7 +164,7 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     public List<Document> findDocumentsByPlaces(String name, String surname, List<Long> placeIds) {
-        if (name != null && !name.isEmpty() && surname != null && !surname.isEmpty()) {
+        if (name != null && !name.isEmpty() || surname != null && !surname.isEmpty()) {
             return documentRepository.findDocumentsPersonByPlaces(name, surname, placeIds);
         } else {
             return documentRepository.findDocumentsByPlaces(placeIds);
@@ -162,26 +177,20 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public List<Document> findDocumentsByLocalizations(String name, String surname, List<Long> localizationIDs) {
-        if (name != null && !name.isEmpty() && surname != null && !surname.isEmpty()) {
-            return documentRepository.findDocumentsPersonByLocalization(name, surname, localizationIDs);
-        } else {
-            return documentRepository.findDocumentsByLocalizations(localizationIDs);
-        }
-    }
-
-    @Override
     public List<Document> searchDocuments(String name, String surname, List<Integer> typeIds,
                                           LocalDate fromDate, LocalDate toDate, List<Long> placeIds) {
 
         List<Document> documents;
 
         // Searching by name and surname
-        if (name != null && !name.isEmpty() && surname != null && !surname.isEmpty()) {
+        if (name != null && !name.isEmpty() || surname != null && !surname.isEmpty()) {
             documents = findByNameAndSurname(name, surname);
         } else {
             documents = getAllDocuments();
         }
+
+        List<Document> confirmedDocuments = findConfirmedDocuments();
+        documents.retainAll(confirmedDocuments);
 
         // Filtering by document types
         if (typeIds != null && !typeIds.isEmpty()) {
@@ -201,7 +210,8 @@ public class DocumentServiceImpl implements DocumentService {
             documents.retainAll(placesFilteredDocuments);
         }
 
-        return documents;
+        // Usuwanie duplikatów
+        return documents.stream().distinct().collect(Collectors.toList());
     }
 
     @Override
@@ -211,9 +221,16 @@ public class DocumentServiceImpl implements DocumentService {
             return false;
         }
 
+        if (photo.getType().getId() != 1) {
+            throw new IllegalArgumentException("Wbrany dokument nie jest zdjęciem");
+        }
+
         documentRepository.addPhotoToDocument(photo.getId(), document);
+        photo.setPhotoRefers(document);
+
         return true;
     }
+
 
     private void validateDocument(Document document) {
         Set<ConstraintViolation<Document>> violations = validator.validate(document);

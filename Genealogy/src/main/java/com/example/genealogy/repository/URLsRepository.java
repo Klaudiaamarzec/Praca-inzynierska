@@ -12,7 +12,7 @@ public interface URLsRepository extends JpaRepository<URLs, Long>{
     @Query(value = """
         SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM urls u
         WHERE (u.url = :url)
-        AND (:comment IS NULL OR lower(u.comment) LIKE lower(CONCAT('%', :comment, '%')))
+        AND (:comment IS NULL OR lower(u.comment) = lower(:comment))
         AND (u.idurl = :idurl)
     """, nativeQuery = true)
     boolean existsURL(@Param("idurl") Long idurl,

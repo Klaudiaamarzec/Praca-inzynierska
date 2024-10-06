@@ -1,9 +1,11 @@
 package com.example.genealogy.serviceimplementation;
 
 import com.example.genealogy.model.Address;
+import com.example.genealogy.model.Family;
 import com.example.genealogy.model.LocalAddress;
 import com.example.genealogy.repository.LocalAddressRepository;
 import com.example.genealogy.service.LocalAddressService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -27,18 +29,24 @@ public class LocalAddressServiceImpl implements LocalAddressService {
     }
 
     @Override
-    public boolean existsById(@NotNull LocalAddress localAddress) {
-        return localAddressRepository.existsById(localAddress.getId());
+    public boolean existsById(@NotNull Long id) {
+        return localAddressRepository.existsById(id);
     }
 
     @Override
-    public boolean localAddressExist(@NotNull LocalAddress localAddress) {
+    public boolean localAddressExists(@NotNull LocalAddress localAddress) {
         return localAddressRepository.existsLocalAddress(localAddress.getCountry(), localAddress.getVoivodeship(), localAddress.getCommunity(), localAddress.getCity(), localAddress.getAddress(), localAddress.getPostalcode());
     }
 
     @Override
+    public LocalAddress getLocalAddressById(Long id) {
+        return localAddressRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono lokalnego adresu o id: " + id));
+    }
+
+    @Override
     public boolean saveLocalAddress(@NotNull LocalAddress localAddress) {
-        if (localAddressExist(localAddress)) {
+        if (localAddressExists(localAddress)) {
             return false;
         }
 
@@ -54,7 +62,7 @@ public class LocalAddressServiceImpl implements LocalAddressService {
 
     @Override
     public boolean updateLocalAddress(@NotNull LocalAddress localAddress) {
-        if (!existsById(localAddress)) {
+        if (!existsById(localAddress.getId())) {
             return false;
         }
 
@@ -76,7 +84,7 @@ public class LocalAddressServiceImpl implements LocalAddressService {
     @Override
     public boolean deleteLocalAddress(LocalAddress localAddress) {
         try {
-            if (existsById(localAddress)) {
+            if (existsById(localAddress.getId())) {
                 localAddressRepository.delete(localAddress);
                 return true;
             }
@@ -84,6 +92,21 @@ public class LocalAddressServiceImpl implements LocalAddressService {
             return false;
         }
         return false;
+    }
+
+    @Override
+    public List<LocalAddress> findLocalAddressByCountry(String country) {
+        return localAddressRepository.findLocalAddressByCountry(country);
+    }
+
+    @Override
+    public List<LocalAddress> findLocalAddressByVoivodeship(String voivodeship) {
+        return localAddressRepository.findLocalAddressByVoivodeship(voivodeship);
+    }
+
+    @Override
+    public List<LocalAddress> findLocalAddressByCity(String city) {
+        return localAddressRepository.findLocalAddressByCity(city);
     }
 
     @Override
@@ -110,36 +133,6 @@ public class LocalAddressServiceImpl implements LocalAddressService {
         }
 
         return addresses;
-    }
-
-    @Override
-    public List<LocalAddress> findLocalAddressByCountry(String country) {
-        return localAddressRepository.findLocalAddressByCountry(country);
-    }
-
-    @Override
-    public List<LocalAddress> findLocalAddressByVoivodeship(String voivodeship) {
-        return localAddressRepository.findLocalAddressByVoivodeship(voivodeship);
-    }
-
-    @Override
-    public List<LocalAddress> findLocalAddressByCity(String city) {
-        return localAddressRepository.findLocalAddressByCity(city);
-    }
-
-    @Override
-    public List<LocalAddress> findByCountryAndCity(String country, String city) {
-        return localAddressRepository.findByCountryAndCity(country, city);
-    }
-
-    @Override
-    public boolean addressExists(String country, String voivodeship, String city, String address) {
-        return localAddressRepository.addressExists(country, voivodeship, city, address);
-    }
-
-    @Override
-    public List<LocalAddress> getAddress(String country, String voivodeship, String city, String address) {
-        return localAddressRepository.getAddress(country, voivodeship, city, address);
     }
 
     private void validateLocalAddress(LocalAddress localAddress) {
