@@ -1,6 +1,5 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.model.Notification;
 import com.example.genealogy.model.PersonDocument;
 import com.example.genealogy.repository.PersonDocumentRepository;
 import com.example.genealogy.service.PersonDocumentService;
@@ -109,7 +108,7 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja dokumentu osoby nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja dokumentu osoby nie powiodła się:\n" + sb, violations);
         }
     }
 }

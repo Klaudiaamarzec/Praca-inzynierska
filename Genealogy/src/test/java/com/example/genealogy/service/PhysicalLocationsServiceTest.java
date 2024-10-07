@@ -1,6 +1,5 @@
 package com.example.genealogy.service;
 
-import com.example.genealogy.model.Notification;
 import com.example.genealogy.model.PhysicalLocations;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
@@ -113,9 +112,7 @@ public class PhysicalLocationsServiceTest {
         physicalLocation.setLocaladdress(localAddressService.getLocalAddressById(2L));
         physicalLocation.setUser(userService.getUserById(5L));
 
-        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> {
-            physicalLocationService.savePhysicalLocation(physicalLocation);
-        });
+        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> physicalLocationService.savePhysicalLocation(physicalLocation));
 
         // Sprawdzenie czy wyjątek zawiera odpowiednią wiadomość walidacyjną
         assertThat(thrown.getConstraintViolations()).hasSize(1); // Weryfikacja liczby błędów walidacji
@@ -137,9 +134,7 @@ public class PhysicalLocationsServiceTest {
 
     @Test
     void testNotGetLocationById() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            physicalLocationService.getPhysicalLocationsById(99L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> physicalLocationService.getPhysicalLocationsById(99L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono fizycznego adresu o id: " + 99L);
     }
@@ -172,9 +167,7 @@ public class PhysicalLocationsServiceTest {
 
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            physicalLocationService.getPhysicalLocationsById(1L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> physicalLocationService.getPhysicalLocationsById(1L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono fizycznego adresu o id: " + 1L);
     }

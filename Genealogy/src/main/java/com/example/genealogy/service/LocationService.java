@@ -1,7 +1,6 @@
 package com.example.genealogy.service;
 
 import com.example.genealogy.model.Document;
-import com.example.genealogy.model.LocalAddress;
 import com.example.genealogy.model.Location;
 
 import java.util.List;

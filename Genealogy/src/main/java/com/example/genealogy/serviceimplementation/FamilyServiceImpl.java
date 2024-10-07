@@ -1,6 +1,5 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.model.DocumentType;
 import com.example.genealogy.model.Family;
 import com.example.genealogy.model.Person;
 import com.example.genealogy.repository.FamilyRepository;
@@ -8,7 +7,6 @@ import com.example.genealogy.service.FamilyService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -126,7 +124,7 @@ public class FamilyServiceImpl implements FamilyService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja rodziny nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja rodziny nie powiodła się:\n" + sb, violations);
         }
     }
 }

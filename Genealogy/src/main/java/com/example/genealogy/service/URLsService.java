@@ -1,6 +1,5 @@
 package com.example.genealogy.service;
 
-import com.example.genealogy.model.Role;
 import com.example.genealogy.model.URLs;
 
 import java.util.List;

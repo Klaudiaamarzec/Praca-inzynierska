@@ -3,8 +3,6 @@ package com.example.genealogy.serviceimplementation;
 import com.example.genealogy.model.*;
 import com.example.genealogy.repository.LocationRepository;
 import com.example.genealogy.service.LocationService;
-import com.example.genealogy.service.PhysicalLocationService;
-import com.example.genealogy.service.URLsService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -103,7 +101,7 @@ public class LocationServiceImpl implements LocationService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja lokalizacji nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja lokalizacji nie powiodła się:\n" + sb, violations);
         }
     }
 }

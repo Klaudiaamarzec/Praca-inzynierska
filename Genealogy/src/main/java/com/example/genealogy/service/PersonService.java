@@ -2,7 +2,6 @@ package com.example.genealogy.service;
 
 import com.example.genealogy.model.Document;
 import com.example.genealogy.model.Person;
-import com.example.genealogy.model.PersonDocument;
 
 import java.util.List;
 

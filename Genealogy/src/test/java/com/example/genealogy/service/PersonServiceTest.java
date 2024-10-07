@@ -1,6 +1,5 @@
 package com.example.genealogy.service;
 
-import com.example.genealogy.model.Notification;
 import com.example.genealogy.model.Person;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
@@ -56,6 +55,16 @@ public class PersonServiceTest {
     }
 
     @Test
+    void testPersonNotExists2() {
+        Person person = new Person();
+        person.setName(null);
+        person.setSurname(null);
+
+        boolean result = personService.personExists(person);
+        assertThat(result).isFalse();
+    }
+
+    @Test
     void testSavePerson() {
         Person person = new Person();
         person.setName("John");
@@ -82,9 +91,7 @@ public class PersonServiceTest {
         person.setName(null);
         person.setSurname(null);
 
-        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> {
-            personService.savePerson(person);
-        });
+        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> personService.savePerson(person));
 
         assertThat(thrown.getConstraintViolations()).hasSize(2);
 
@@ -107,9 +114,7 @@ public class PersonServiceTest {
 
     @Test
     void testNotGetPersonById() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            personService.getPersonById(99L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> personService.getPersonById(99L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono osoby o id: " + 99L);
     }
@@ -134,9 +139,7 @@ public class PersonServiceTest {
         boolean result = personService.deletePerson(personToDelete);
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            personService.getPersonById(1L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> personService.getPersonById(1L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono osoby o id: " + personToDelete.getId());
     }

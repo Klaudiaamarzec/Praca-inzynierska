@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,6 +24,13 @@ public class UserRepositoryTest {
 
         boolean result = userRepository.existsUser(2, "iwona", "iwona@onet.pl");
         assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void testFindByEmail() {
+
+        User user = userRepository.findByEmail("iwona@onet.pl");
+        assertThat(user.getId()).isEqualTo(2L);
     }
 
     @Test

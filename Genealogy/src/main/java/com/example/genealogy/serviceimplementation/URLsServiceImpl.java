@@ -1,6 +1,5 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.model.Role;
 import com.example.genealogy.model.URLs;
 import com.example.genealogy.repository.URLsRepository;
 import com.example.genealogy.service.URLsService;
@@ -103,7 +102,7 @@ public class URLsServiceImpl implements URLsService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja URL-a nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja URL-a nie powiodła się:\n" + sb, violations);
         }
     }
 }

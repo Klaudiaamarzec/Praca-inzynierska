@@ -91,9 +91,7 @@ public class DateServiceTest {
     @Test
     void testNotGetDateById() {
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            dateService.getDateById(22L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> dateService.getDateById(22L));
 
         // Możesz również sprawdzić wiadomość wyjątku
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono daty o id: " + 22L);
@@ -130,9 +128,7 @@ public class DateServiceTest {
 
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            dateService.getDateById(1L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> dateService.getDateById(1L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono daty o id: " + dateToDelete.getId());
     }

@@ -2,8 +2,6 @@ package com.example.genealogy.service;
 
 import com.example.genealogy.model.LocalAddress;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.ConstraintViolation;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -11,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -84,9 +81,7 @@ public class LocalAddressServiceTest {
 
     @Test
     void testNotGetLocalAddressById() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            localAddressService.getLocalAddressById(99L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> localAddressService.getLocalAddressById(99L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono lokalnego adresu o id: " + 99);
     }
@@ -111,9 +106,7 @@ public class LocalAddressServiceTest {
         boolean result = localAddressService.deleteLocalAddress(addressToDelete);
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            localAddressService.getLocalAddressById(1L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> localAddressService.getLocalAddressById(1L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono lokalnego adresu o id: " + addressToDelete.getId());
     }

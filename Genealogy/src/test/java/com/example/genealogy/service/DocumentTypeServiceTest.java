@@ -65,9 +65,7 @@ public class DocumentTypeServiceTest {
         DocumentType documentType = new DocumentType();
         documentType.setTypeName(null);
 
-        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> {
-            documentTypeService.saveDocumentType(documentType);
-        });
+        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> documentTypeService.saveDocumentType(documentType));
 
         assertThat(thrown.getMessage()).contains("Nazwa typu nie może być pusta");
     }
@@ -92,9 +90,7 @@ public class DocumentTypeServiceTest {
 
     @Test
     void testNotGetDocumentTypeById() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            documentTypeService.getDocumentTypeById(99);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> documentTypeService.getDocumentTypeById(99));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono typu dokumentu o id: " + 99);
     }
@@ -119,9 +115,7 @@ public class DocumentTypeServiceTest {
         boolean result = documentTypeService.deleteDocumentType(documentTypeToDelete);
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            documentTypeService.getDocumentTypeById(1);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> documentTypeService.getDocumentTypeById(1));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono typu dokumentu o id: " + documentTypeToDelete.getId());
     }

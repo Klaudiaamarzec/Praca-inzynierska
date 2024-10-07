@@ -108,9 +108,7 @@ public class DocumentServiceTest {
         document.setOwner(userService.getUserById(2L));
         document.setType(documentTypeService.getDocumentTypeById(3));
 
-        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> {
-            documentService.saveDocument(document);
-        });
+        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> documentService.saveDocument(document));
 
         assertThat(thrown.getMessage()).contains("Adres nie może być pusty");
     }
@@ -124,9 +122,7 @@ public class DocumentServiceTest {
 
     @Test
     void testNotGetDocumentById() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            documentService.getDocumentById(99L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> documentService.getDocumentById(99L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono dokumentu o id: " + 99L);
     }
@@ -162,9 +158,7 @@ public class DocumentServiceTest {
         boolean result = documentService.deleteDocument(documentToDelete);
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            documentService.getDocumentById(1L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> documentService.getDocumentById(1L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono dokumentu o id: " + documentToDelete.getId());
     }
@@ -497,9 +491,7 @@ public class DocumentServiceTest {
         Document nonPhoto = documentService.getDocumentById(6L);
 
         // Sprawdzenie, czy wyjątek jest rzucany
-        assertThrows(IllegalArgumentException.class, () -> {
-            documentService.addPhotoToDocument(document, nonPhoto);
-        });
+        assertThrows(IllegalArgumentException.class, () -> documentService.addPhotoToDocument(document, nonPhoto));
     }
 
 }

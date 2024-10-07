@@ -1,6 +1,5 @@
 package com.example.genealogy.service;
 
-import com.example.genealogy.model.Notification;
 import com.example.genealogy.model.PersonDocument;
 
 import java.util.List;

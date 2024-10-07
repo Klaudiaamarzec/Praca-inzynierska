@@ -1,10 +1,8 @@
 package com.example.genealogy.service;
 
 import com.example.genealogy.model.Document;
-import com.example.genealogy.model.Person;
 import com.example.genealogy.model.User;
 
-import javax.print.Doc;
 import java.time.LocalDate;
 import java.util.List;
 

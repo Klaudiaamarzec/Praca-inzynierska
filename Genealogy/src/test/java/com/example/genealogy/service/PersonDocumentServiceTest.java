@@ -80,9 +80,7 @@ public class PersonDocumentServiceTest {
         PersonDocument personDocument = new PersonDocument();
         personDocument.setDocument(documentService.getDocumentById(2L));
 
-        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> {
-            personDocumentService.savePersonDocument(personDocument);
-        });
+        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> personDocumentService.savePersonDocument(personDocument));
 
         assertThat(thrown.getMessage()).contains("Osoba nie może być pusta");
     }
@@ -96,9 +94,7 @@ public class PersonDocumentServiceTest {
 
     @Test
     void testNotGetPersonDocumentById() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            personDocumentService.getPersonDocumentById(99L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> personDocumentService.getPersonDocumentById(99L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono osoby w dokumencie o id: " + 99L);
     }
@@ -123,9 +119,7 @@ public class PersonDocumentServiceTest {
         boolean result = personDocumentService.deletePersonDocument(personDocumentToDelete);
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            personDocumentService.getPersonDocumentById(1L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> personDocumentService.getPersonDocumentById(1L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono osoby w dokumencie o id: " + personDocumentToDelete.getId());
     }

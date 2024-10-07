@@ -5,7 +5,6 @@ import com.example.genealogy.repository.DateRepository;
 import com.example.genealogy.service.DateService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ConstraintViolationException;
 import org.jetbrains.annotations.NotNull;
@@ -119,7 +118,7 @@ public class DateServiceImpl implements DateService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja daty nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja daty nie powiodła się:\n" + sb, violations);
         }
     }
 }

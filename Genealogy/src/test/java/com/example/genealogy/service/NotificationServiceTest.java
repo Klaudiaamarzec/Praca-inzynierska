@@ -1,12 +1,9 @@
 package com.example.genealogy.service;
 
-import com.example.genealogy.model.Document;
 import com.example.genealogy.model.Notification;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ConstraintViolation;
-import org.aspectj.weaver.ast.Not;
-import org.checkerframework.checker.units.qual.N;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -18,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -90,9 +86,7 @@ public class NotificationServiceTest {
         notification.setContext("Fotografia 18");
         notification.setDisplayed(false);
 
-        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> {
-            notificationService.saveNotification(notification);
-        });
+        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> notificationService.saveNotification(notification));
 
         // Sprawdzenie czy wyjątek zawiera odpowiednią wiadomość walidacyjną
         assertThat(thrown.getConstraintViolations()).hasSize(1); // Weryfikacja liczby błędów walidacji
@@ -111,9 +105,7 @@ public class NotificationServiceTest {
         notification.setTitle("Zaktualizowano nowy dokument");
         notification.setContext("Fotografia 18");
 
-        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> {
-            notificationService.saveNotification(notification);
-        });
+        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> notificationService.saveNotification(notification));
 
         assertThat(thrown.getConstraintViolations()).hasSize(4);
 
@@ -137,9 +129,7 @@ public class NotificationServiceTest {
 
     @Test
     void testNotGetNotificationById() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            notificationService.getNotificationById(99L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> notificationService.getNotificationById(99L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono powiadomienia o id: " + 99);
     }
@@ -164,9 +154,7 @@ public class NotificationServiceTest {
         boolean result = notificationService.deleteNotification(notificationToDelete);
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            notificationService.getNotificationById(1L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> notificationService.getNotificationById(1L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono powiadomienia o id: " + notificationToDelete.getId());
     }

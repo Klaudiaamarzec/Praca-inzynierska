@@ -71,9 +71,7 @@ public class FamilyServiceTest {
         Family family = new Family();
         family.setChild(personService.getPersonById(2L));
 
-        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> {
-            familyService.saveFamily(family);
-        });
+        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> familyService.saveFamily(family));
 
         assertThat(thrown.getConstraintViolations()).hasSize(2);
 
@@ -107,9 +105,7 @@ public class FamilyServiceTest {
 
     @Test
     void testNotGetFamilyById() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            familyService.getFamilyById(99L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> familyService.getFamilyById(99L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono rodziny o id: " + 99);
     }
@@ -134,9 +130,7 @@ public class FamilyServiceTest {
         boolean result = familyService.deleteFamily(familyToDelete);
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            familyService.getFamilyById(1L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> familyService.getFamilyById(1L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono rodziny o id: " + familyToDelete.getId());
     }

@@ -1,6 +1,5 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.model.Person;
 import com.example.genealogy.model.PhysicalLocations;
 import com.example.genealogy.model.User;
 import com.example.genealogy.repository.PhysicalLocationRepository;
@@ -127,7 +126,7 @@ public class PhysicalLocationServiceImpl implements PhysicalLocationService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja lokalizacji fizycznej nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja lokalizacji fizycznej nie powiodła się:\n" + sb, violations);
         }
     }
 }

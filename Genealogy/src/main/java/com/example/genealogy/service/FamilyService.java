@@ -1,6 +1,5 @@
 package com.example.genealogy.service;
 
-import com.example.genealogy.model.DocumentType;
 import com.example.genealogy.model.Family;
 import com.example.genealogy.model.Person;
 

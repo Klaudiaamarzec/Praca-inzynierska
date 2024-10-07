@@ -2,7 +2,6 @@ package com.example.genealogy.serviceimplementation;
 
 import com.example.genealogy.model.Date;
 import com.example.genealogy.model.Document;
-import com.example.genealogy.model.Person;
 import com.example.genealogy.model.User;
 import com.example.genealogy.repository.DocumentRepository;
 import com.example.genealogy.service.DateService;

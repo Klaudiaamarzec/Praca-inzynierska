@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -36,6 +37,12 @@ public class User {
     @Column(name="mail", columnDefinition = "text")
     @NotNull(message = "Email nie może być pusty")
     private String mail;
+
+    @Column(name="resettoken", columnDefinition = "text")
+    private String resetToken;
+
+    @Column(name = "tokenexpiration")
+    private LocalDateTime tokenExpirationTime;
 
     @OneToMany(mappedBy = "owner")
     private Set<Document> documents;

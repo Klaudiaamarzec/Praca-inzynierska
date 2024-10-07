@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -37,8 +36,8 @@ public interface PersonRepository extends JpaRepository<Person, Long>{
 
     @Query("""
     SELECT COUNT(p) > 0 FROM Person p
-    WHERE (:name IS NULL OR lower(p.name) LIKE lower(CONCAT('%', :name, '%')))
-    AND (:surname IS NULL OR lower(p.surname) LIKE lower(CONCAT('%', :surname, '%')))
+    WHERE (lower(p.name) LIKE lower(CONCAT('%', :name, '%')))
+    AND (lower(p.surname) LIKE lower(CONCAT('%', :surname, '%')))
     AND (:rin IS NULL OR p.rin = :rin)
     AND (p.birthDate = :birthdate OR CAST(:birthdate AS DATE) IS NULL)
 """)

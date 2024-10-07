@@ -1,7 +1,6 @@
 package com.example.genealogy.service;
 
 import com.example.genealogy.model.URLs;
-import com.example.genealogy.model.Location;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -79,9 +78,7 @@ public class URLsServiceTest {
         urls.setUrlID(locationService.getLocationById(1L));
         urls.setUrl(null);
 
-        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> {
-            urlsService.saveURL(urls);
-        });
+        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> urlsService.saveURL(urls));
 
         assertThat(thrown.getConstraintViolations()).hasSize(1);
 
@@ -102,9 +99,7 @@ public class URLsServiceTest {
 
     @Test
     void testNotGetURLsById() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            urlsService.getURLById(99L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> urlsService.getURLById(99L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono adresu URL o id: " + 99);
     }
@@ -131,9 +126,7 @@ public class URLsServiceTest {
 
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            urlsService.getURLById(1L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> urlsService.getURLById(1L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono adresu URL o id: " + 1);
     }

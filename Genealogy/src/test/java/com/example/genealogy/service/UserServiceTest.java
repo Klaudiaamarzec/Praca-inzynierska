@@ -1,16 +1,18 @@
 package com.example.genealogy.service;
 
-import com.example.genealogy.model.PhysicalLocations;
 import com.example.genealogy.model.User;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,12 @@ public class UserServiceTest {
 
     @Autowired
     private RoleService roleService;
+
+    @BeforeEach
+    void setUp() {
+        // Inicjalizacja mocków
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     void testExistsById() {
@@ -80,9 +88,7 @@ public class UserServiceTest {
         user.setPassword("secure_password");
         user.setMail("john.doe@example.com");
 
-        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> {
-            userService.saveUser(user);
-        });
+        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> userService.saveUser(user));
 
         assertThat(thrown.getConstraintViolations()).hasSize(1);
 
@@ -116,12 +122,39 @@ public class UserServiceTest {
 
     @Test
     void testNotGetUserById() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            userService.getUserById(99L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> userService.getUserById(99L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono użytkownika o id: " + 99);
     }
+
+    @Test
+    void testFindByEmail() {
+
+        User foundUser = userService.findByEmail("iwona@onet.pl");
+        assertThat(foundUser.getId()).isEqualTo(2L);
+    }
+
+    @Test
+    void testFindByEmail2() {
+
+        User foundUser = userService.findByEmail("klaudia06072002@gmail.com");
+        assertThat(foundUser.getId()).isEqualTo(7L);
+    }
+
+    @Test
+    void testFindByResetToken() {
+
+        User foundUser = userService.findByResetToken("cf6ccbd6-cd7f-4d4d-91ec-e5a9ed048e6b");
+        assertThat(foundUser.getId()).isEqualTo(7L);
+    }
+
+    @Test
+    void testFindByUserName() {
+
+        User foundUser = userService.findByUserName("iwona");
+        assertThat(foundUser.getId()).isEqualTo(2L);
+    }
+
 
     @Test
     void testUpdateUser() {
@@ -145,9 +178,7 @@ public class UserServiceTest {
 
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            userService.getUserById(1L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> userService.getUserById(1L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono użytkownika o id: " + 1);
     }
@@ -191,4 +222,35 @@ public class UserServiceTest {
                 .extracting(User::getId)
                 .containsExactly(2L, 3L, 4L);
     }
+
+    @Test
+    void testCreatePasswordResetToken() {
+
+        User user = userService.getUserById(2L);
+
+        userService.saveUser(user);
+
+        String token = userService.createPasswordResetToken(user);
+
+        assertThat(token).isNotNull();
+        assertThat(user.getResetToken()).isEqualTo(token);
+
+        LocalDateTime expectedExpirationTime = LocalDateTime.now().plusMinutes(30);
+
+        assertThat(user.getTokenExpirationTime()).isAfter(LocalDateTime.now())
+                .isBefore(expectedExpirationTime.plusSeconds(1));
+    }
+
+    @Test
+    void testSendResetPasswordEmail() {
+
+        User user = userService.getUserById(7L);
+        userService.saveUser(user);
+
+        String token = userService.createPasswordResetToken(user);
+        String email = "klaudia06072002@gmail.com";
+
+        userService.sendResetPasswordEmail(email, token);
+    }
+
 }

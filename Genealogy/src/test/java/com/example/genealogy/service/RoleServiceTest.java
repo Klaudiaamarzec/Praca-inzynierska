@@ -66,9 +66,7 @@ public class RoleServiceTest {
         Role role = new Role();
         role.setRoleName(null);
 
-        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> {
-            roleService.saveRole(role);
-        });
+        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> roleService.saveRole(role));
 
         // Sprawdzenie czy wyjątek zawiera odpowiednią wiadomość walidacyjną
         assertThat(thrown.getConstraintViolations()).hasSize(1); // Weryfikacja liczby błędów walidacji
@@ -100,9 +98,7 @@ public class RoleServiceTest {
 
     @Test
     void testNotGetRoleById() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            roleService.getRoleById(99);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> roleService.getRoleById(99));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono roli o id: " + 99);
     }
@@ -129,9 +125,7 @@ public class RoleServiceTest {
 
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            roleService.getRoleById(1);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> roleService.getRoleById(1));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono roli o id: " + 1);
     }

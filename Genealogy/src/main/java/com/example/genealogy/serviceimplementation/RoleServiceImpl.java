@@ -1,6 +1,5 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.model.PhysicalLocations;
 import com.example.genealogy.model.Role;
 import com.example.genealogy.repository.RoleRepository;
 import com.example.genealogy.service.RoleService;
@@ -108,7 +107,7 @@ public class RoleServiceImpl implements RoleService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja roli nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja roli nie powiodła się:\n" + sb, violations);
         }
     }
 }

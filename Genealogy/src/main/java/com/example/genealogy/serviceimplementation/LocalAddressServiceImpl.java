@@ -1,7 +1,5 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.model.Address;
-import com.example.genealogy.model.Family;
 import com.example.genealogy.model.LocalAddress;
 import com.example.genealogy.repository.LocalAddressRepository;
 import com.example.genealogy.service.LocalAddressService;
@@ -135,7 +133,7 @@ public class LocalAddressServiceImpl implements LocalAddressService {
         return addresses;
     }
 
-    private void validateLocalAddress(LocalAddress localAddress) {
+    private void validateLocalAddress(LocalAddress localAddress) throws ConstraintViolationException {
         Set<ConstraintViolation<LocalAddress>> violations = validator.validate(localAddress);
         if (!violations.isEmpty()) {
             StringBuilder sb = new StringBuilder();
@@ -145,7 +143,7 @@ public class LocalAddressServiceImpl implements LocalAddressService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja adresu lokalnego nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja adresu lokalnego nie powiodła się:\n" + sb, violations);
         }
     }
 }

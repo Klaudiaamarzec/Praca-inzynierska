@@ -95,9 +95,7 @@ public class AddressServiceTest {
     @Test
     void testNotGetAddressById() {
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            addressService.getAddressById(21L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> addressService.getAddressById(21L));
 
         // Możesz również sprawdzić wiadomość wyjątku
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono adresu o id: " + 21L);
@@ -144,9 +142,7 @@ public class AddressServiceTest {
 
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            addressService.getAddressById(1L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> addressService.getAddressById(1L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono adresu o id: " + 1L);
     }

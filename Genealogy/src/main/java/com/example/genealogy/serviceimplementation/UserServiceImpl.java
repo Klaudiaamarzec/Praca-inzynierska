@@ -1,6 +1,5 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.model.URLs;
 import com.example.genealogy.model.User;
 import com.example.genealogy.repository.UserRepository;
 import com.example.genealogy.service.UserService;
@@ -10,10 +9,14 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -21,10 +24,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final Validator validator;
 
+    private final JavaMailSender mailSender;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, Validator validator) {
+    public UserServiceImpl(UserRepository userRepository, Validator validator, JavaMailSender mailSender) {
         this.userRepository = userRepository;
         this.validator = validator;
+        this.mailSender = mailSender;
     }
 
     @Override
@@ -44,6 +50,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public User findByUserName(String userName) {
+        return userRepository.findByUserName(userName);
+    }
+
+    @Override
+    public User findByResetToken(String resetToken) {
+        return userRepository.findByResetToken(resetToken);
+    }
+
+    @Override
     public boolean saveUser(@NotNull User user) {
         if (userExists(user)) {
             return false;
@@ -52,6 +73,7 @@ public class UserServiceImpl implements UserService {
         validateUser(user);
 
         try {
+            //user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
             return true;
         } catch (Exception e) {
@@ -103,6 +125,37 @@ public class UserServiceImpl implements UserService {
         return userRepository.findUsers();
     }
 
+    @Override
+    public String createPasswordResetToken(User user) {
+        // Generowanie unikalnego tokenu
+        String token = UUID.randomUUID().toString();
+
+        // Przechowywanie tokenu w bazie danych powiązanego z użytkownikiem, aby go później weryfikować
+        user.setResetToken(token);
+        user.setTokenExpirationTime(LocalDateTime.now().plusMinutes(30));
+        userRepository.save(user);
+
+        return token;
+    }
+
+    @Override
+    public void sendResetPasswordEmail(String email, String token) {
+
+        String resetLink = "http://localhost:8080/auth/reset-password?token=" + token; // Adres URL do resetowania hasła
+        String subject = "Resetowanie hasła";
+        String body = "Kliknij poniższy link, aby zresetować swoje hasło:\n" + resetLink;
+
+        // Przygotowanie wiadomości e-mail
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject(subject);
+        message.setText(body);
+        message.setFrom("genealogy.application@onet.pl");
+
+        // Wysyłanie e-maila
+        mailSender.send(message);
+    }
+
     private void validateUser(User user) {
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         if (!violations.isEmpty()) {
@@ -113,7 +166,7 @@ public class UserServiceImpl implements UserService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja użytkownika nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja użytkownika nie powiodła się:\n" + sb, violations);
         }
     }
 }

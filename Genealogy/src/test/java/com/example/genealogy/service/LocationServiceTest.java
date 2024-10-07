@@ -67,9 +67,7 @@ public class LocationServiceTest {
         Location location = new Location();
         location.setPhysical(4L);
 
-        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> {
-            locationService.saveLocation(location);
-        });
+        ConstraintViolationException thrown = assertThrows(ConstraintViolationException.class, () -> locationService.saveLocation(location));
 
         assertThat(thrown.getConstraintViolations()).hasSize(1);
 
@@ -99,9 +97,7 @@ public class LocationServiceTest {
 
     @Test
     void testNotGetLocationById() {
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            locationService.getLocationById(99L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> locationService.getLocationById(99L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono lokalizacji o id: " + 99);
     }
@@ -114,9 +110,7 @@ public class LocationServiceTest {
         boolean result = locationService.deleteLocation(locationToDelete);
         assertThat(result).isTrue();
 
-        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> {
-            locationService.getLocationById(1L);
-        });
+        EntityNotFoundException thrown = assertThrows(EntityNotFoundException.class, () -> locationService.getLocationById(1L));
 
         assertThat(thrown.getMessage()).isEqualTo("Nie znaleziono lokalizacji o id: " + locationToDelete.getId());
     }

@@ -1,6 +1,5 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.model.Location;
 import com.example.genealogy.model.Notification;
 import com.example.genealogy.model.User;
 import com.example.genealogy.repository.NotificationRepository;
@@ -160,7 +159,7 @@ public class NotificationServiceImpl implements NotificationService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja powiadomienia nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja powiadomienia nie powiodła się:\n" + sb, violations);
         }
     }
 }

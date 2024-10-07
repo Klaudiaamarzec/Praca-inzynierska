@@ -2,7 +2,6 @@ package com.example.genealogy.serviceimplementation;
 
 import com.example.genealogy.model.Document;
 import com.example.genealogy.model.Person;
-import com.example.genealogy.model.PersonDocument;
 import com.example.genealogy.repository.PersonRepository;
 import com.example.genealogy.service.PersonService;
 import jakarta.persistence.EntityNotFoundException;

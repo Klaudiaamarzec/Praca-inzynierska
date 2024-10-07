@@ -1,6 +1,5 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.model.Document;
 import com.example.genealogy.model.DocumentType;
 import com.example.genealogy.repository.DocumentTypeRepository;
 import com.example.genealogy.service.DocumentTypeService;
@@ -101,7 +100,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
                         .append(violation.getMessage())
                         .append("\n");
             }
-            throw new ConstraintViolationException("Walidacja typu dokumentu nie powiodła się:\n" + sb.toString(), violations);
+            throw new ConstraintViolationException("Walidacja typu dokumentu nie powiodła się:\n" + sb, violations);
         }
     }
 }
