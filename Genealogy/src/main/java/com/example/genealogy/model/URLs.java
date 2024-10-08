@@ -1,5 +1,8 @@
 package com.example.genealogy.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,16 +12,19 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "urls")
 @Data
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class URLs {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(name = "id")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "idurl")
     @NotNull(message = "URL id nie może być puste")
+    //@JsonManagedReference("url-location")
     private Location urlID;
 
     @Column(name = "url", length = 256)

@@ -1,5 +1,8 @@
 package com.example.genealogy.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -9,10 +12,12 @@ import java.util.Set;
 @Entity
 @Table(name = "address")
 @Data
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(name = "placeid")
     private Long id;
 

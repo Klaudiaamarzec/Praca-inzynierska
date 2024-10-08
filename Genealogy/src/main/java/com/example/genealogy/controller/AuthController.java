@@ -10,7 +10,7 @@ import com.example.genealogy.service.PasswordHasher;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/Auth")
 public class AuthController {
 
     private final UserService userService;
@@ -21,7 +21,7 @@ public class AuthController {
     }
 
     // Endpoint do rejestracji użytkownika
-    @PostMapping("/register")
+    @PostMapping("/Register")
     public ResponseEntity<String> registerUser(@Valid @RequestBody User user) {
         if (userService.userExists(user)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Użytkownik już istnieje!");
@@ -40,7 +40,7 @@ public class AuthController {
     }
 
     // Endpoint do logowania
-    @PostMapping("/login")
+    @PostMapping("/Login")
     public ResponseEntity<String> login(@RequestParam String usernameOrEmail, @RequestParam String password) {
         User user;
 
@@ -60,7 +60,7 @@ public class AuthController {
     }
 
     // Endpoint do wylogowania
-    @PostMapping("/logout")
+    @PostMapping("/Logout")
     public ResponseEntity<String> logout() {
         // Możesz dodać logikę, jeśli chcesz coś zrobić przed wylogowaniem
         return ResponseEntity.ok("Wylogowano pomyślnie!");

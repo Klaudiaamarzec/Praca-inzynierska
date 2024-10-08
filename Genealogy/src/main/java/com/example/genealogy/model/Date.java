@@ -1,6 +1,9 @@
 package com.example.genealogy.model;
 
 import com.example.genealogy.annotation.CurrentYear;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
@@ -11,16 +14,18 @@ import java.util.Set;
 @Entity
 @Table(name = "Date")
 @Data
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Date {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(name = "dateid")
     private Long id;
 
     @NotNull(message = "Rok nie może być pusty")
     @Min(value = 1000, message = "Rok nie może być wcześniejszy niż 1000")
-    @CurrentYear(message = "Rok nie może być większy niż bieżący rok")
+    @CurrentYear()
     private Integer year;
 
     @Min(value = 1, message = "Miesiąc musi być pomiędzy 1 a 12")

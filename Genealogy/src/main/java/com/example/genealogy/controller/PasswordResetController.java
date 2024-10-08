@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/Auth")
 public class PasswordResetController {
 
     private final UserService userService;
@@ -22,7 +22,7 @@ public class PasswordResetController {
     }
 
     // Endpoint do żądania resetowania hasła
-    @PostMapping("/reset-password/request")
+    @PostMapping("/ResetPassword/Request")
     public ResponseEntity<String> requestPasswordReset(@RequestParam String email) {
 
         // Sprawdzenie, czy e-mail istnieje w bazie
@@ -39,7 +39,7 @@ public class PasswordResetController {
     }
 
     // Endpoint do resetowania hasła
-    @PostMapping("/reset-password")
+    @PostMapping("/ResetPassword")
     public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
 
         // Znajdź użytkownika na podstawie tokena
