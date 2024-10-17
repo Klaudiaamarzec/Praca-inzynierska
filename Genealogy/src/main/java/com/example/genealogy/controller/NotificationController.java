@@ -170,7 +170,7 @@ public class NotificationController {
         }
     }
 
-    @PostMapping("/ApproveUpdate/{id}/")
+    @PostMapping("/ApproveUpdate/{id}")
     public ResponseEntity<String> approveDocumentChanges(@PathVariable Long id, HttpServletRequest request) {
         try {
             String token = request.getHeader("Authorization").substring(7);
@@ -204,7 +204,7 @@ public class NotificationController {
             User currentUser = userService.findByUserName(username);
 
             // Sprawdź, czy użytkownik ma odpowiednie uprawnienia (np. genealog)
-            if (currentUser.getIdRole().getId() != 2) { // Upewnij się, że operator porównania jest poprawny
+            if (currentUser.getIdRole().getId() != 1) { // Upewnij się, że operator porównania jest poprawny
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Brak uprawnień do wykonania tej operacji");
             }
 
@@ -225,7 +225,7 @@ public class NotificationController {
             }
 
             return ResponseEntity.status(HttpStatus.OK)
-                    .body("Zmiany zostały odrzucone, nowy dokument został usunięty.");
+                    .body("Zmiany zostały zatwierdzone, nowy dokument został dodany.");
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -233,6 +233,44 @@ public class NotificationController {
         }
     }
 
+    @PutMapping("/ConfirmAdding/{id}")
+    public ResponseEntity<String> confirmAddingDocument(@PathVariable Long id, HttpServletRequest request) {
+
+        try {
+            String token = request.getHeader("Authorization").substring(7);
+            String username = jwtUtil.extractUsername(token);
+            User currentUser = userService.findByUserName(username);
+
+            if (currentUser.getIdRole().getId() != 1) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Brak uprawnień do wykonania tej operacji");
+            }
+
+            Notification notification = notificationService.getNotificationById(id);
+            Document newDocument = notification.getDocument();
+
+            newDocument.setConfirmed(true);
+
+            boolean isSaved = documentService.saveDocument(newDocument);
+            if (!isSaved) {
+
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Wystąpił błąd podczas dodawania nowego dokumentu.");
+            }
+
+            boolean isDeleted = notificationService.deleteNotification(notification);
+            if(!isDeleted) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wystąpił błąd podczas usuwania powiadomienia");
+            }
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Zmiany zostały odrzucone, nowy dokument został usunięty.");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Wystąpił nieoczekiwany błąd: " + e.getMessage());
+        }
+
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteNotification(@PathVariable Long id, HttpServletRequest request) {

@@ -14,7 +14,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -117,8 +119,37 @@ public class DocumentController {
             // Zapisanie nowego dokumentu
             boolean isSaved = documentService.saveDocument(document);
             if (isSaved) {
-                return ResponseEntity.status(HttpStatus.OK).body("{\"documentId\": " + document.getId() + "}");
-                //return ResponseEntity.status(HttpStatus.CREATED).body("Dokument numer: " + document.getId() + " został pomyślnie dodany");
+
+                if(currentUser.getIdRole().getId() == 2) {
+
+                    // Wyślij powiadomienie do genealogów
+                    Notification notification = new Notification();
+                    notification.setUser(currentUser);
+                    notification.setDisplayed(false);
+                    notification.setDate(LocalDate.now());
+                    notification.setDocument(document);
+                    notification.setTitle("Nowy dokument do weryfikacji");
+                    notification.setContext("Użytkownik " + currentUser.getUserName() + " zaproponował dodanie dokumentu " + document.getTitle() + ".\nProsimy o weryfikację wprowadzonych danych. Możesz zaakceptować dokument i dodać go do serwisu.");
+
+                    boolean notificationSaved = notificationService.saveNotification(notification);
+                    if(notificationSaved) {
+
+                        Map<String, Object> response = new HashMap<>();
+                        response.put("message", "Propozycja dodania dokumentu została przesłana do zatwierdzenia przez genealoga.");
+                        response.put("documentId", document.getId());
+
+                        return ResponseEntity.status(HttpStatus.OK).body(response);
+                    }
+                    else {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Błąd podczas wysyłania powiadomienia odnośnie wprowadzonych zmian");
+                    }
+                }
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", "Dokument został prawidłowo zapisany.");
+                response.put("documentId", document.getId());
+
+                return ResponseEntity.status(HttpStatus.OK).body(response);
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wystąpił błąd podczas dodawania dokumentu");
             }

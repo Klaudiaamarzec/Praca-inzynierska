@@ -58,7 +58,7 @@ public class Notification {
         return document != null ? document.getId() : null;
     }
 
-    @JsonProperty("newdocument")
+    @JsonProperty("newDocument")
     public Long getNewDocumentId() {
         return newDocument != null ? newDocument.getId() : null;
     }
