@@ -6,7 +6,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.Data;
 import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,6 +61,13 @@ public class Document {
     @JoinColumn(name = "type")
     @NotNull(message = "Pole 'Typ' nie może być puste", groups = OnCreate.class)
     private DocumentType type;
+
+    @Getter
+    @ElementCollection
+    @CollectionTable(name = "additional_fields", joinColumns = @JoinColumn(name = "document_id"))
+    @MapKeyColumn(name = "field_name")
+    @Column(name = "field_value")
+    private Map<String, String> additionalFields = new HashMap<>();
 
     @OneToOne
     @JoinColumn(name = "localization")
@@ -132,4 +143,12 @@ public class Document {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+//    public void addAdditionalField(String fieldName, String fieldValue) {
+//        this.additionalFields.put(fieldName, fieldValue);
+//    }
+//
+//    public String getAdditionalField(String fieldName) {
+//        return this.additionalFields.get(fieldName);
+//    }
 }

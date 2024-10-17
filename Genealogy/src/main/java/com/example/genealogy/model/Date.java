@@ -3,7 +3,6 @@ package com.example.genealogy.model;
 import com.example.genealogy.annotation.CurrentYear;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
