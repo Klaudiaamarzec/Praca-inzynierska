@@ -1,16 +1,23 @@
 package com.example.genealogy.service;
 
 import com.example.genealogy.model.Document;
+import com.example.genealogy.model.Notification;
+import com.example.genealogy.model.PersonDocument;
+import com.example.genealogy.repository.NotificationRepository;
+import com.example.genealogy.repository.PersonDocumentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,6 +35,12 @@ public class DocumentServiceTest {
 
     @Autowired
     private AddressService addressService;
+
+    @Autowired
+    private PersonDocumentService personDocumentService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Autowired
     private UserService userService;
@@ -72,9 +85,9 @@ public class DocumentServiceTest {
 
         Document document = new Document();
         document.setConfirmed(true);
-        document.setTitle("Akt urodzenia Kylie Jenner");
-        document.setDate(dateService.getDateById(2L));
-        document.setPlace(addressService.getAddressById(3L));
+        //document.setTitle("Akt urodzenia Kylie Jenner");
+        //document.setDate(dateService.getDateById(2L));
+        document.setPlace(addressService.getAddressById(1L));
         document.setOwner(userService.getUserById(2L));
         document.setType(documentTypeService.getDocumentTypeById(3));
 
@@ -492,6 +505,34 @@ public class DocumentServiceTest {
 
         // Sprawdzenie, czy wyjątek jest rzucany
         assertThrows(IllegalArgumentException.class, () -> documentService.addPhotoToDocument(document, nonPhoto));
+    }
+
+    @Test
+    void testApproveChanges() {
+
+        ResponseEntity<?> response = documentService.approveChanges(18L, 35L);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo("Zmiany zostały zatwierdzone, stary dokument został usunięty.");
+
+        // Sprawdzenie, czy stary dokument został usunięty
+
+        try {
+            Document deletedDocument = documentService.getDocumentById(18L);
+        } catch (EntityNotFoundException e) {
+            assertThat(e.getMessage()).contains("Nie znaleziono dokumentu o id: " + 18L);
+        }
+
+        Document newDocument = documentService.getDocumentById(35L);
+
+        // Sprawdzenie, czy powiązania zostały przeniesione do nowego dokumentu
+        List<PersonDocument> updatedPersonDocuments = personDocumentService.findPersonDocumentByDocumentID(35L);//personDocumentRepository.findPersonDocumentByDocumentID(35L);
+        assertThat(updatedPersonDocuments).hasSize(2);
+        assertThat(updatedPersonDocuments.get(0).getDocument()).isEqualTo(newDocument);
+        assertThat(updatedPersonDocuments.get(1).getDocument()).isEqualTo(newDocument);
+
+        List<Notification> updatedNotifications = notificationService.findNotificationByDocumentID(18L);
+        assertThat(updatedNotifications).hasSize(0);
     }
 
 }

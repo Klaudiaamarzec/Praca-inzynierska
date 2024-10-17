@@ -1,5 +1,6 @@
 package com.example.genealogy.model;
 
+import com.example.genealogy.validator.OnCreate;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -23,7 +24,7 @@ public class URLs {
 
     @ManyToOne
     @JoinColumn(name = "idurl")
-    @NotNull(message = "URL id nie może być puste")
+    @NotNull(message = "URL id nie może być puste", groups = OnCreate.class)
     //@JsonManagedReference("url-location")
     private Location urlID;
 

@@ -1,6 +1,7 @@
 package com.example.genealogy.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.validation.constraints.NotBlank;
@@ -28,10 +29,10 @@ public class DocumentType {
     private String typeName;
 
     @Column(name = "template", columnDefinition = "TEXT")
-    @NotBlank(message = "Szablon nie może być pusty")
     private String template;
 
     @OneToMany(mappedBy = "type")
+    @JsonIgnore
     private Set<Document> documents;
 
     @Transient

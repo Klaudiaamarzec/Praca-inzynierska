@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface DateRepository extends JpaRepository<Date, Long> {
 
-    //@Query("SELECT d FROM Date d WHERE d.day = :day AND d.month = :month AND d.year = :year")
-    //Date findDate(@Param("day") int day, @Param("month") int month, @Param("year") int year);
+    @Query("SELECT d FROM Date d WHERE d.day = :day AND d.month = :month AND d.year = :year")
+    Date findDate(@Param("day") int day, @Param("month") int month, @Param("year") int year);
 
     @Query("SELECT d FROM Date d WHERE " +
             "(d.day = :day AND d.month = :month AND d.year = :year) OR " +

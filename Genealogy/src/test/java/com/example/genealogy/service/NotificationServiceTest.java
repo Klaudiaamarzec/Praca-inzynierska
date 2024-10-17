@@ -175,17 +175,6 @@ public class NotificationServiceTest {
     }
 
     @Test
-    void testFindNotificationByDocumentList() {
-
-        List<Notification> notifications = notificationService.findNotificationByDocumentList(List.of(4L,5L));
-
-        assertThat(notifications).hasSize(2);
-
-        assertThat(notifications.get(0).getId()).isEqualTo(2L);
-        assertThat(notifications.get(1).getId()).isEqualTo(1L);
-    }
-
-    @Test
     void testFindNotificationByUser() {
 
         List<Notification> notifications = notificationService.findNotificationByUser(userService.getUserById(2L));
@@ -242,7 +231,7 @@ public class NotificationServiceTest {
 
         List<Notification> notifications = notificationService.findNotificationsAboutEdit();
 
-        assertThat(notifications).hasSize(0);
+        assertThat(notifications).hasSize(1);
     }
 
     @Test

@@ -33,13 +33,18 @@ public class LocalAddressServiceImpl implements LocalAddressService {
 
     @Override
     public boolean localAddressExists(@NotNull LocalAddress localAddress) {
-        return localAddressRepository.existsLocalAddress(localAddress.getCountry(), localAddress.getVoivodeship(), localAddress.getCommunity(), localAddress.getCity(), localAddress.getAddress(), localAddress.getPostalcode());
+        return localAddressRepository.existsLocalAddress(localAddress.getCountry(), localAddress.getVoivodeship(), localAddress.getCommunity(), localAddress.getCity(), localAddress.getAddress(), localAddress.getPostalCode());
     }
 
     @Override
     public LocalAddress getLocalAddressById(Long id) {
         return localAddressRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono lokalnego adresu o id: " + id));
+    }
+
+    @Override
+    public LocalAddress getLocalAddressByAllParams(String country, String voivodeship, String community, String city, String address, String postalCode) {
+        return localAddressRepository.getLocalAddressByAllParams(country, voivodeship, community, city, address, postalCode);
     }
 
     @Override

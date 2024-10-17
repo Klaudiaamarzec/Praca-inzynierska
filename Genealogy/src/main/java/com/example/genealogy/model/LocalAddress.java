@@ -42,7 +42,7 @@ public class LocalAddress {
 
     @Column(name = "postalcode", length = 15)
     @Size(max = 15, message = "Kod pocztowy nie może mieć więcej niż 15 znaków")
-    private String postalcode;
+    private String postalCode;
 
     @OneToMany(mappedBy = "localaddress")
     private Set<PhysicalLocations> physicalLocations;

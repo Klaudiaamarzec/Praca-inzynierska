@@ -8,6 +8,7 @@ import java.util.List;
 public interface PersonService {
 
     boolean existsById(Long id);
+    List<Person> findPersonByIds(List<Long> ids);
 
     boolean personExists(Person person);
 

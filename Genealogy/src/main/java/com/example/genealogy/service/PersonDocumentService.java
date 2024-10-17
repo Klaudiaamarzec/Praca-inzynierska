@@ -12,11 +12,17 @@ public interface PersonDocumentService {
 
     PersonDocument getPersonDocumentById(Long id);
 
+    PersonDocument getPersonDocument(Long documentID, Long personID);
+
     boolean savePersonDocument(PersonDocument personDocument);
 
     boolean updatePersonDocument(PersonDocument personDocument);
 
     boolean deletePersonDocument(PersonDocument personDocument);
+
+    boolean deleteByDocumentID(Long documentID);
+
+    List<PersonDocument> findPersonDocumentByDocumentID(Long documentID);
 
     List<PersonDocument> getAllPersonDocuments();
 }

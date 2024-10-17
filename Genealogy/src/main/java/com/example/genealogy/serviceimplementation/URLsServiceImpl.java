@@ -2,6 +2,7 @@ package com.example.genealogy.serviceimplementation;
 
 import com.example.genealogy.model.URLs;
 import com.example.genealogy.repository.URLsRepository;
+import com.example.genealogy.service.LocationService;
 import com.example.genealogy.service.URLsService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;

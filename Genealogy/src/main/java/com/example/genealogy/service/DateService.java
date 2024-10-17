@@ -20,6 +20,8 @@ public interface DateService {
 
     List<Date> getAllDates();
 
+    Date findDate(int day, int month, int year);
+
     List<Date> findDates(int day, int month, int year);
 
     List<Date> findDatesByDateRange(LocalDate fromDate, LocalDate toDate);

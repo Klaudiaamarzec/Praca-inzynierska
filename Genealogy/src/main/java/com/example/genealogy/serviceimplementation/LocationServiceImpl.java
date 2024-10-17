@@ -2,6 +2,7 @@ package com.example.genealogy.serviceimplementation;
 
 import com.example.genealogy.model.*;
 import com.example.genealogy.repository.LocationRepository;
+import com.example.genealogy.service.DocumentService;
 import com.example.genealogy.service.LocationService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
@@ -9,6 +10,8 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +21,13 @@ import java.util.Set;
 public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
+    private final DocumentService documentService;
     private final Validator validator;
 
     @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository, Validator validator) {
+    public LocationServiceImpl(LocationRepository locationRepository, DocumentService documentService, Validator validator) {
         this.locationRepository = locationRepository;
+        this.documentService = documentService;
         this.validator = validator;
     }
 
@@ -74,6 +79,42 @@ public class LocationServiceImpl implements LocationService {
             return false;
         }
         return false;
+    }
+
+    @Override
+    public ResponseEntity<?> addLocalizationToDocument(Long documentID) {
+
+        Document document = documentService.getDocumentById(documentID);
+
+        if(document.getLocalization() != null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lokalizacja jest już ustawiona dla tego dokumentu");
+        }
+
+        Location location = new Location();
+        boolean locationResult = saveLocation(location);
+
+        if(!locationResult) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nie udało się zapisać nowej lokalizacji w bazie danych");
+        }
+
+        // Utworzenie nowych identyfikatorów URL i PhysicalLocation
+        location.setPhysical(location.getId());
+        location.setUrl(location.getId());
+
+        locationResult = saveLocation(location);
+
+        if(!locationResult) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nie udało się zapisać nowej lokalizacji w bazie danych");
+        }
+
+        document.setLocalization(location);
+        boolean result = documentService.saveDocument(document);
+
+        if(!result) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nie udało się dodać nowej lokalizacji do dokumentu");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("{\"locationId\": " + location.getId() + "}");
     }
 
     @Override

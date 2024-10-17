@@ -94,6 +94,11 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    public Address getAddressByAllParams(String country, String voivodeship, String community, String city, Long longitude, Long latitude, String address, String postalCode, String parish, String secular) {
+        return addressRepository.getAddressByAllParams(country, voivodeship, community, city, longitude, latitude, address, postalCode, parish, secular);
+    }
+
+    @Override
     public List<Address> findByCountry(String country) {
         return addressRepository.findByCountry(country);
     }

@@ -24,13 +24,12 @@ public class Location {
     private Long physical;
 
     @Column(name = "idurl")
-    @NotNull(message = "Pole 'URL' nie może być puste")
     private Long url;
 
     @OneToOne(mappedBy = "localization")
     private Document document;
 
-    @OneToMany(mappedBy = "url")
+    @OneToMany(mappedBy = "urlID")
     private Set<URLs> urls;
 
     @OneToMany(mappedBy = "physical")

@@ -29,9 +29,9 @@ public interface PhysicalLocationRepository extends JpaRepository<PhysicalLocati
     SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM physicallocations pl
     WHERE (pl.date = :date)
     AND (pl.isoriginal = :isOriginal)
-    AND (:condition IS NULL OR lower(pl.condition) = lower(:condition))
-    AND (:type IS NULL OR lower(pl.type) = lower(:type))
-    AND (:description IS NULL OR lower(pl.description) = lower(:description))
+    AND (lower(pl.condition) = lower(:condition) OR :condition IS NULL)
+    AND (lower(pl.type) = lower(:type) OR :type IS NULL)
+    AND (lower(pl.description) = lower(:description) OR :description IS NULL)
     AND (pl.idphys = :physicalId)
     AND (pl.localaddressid = :localAddressId)
     AND (pl.userid = :userId)

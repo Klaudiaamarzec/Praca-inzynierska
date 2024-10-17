@@ -17,6 +17,9 @@ public interface PersonRepository extends JpaRepository<Person, Long>{
     @Query("SELECT p.name, p.surname FROM Person p")
     List<Object[]> getPersonList();
 
+    @Query("SELECT p FROM Person p where p.id IN :ids")
+    List<Person> findPersonByIds(@Param("ids") List<Long> ids);
+
     @Query(value = "SELECT * FROM Person p " +
             "WHERE unaccent(lower(p.name)) LIKE unaccent(lower(CONCAT('%', :name, '%'))) " +
             "AND unaccent(lower(p.surname)) LIKE unaccent(lower(CONCAT('%', :surname, '%'))) ",

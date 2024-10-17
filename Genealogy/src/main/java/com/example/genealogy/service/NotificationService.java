@@ -19,9 +19,11 @@ public interface NotificationService {
 
     boolean deleteNotification(Notification notification);
 
+    boolean deleteByDocumentID(Long documentID);
+
     List<Notification> getAllNotifications();
 
-    List<Notification> findNotificationByDocumentList(List<Long> documentIDs);
+    List<Notification> findNotificationByDocumentID(Long documentID);
 
     List<Notification> findNotificationByUser(User user);
 

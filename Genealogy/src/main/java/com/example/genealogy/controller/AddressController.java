@@ -5,7 +5,6 @@ import com.example.genealogy.service.AddressService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,11 +24,22 @@ public class AddressController {
     // 1. Dodawanie adresu
     @PostMapping( "/Add")
     public ResponseEntity<String> addAddress(@Valid @RequestBody Address address) {
-        boolean isSaved = addressService.saveAddress(address);
-        if (isSaved) {
-            return ResponseEntity.status(HttpStatus.CREATED).body("Adres został pomyślnie dodany.");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Adres już istnieje lub wystąpił błąd.");
+        boolean exists = addressService.addressExists(address);
+
+        if(exists) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Adres już istnieje");
+        }
+
+        try {
+            boolean isSaved = addressService.saveAddress(address);
+            if (isSaved) {
+                return ResponseEntity.status(HttpStatus.CREATED).body("Adres został pomyślnie dodany");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wystąpił błąd podczas zapisywania adresu");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Wystąpił nieoczekiwany błąd: " + e.getMessage());
         }
     }
 
@@ -39,9 +49,9 @@ public class AddressController {
         Address address = addressService.getAddressById(id);
         boolean isDeleted = addressService.deleteAddress(address);
         if (isDeleted) {
-            return ResponseEntity.ok("Adres został usunięty.");
+            return ResponseEntity.ok("Adres został usunięty");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Adres o podanym ID nie istnieje.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nie udało się usunąć adresu");
         }
     }
 
@@ -59,43 +69,31 @@ public class AddressController {
         return ResponseEntity.ok(addresses);
     }
 
-    // 5. Szukanie adresu na podstawie parametrów
-    @GetMapping("/Search")
-    public ResponseEntity<List<Address>> searchAddress(
-            @RequestParam(required = false) String country,
-            @RequestParam(required = false) String voivodeship,
-            @RequestParam(required = false) String community,
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) String address,
-            @RequestParam(required = false) String postalCode,
-            @RequestParam(required = false) String startPostalCode,
-            @RequestParam(required = false) String endPostalCode,
-            @RequestParam(required = false) String parish,
-            @RequestParam(required = false) Long longitude,
-            @RequestParam(required = false) Long latitude,
-            @RequestParam(required = false) Long minLongitude,
-            @RequestParam(required = false) Long maxLongitude,
-            @RequestParam(required = false) Long minLatitude,
-            @RequestParam(required = false) Long maxLatitude) {
-
-        List<Address> addresses = addressService.searchAddress(country, voivodeship, community, city, address,
-                postalCode, startPostalCode, endPostalCode, parish, longitude, latitude, minLongitude, maxLongitude, minLatitude, maxLatitude);
-        return ResponseEntity.ok(addresses);
-    }
-
-    // 6. Aktualizacja adresu na podstawie ID
+    // 5. Aktualizacja adresu na podstawie ID
     @PutMapping("/Update/{id}")
     public ResponseEntity<String> updateAddress(@PathVariable Long id, @Valid @RequestBody Address updatedAddress) {
 
-        // Ustaw ID w obiekcie updatedAddress, aby upewnić się, że aktualizujemy właściwy rekord
-        updatedAddress.setId(id);
+        boolean exists = addressService.existsById(id);
 
-        // Wywołaj metodę update z serwisu
-        boolean isUpdated = addressService.updateAddress(updatedAddress);
-        if (isUpdated) {
-            return ResponseEntity.ok("Adres został pomyślnie zaktualizowany.");
+        if (exists) {
+            try {
+
+                updatedAddress.setId(id);
+
+                boolean isUpdated = addressService.updateAddress(updatedAddress);
+                if (isUpdated) {
+                    return ResponseEntity.ok("Adres został pomyślnie zaktualizowany");
+                } else {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wystąpił błąd podczas aktualizacji adresu");
+                }
+
+            } catch (Exception e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Wystąpił nieoczekiwany błąd: " + e.getMessage());
+            }
+
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Adres o podanym ID nie istnieje lub wystąpił błąd.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Adres nie istnieje.");
         }
     }
 }

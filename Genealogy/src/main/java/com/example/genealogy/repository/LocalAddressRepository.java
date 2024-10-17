@@ -1,5 +1,6 @@
 package com.example.genealogy.repository;
 
+import com.example.genealogy.model.Address;
 import com.example.genealogy.model.LocalAddress;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -72,4 +73,22 @@ public interface LocalAddressRepository extends JpaRepository<LocalAddress, Long
                                @Param("city") String city,
                                @Param("address") String address,
                                @Param("postalcode") String postalcode);
+
+    // Return local addresses by all parameters
+    @Query(value = "SELECT * FROM localaddress la " +
+            "WHERE (:country IS NULL OR unaccent(lower(la.country)) LIKE unaccent(lower(CONCAT('%', :country, '%')))) " +
+            "AND (:voivodeship IS NULL OR unaccent(lower(la.voivodeship)) LIKE unaccent(lower(CONCAT('%', :voivodeship, '%')))) " +
+            "AND (:community IS NULL OR unaccent(lower(la.community)) LIKE unaccent(lower(CONCAT('%', :community, '%')))) " +
+            "AND (:city IS NULL OR unaccent(lower(la.city)) LIKE unaccent(lower(CONCAT('%', :city, '%')))) " +
+            "AND (:address IS NULL OR unaccent(lower(la.address)) LIKE unaccent(lower(CONCAT('%', :address, '%')))) " +
+            "AND (:postalCode IS NULL OR unaccent(lower(la.postalCode)) LIKE unaccent(lower(CONCAT('%', :postalCode, '%')))) ",
+            nativeQuery = true)
+    LocalAddress getLocalAddressByAllParams(
+            @Param("country") String country,
+            @Param("voivodeship") String voivodeship,
+            @Param("community") String community,
+            @Param("city") String city,
+            @Param("address") String address,
+            @Param("postalCode") String postalCode
+    );
 }

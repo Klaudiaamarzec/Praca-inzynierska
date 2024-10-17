@@ -38,10 +38,7 @@ public class FamilyRepositoryTest {
 
         Person child = optChild.get();
 
-        List<Family> families = familyRepository.findFamiliesByChild(child);
-
-        assertThat(families).hasSize(1);
-        Family family = families.get(0);
+        Family family = familyRepository.findFamilyByChild(child);
 
         assertThat(family.getChild().getId()).isEqualTo(6L);
 

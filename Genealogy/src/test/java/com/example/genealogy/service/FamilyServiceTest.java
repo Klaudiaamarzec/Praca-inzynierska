@@ -153,11 +153,9 @@ public class FamilyServiceTest {
     @Test
     void testFindFamiliesByChild() {
 
-        List<Family> families = familyService.findFamiliesByChild(personService.getPersonById(4L));
+        Family family = familyService.findFamilyByChild(personService.getPersonById(4L));
 
-        assertThat(families).hasSize(1);
-
-        assertThat(families.get(0).getId()).isEqualTo(2L);
+        assertThat(family.getId()).isEqualTo(2L);
     }
 
     @Test

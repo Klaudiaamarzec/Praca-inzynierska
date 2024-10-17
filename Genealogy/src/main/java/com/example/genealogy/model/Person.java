@@ -1,6 +1,7 @@
 package com.example.genealogy.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.validation.constraints.NotBlank;
@@ -9,16 +10,15 @@ import lombok.Data;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "person")
 @Data
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @Column(name = "name", length = 256)
@@ -37,7 +37,7 @@ public class Person {
     @Column(name = "birthdate", columnDefinition = "Date")
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "person")
+    @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     private Set<PersonDocument> personDocuments;
 
     @OneToOne(mappedBy = "child")
@@ -48,5 +48,50 @@ public class Person {
 
     @OneToMany(mappedBy = "mother")
     private Set<Family> motherFamilies;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Person person = (Person) o;
+
+        return id != null && id.equals(person.id);
+    }
+
+    // Niestandardowy getter, zwraca tylko ID dla personDocuments
+    @JsonProperty("personDocuments")
+    public Set<Long> getPersonDocumentIds() {
+        return personDocuments != null ? personDocuments.stream()
+                .map(PersonDocument::getId)
+                .collect(Collectors.toSet()) : null;
+    }
+
+    // Niestandardowy getter dla childFamily, zwraca ID
+    @JsonProperty("childFamily")
+    public Long getChildFamilyId() {
+        return childFamily != null ? childFamily.getId() : null;
+    }
+
+    // Niestandardowy getter dla fatherFamilies, zwraca tylko ID
+    @JsonProperty("fatherFamilies")
+    public Set<Long> getFatherFamilyIds() {
+        return fatherFamilies != null ? fatherFamilies.stream()
+                .map(Family::getId)
+                .collect(Collectors.toSet()) : null;
+    }
+
+    // Niestandardowy getter dla motherFamilies, zwraca tylko ID
+    @JsonProperty("motherFamilies")
+    public Set<Long> getMotherFamilyIds() {
+        return motherFamilies != null ? motherFamilies.stream()
+                .map(Family::getId)
+                .collect(Collectors.toSet()) : null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 
 }

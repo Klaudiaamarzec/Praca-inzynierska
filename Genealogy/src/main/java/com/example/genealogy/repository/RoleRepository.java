@@ -14,7 +14,7 @@ public interface RoleRepository extends JpaRepository<Role, Integer>{
 
     @Query(value = """
     SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM Role r
-    WHERE ( lower(r.rolename) = lower(:roleName))
+    WHERE (lower(r.rolename) = lower(:roleName))
 """, nativeQuery = true)
     boolean existsRole(@Param("roleName") String roleName);
 

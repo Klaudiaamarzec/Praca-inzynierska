@@ -95,8 +95,8 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<Family> findFamiliesByChild(Person child) {
-        return familyRepository.findFamiliesByChild(child);
+    public Family findFamilyByChild(Person child) {
+        return familyRepository.findFamilyByChild(child);
     }
 
     @Override

@@ -1,9 +1,9 @@
 package com.example.genealogy.serviceimplementation;
 
-import com.example.genealogy.model.Date;
-import com.example.genealogy.model.Document;
-import com.example.genealogy.model.User;
+import com.example.genealogy.model.*;
 import com.example.genealogy.repository.DocumentRepository;
+import com.example.genealogy.repository.NotificationRepository;
+import com.example.genealogy.repository.PersonDocumentRepository;
 import com.example.genealogy.service.DateService;
 import com.example.genealogy.service.DocumentService;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,6 +11,8 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -24,11 +26,15 @@ public class DocumentServiceImpl implements DocumentService {
 
     private final DocumentRepository documentRepository;
     private final DateService dateService;
+    private final PersonDocumentRepository personDocumentRepository;
+    private final NotificationRepository notificationRepository;
     private final Validator validator;
 
-    public DocumentServiceImpl(DocumentRepository documentRepository, DateService dateService, Validator validator) {
+    public DocumentServiceImpl(DocumentRepository documentRepository, DateService dateService, PersonDocumentRepository personDocumentRepository, NotificationRepository notificationRepository, Validator validator) {
         this.documentRepository = documentRepository;
         this.dateService = dateService;
+        this.personDocumentRepository = personDocumentRepository;
+        this.notificationRepository = notificationRepository;
         this.validator = validator;
     }
 
@@ -228,6 +234,44 @@ public class DocumentServiceImpl implements DocumentService {
         photo.setPhotoRefers(document);
 
         return true;
+    }
+
+    @Override
+    public ResponseEntity<String> approveChanges(Long oldDocumentId, Long newDocumentId) {
+
+        // Pobierz stary i nowy dokument
+        Document oldDocument = documentRepository.findById(oldDocumentId)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono dokumentu o id: " + oldDocumentId));
+        Document newDocument = documentRepository.findById(newDocumentId)
+                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono dokumentu o id: " + newDocumentId));
+
+        // Przenieś powiązania z PersonDocument do nowego dokumentu
+        List<PersonDocument> personDocuments = personDocumentRepository.findPersonDocumentByDocumentID(oldDocumentId);
+        for (PersonDocument personDocument : personDocuments) {
+            personDocument.setDocument(newDocument);
+            personDocumentRepository.save(personDocument);
+        }
+
+        // Usuń wszystkie powiązania z PersonDocument i Notification przed usunięciem dokumentu
+        personDocumentRepository.deleteByDocumentId(oldDocumentId);
+        notificationRepository.deleteByDocumentId(oldDocumentId);
+
+        newDocument.setConfirmed(true);
+        boolean isSaved = saveDocument(newDocument);
+
+        if(!isSaved) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wystąpił błąd podczas zapisywania nowego dokumentu");
+        }
+
+        // Usuń stary dokument
+        boolean deleted = deleteDocument(oldDocument);
+        if (!deleted) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Wystąpił błąd podczas usuwania starego dokumentu.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Zmiany zostały zatwierdzone, stary dokument został usunięty.");
     }
 
 

@@ -29,32 +29,6 @@ public class NotificationRepositoryTest {
     }
 
     @Test
-    void testFindNotificationByDocumentList() {
-
-        List<Long> documentIDs = Arrays.asList(2L, 6L);
-        List<Notification> notifications = notificationRepository.findNotificationByDocumentList(documentIDs);
-
-        assertThat(notifications).hasSize(1);
-
-        // ID Check
-        assertThat(notifications.get(0).getId()).isEqualTo(3L);
-    }
-
-    @Test
-    void testFindNotificationByDocumentList2() {
-
-        List<Long> documentIDs = Arrays.asList(2L, 6L, 4L, 5L, 3L);
-        List<Notification> notifications = notificationRepository.findNotificationByDocumentList(documentIDs);
-
-        assertThat(notifications).hasSize(3);
-
-        // ID Check
-        assertThat(notifications.get(0).getId()).isEqualTo(3L);
-        assertThat(notifications.get(1).getId()).isEqualTo(2L);
-        assertThat(notifications.get(2).getId()).isEqualTo(1L);
-    }
-
-    @Test
     void testFindNotificationByUser() {
 
         Long userID = 2L;

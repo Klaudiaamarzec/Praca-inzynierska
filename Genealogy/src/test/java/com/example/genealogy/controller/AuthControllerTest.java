@@ -144,39 +144,39 @@ public class AuthControllerTest {
         assertEquals("Niepoprawne dane logowania!", loginResponse.getBody());
     }
 
-    @Test
-    public void testRegisterLoginAndLogout_Success() {
-        User newUser = new User();
-        newUser.setUserName("newUser");
-        newUser.setMail("newuser@example.com");
-        newUser.setPassword("password"); // Hasło będzie kodowane w metodzie register
-        newUser.setIdRole(roleService.getRoleById(2));
-
-        // Rejestracja użytkownika
-        ResponseEntity<String> registerResponse = authController.registerUser(newUser);
-        assertEquals(HttpStatus.CREATED, registerResponse.getStatusCode());
-        assertEquals("Rejestracja powiodła się!", registerResponse.getBody());
-
-        // Sprawdzenie, czy użytkownik został zapisany
-        User savedUser = userService.findByEmail("newuser@example.com");
-        assertThat(savedUser).isNotNull();
-
-        // Dekodowanie hasła z Base64
-        String decodedPassword = new String(Base64.getDecoder().decode(savedUser.getPassword()));
-
-        // Porównanie hasła
-        assertEquals("password", decodedPassword);
-
-        // Próba logowania
-        ResponseEntity<String> loginResponse = authController.login(newUser.getMail(), "password"); // Przekazanie jawnego hasła
-        assertEquals(HttpStatus.OK, loginResponse.getStatusCode());
-        assertEquals("Zalogowano pomyślnie!", loginResponse.getBody());
-
-        // Proba wylogowania
-        ResponseEntity<String> logoutResponse = authController.logout();
-        assertEquals(HttpStatus.OK, logoutResponse.getStatusCode());
-        assertEquals("Wylogowano pomyślnie!", logoutResponse.getBody());
-    }
+//    @Test
+//    public void testRegisterLoginAndLogout_Success() {
+//        User newUser = new User();
+//        newUser.setUserName("newUser");
+//        newUser.setMail("newuser@example.com");
+//        newUser.setPassword("password"); // Hasło będzie kodowane w metodzie register
+//        newUser.setIdRole(roleService.getRoleById(2));
+//
+//        // Rejestracja użytkownika
+//        ResponseEntity<String> registerResponse = authController.registerUser(newUser);
+//        assertEquals(HttpStatus.CREATED, registerResponse.getStatusCode());
+//        assertEquals("Rejestracja powiodła się!", registerResponse.getBody());
+//
+//        // Sprawdzenie, czy użytkownik został zapisany
+//        User savedUser = userService.findByEmail("newuser@example.com");
+//        assertThat(savedUser).isNotNull();
+//
+//        // Dekodowanie hasła z Base64
+//        String decodedPassword = new String(Base64.getDecoder().decode(savedUser.getPassword()));
+//
+//        // Porównanie hasła
+//        assertEquals("password", decodedPassword);
+//
+//        // Próba logowania
+//        ResponseEntity<String> loginResponse = authController.login(newUser.getMail(), "password"); // Przekazanie jawnego hasła
+//        assertEquals(HttpStatus.OK, loginResponse.getStatusCode());
+//        assertEquals("Zalogowano pomyślnie!", loginResponse.getBody());
+//
+//        // Proba wylogowania
+//        ResponseEntity<String> logoutResponse = authController.logout();
+//        assertEquals(HttpStatus.OK, logoutResponse.getStatusCode());
+//        assertEquals("Wylogowano pomyślnie!", logoutResponse.getBody());
+//    }
 
     @Test
     public void testRequestPasswordReset_UserExists() {

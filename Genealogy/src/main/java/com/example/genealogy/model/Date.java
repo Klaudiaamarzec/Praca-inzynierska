@@ -2,6 +2,7 @@ package com.example.genealogy.model;
 
 import com.example.genealogy.annotation.CurrentYear;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.validation.constraints.Min;
@@ -37,5 +38,6 @@ public class Date {
     private Integer day;
 
     @OneToMany(mappedBy = "date") // Opposite relation manyToOne
+    @JsonIgnore
     private Set<Document> documents;
 }

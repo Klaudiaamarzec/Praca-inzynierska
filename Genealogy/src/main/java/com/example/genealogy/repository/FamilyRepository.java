@@ -14,7 +14,7 @@ public interface FamilyRepository extends JpaRepository<Family, Long> {
 
     // Find all families where Person is child
     @Query("SELECT f FROM Family f WHERE f.child = :person")
-    List<Family> findFamiliesByChild(@Param("person") Person person);
+    Family findFamilyByChild(@Param("person") Person person);
 
     // Find all families where Person is mother
     @Query("SELECT f FROM Family f WHERE f.mother = :person")

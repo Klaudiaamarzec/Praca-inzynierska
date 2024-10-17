@@ -25,11 +25,24 @@ public class Family {
 
     @ManyToOne
     @JoinColumn(name = "fid")
-    @NotNull(message = "Pole 'Ojciec' nie może być puste")
     private Person father;
 
     @ManyToOne
     @JoinColumn(name = "mid")
-    @NotNull(message = "Pole 'Matka' nie może być puste")
     private Person mother;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Family family = (Family) o;
+
+        return id != null && id.equals(family.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

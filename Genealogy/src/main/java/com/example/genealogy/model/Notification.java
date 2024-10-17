@@ -13,12 +13,10 @@ import java.util.Objects;
 @Entity
 @Table(name = "notification")
 @Data
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(name = "id")
     private Long id;
 
@@ -51,6 +49,22 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "newdocument")
     private Document newDocument;
+
+    @JsonProperty("user")
+    public Long getUserId() {
+        return user != null ? user.getId() : null;
+    }
+
+    @JsonProperty("document")
+    public Long getDocumentId() {
+        return document != null ? document.getId() : null;
+    }
+
+    @JsonProperty("newdocument")
+    public Long getNewDocumentId() {
+        return newDocument != null ? newDocument.getId() : null;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

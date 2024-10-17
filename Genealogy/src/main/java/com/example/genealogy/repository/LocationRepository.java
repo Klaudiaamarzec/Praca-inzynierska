@@ -25,7 +25,7 @@ public interface LocationRepository extends JpaRepository<Location, Long>{
 
     @Query(value = """
         SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM location l
-        WHERE (:physical IS NULL OR l.idphys = :physical)
+        WHERE (l.idphys = :physical OR :physical IS NULL)
         AND (l.idurl = :url)
     """, nativeQuery = true)
     boolean existsLocation(@Param("physical") Long physical,

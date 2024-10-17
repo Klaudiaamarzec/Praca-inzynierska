@@ -9,16 +9,15 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "Users")
 @Data
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
     @ManyToOne
@@ -47,12 +46,23 @@ public class User {
     private LocalDateTime tokenExpirationTime;
 
     @OneToMany(mappedBy = "owner")
-    @JsonBackReference("document-user")
     private Set<Document> documents;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private Set<Notification> notifications;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private Set<PhysicalLocations> physicalLocations;
+
+    @JsonProperty("idRole")
+    public Integer getRoleId() {
+        return idRole != null ? idRole.getId() : null;
+    }
+
+    @JsonProperty("documents")
+    public Set<Long> getDocumentIds() {
+        return documents != null ? documents.stream().map(Document::getId).collect(Collectors.toSet()) : null;
+    }
 }

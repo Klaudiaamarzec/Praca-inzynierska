@@ -22,6 +22,8 @@ public interface AddressService {
 
     List<Address> getAllAddresses();
 
+    Address getAddressByAllParams(String country, String voivodeship, String community, String city, Long longitude, Long latitude, String address, String postalCode, String parish, String secular);
+
     List<Address> findByCountry(String country);
 
     List<Address> findByVoivodeship(String voivodeship);

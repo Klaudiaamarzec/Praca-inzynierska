@@ -171,8 +171,8 @@ public interface DocumentRepository extends JpaRepository<Document, Long>{
     SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM Document d
     WHERE (:title IS NULL OR unaccent(lower(d.title)) = unaccent(lower(:title)))
     AND (d.confirmed = :confirmed)
-    AND (:startDate IS NULL OR d.startDate = :startDate)
-    AND (:endDate IS NULL OR d.endDate = :endDate)
+    AND (d.startDate = :startDate OR CAST(:startDate AS DATE) IS NULL)
+    AND (d.endDate = :endDate OR CAST(:endDate AS DATE ) IS NULL)
     AND (:description IS NULL OR unaccent(lower(d.description)) = unaccent(lower(:description)))
     AND (d.type = :typeId)
     AND (d.place = :placeId)

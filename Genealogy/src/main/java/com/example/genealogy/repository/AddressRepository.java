@@ -150,7 +150,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
             "AND (:parish IS NULL OR unaccent(lower(a.parish)) LIKE unaccent(lower(CONCAT('%', :parish, '%')))) " +
             "AND (:secular IS NULL OR unaccent(lower(a.secular)) LIKE unaccent(lower(CONCAT('%', :secular, '%'))))",
             nativeQuery = true)
-    List<Address> getAddressesByAllParams(
+    Address getAddressByAllParams(
             @Param("country") String country,
             @Param("voivodeship") String voivodeship,
             @Param("community") String community,

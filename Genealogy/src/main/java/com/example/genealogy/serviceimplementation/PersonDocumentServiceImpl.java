@@ -47,6 +47,15 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
                 .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono osoby w dokumencie o id: " + id));
     }
 
+    @Override
+    public List<PersonDocument> findPersonDocumentByDocumentID(Long documentID) {
+        return personDocumentRepository.findPersonDocumentByDocumentID(documentID);
+    }
+
+    @Override
+    public PersonDocument getPersonDocument(Long documentID, Long personID) {
+        return personDocumentRepository.getPersonDocument(documentID, personID);
+    }
 
     @Override
     public boolean savePersonDocument(@NotNull PersonDocument personDocument) {
@@ -91,6 +100,18 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
             return false;
         }
         return false;
+    }
+
+    @Override
+    public boolean deleteByDocumentID(Long documentID) {
+
+        try {
+            personDocumentRepository.deleteByDocumentId(documentID);
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

@@ -21,7 +21,7 @@ public interface FamilyService {
 
     List<Family> getAllFamilies();
 
-    List<Family> findFamiliesByChild(Person child);
+    Family findFamilyByChild(Person child);
 
     List<Family> findFamiliesByMother(Person mother);
 

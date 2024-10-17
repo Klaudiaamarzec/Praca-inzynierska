@@ -2,6 +2,7 @@ package com.example.genealogy.service;
 
 import com.example.genealogy.model.Document;
 import com.example.genealogy.model.Location;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ public interface LocationService {
     boolean saveLocation(Location location);
 
     boolean deleteLocation(Location location);
+
+    ResponseEntity<?> addLocalizationToDocument(Long documentID);
 
     List<Location> getAllLocations();
 

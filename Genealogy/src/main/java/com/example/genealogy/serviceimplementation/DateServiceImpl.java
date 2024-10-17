@@ -8,6 +8,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jakarta.validation.ConstraintViolationException;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -94,6 +95,11 @@ public class DateServiceImpl implements DateService {
     @Override
     public List<Date> findDates(int day, int month, int year) {
         return dateRepository.findDates(day, month, year);
+    }
+
+    @Override
+    public Date findDate(int day, int month, int year) {
+        return dateRepository.findDate(day, month, year);
     }
 
     @Override

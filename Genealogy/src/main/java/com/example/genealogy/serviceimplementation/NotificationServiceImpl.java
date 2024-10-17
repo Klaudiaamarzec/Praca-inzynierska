@@ -98,14 +98,26 @@ public class NotificationServiceImpl implements NotificationService {
         return false;
     }
 
+    @Override
+    public boolean deleteByDocumentID(Long documentID) {
+
+        try {
+            notificationRepository.deleteByDocumentId(documentID);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+
+    }
+
     @Observed
     public List<Notification> getAllNotifications() {
         return notificationRepository.findAll();
     }
 
     @Override
-    public List<Notification> findNotificationByDocumentList(List<Long> documentIDs) {
-        return notificationRepository.findNotificationByDocumentList(documentIDs);
+    public List<Notification> findNotificationByDocumentID(Long documentID) {
+        return notificationRepository.findNotificationByDocumentID(documentID);
     }
 
     @Override

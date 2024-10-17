@@ -45,6 +45,11 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public List<Person> findPersonByIds(List<Long> ids) {
+        return personRepository.findPersonByIds(ids);
+    }
+
+    @Override
     public boolean savePerson(@NotNull Person person) {
         if (personExists(person)) {
             return false;

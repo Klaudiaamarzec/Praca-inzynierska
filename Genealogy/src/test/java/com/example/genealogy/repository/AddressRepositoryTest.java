@@ -320,7 +320,7 @@ public class AddressRepositoryTest {
     @Test
     void testGetAddressesByAllParams() {
 
-        List<Address> addresses = addressRepository.getAddressesByAllParams("USA",
+        Address addresses = addressRepository.getAddressByAllParams("USA",
                 "california",
                 null,
                 "Los angeles",
@@ -331,9 +331,7 @@ public class AddressRepositoryTest {
                 "ST",
                 null);
 
-        assertThat(addresses).hasSize(1);
-
         // ID Check
-        assertThat(addresses.get(0).getId()).isEqualTo(2L);
+        assertThat(addresses.getId()).isEqualTo(2L);
     }
 }

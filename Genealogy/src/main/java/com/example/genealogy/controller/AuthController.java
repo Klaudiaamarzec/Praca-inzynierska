@@ -2,6 +2,7 @@ package com.example.genealogy.controller;
 
 import com.example.genealogy.model.User;
 import com.example.genealogy.service.UserService;
+import com.example.genealogy.token.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     // Endpoint do rejestracji użytkownika
@@ -25,6 +28,17 @@ public class AuthController {
     public ResponseEntity<String> registerUser(@Valid @RequestBody User user) {
         if (userService.userExists(user)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Użytkownik już istnieje!");
+        }
+
+        User existingUserName = userService.findByUserName(user.getUserName());
+        User existingEmail = userService.findByEmail(user.getMail());
+
+        if(existingUserName != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Nazwa użytkownika jest już zajęta");
+        }
+
+        if(existingEmail != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Konto o podanym adresie email już istnieje");
         }
 
         // Szyfrowanie hasła
@@ -52,18 +66,13 @@ public class AuthController {
 
         // Sprawdź poprawność użytkownika i hasła
         if (user != null && PasswordHasher.matches(password, user.getPassword())) {
-            // Ustawienia sesji, przekierowania, itp.
-            return ResponseEntity.ok("Zalogowano pomyślnie!");
+
+            String token = jwtUtil.generateToken(user.getUserName(), user.getIdRole().getRoleName());
+            //return ResponseEntity.ok("Zalogowano pomyślnie!");
+            return ResponseEntity.ok(token);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Niepoprawne dane logowania!");
         }
-    }
-
-    // Endpoint do wylogowania
-    @PostMapping("/Logout")
-    public ResponseEntity<String> logout() {
-        // Możesz dodać logikę, jeśli chcesz coś zrobić przed wylogowaniem
-        return ResponseEntity.ok("Wylogowano pomyślnie!");
     }
 
 }

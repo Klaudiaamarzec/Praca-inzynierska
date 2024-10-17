@@ -1,5 +1,6 @@
 package com.example.genealogy.model;
 
+import com.example.genealogy.validator.OnCreate;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -12,21 +13,19 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "physicallocations")
 @Data
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class PhysicalLocations {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(name = "id")
     private Long id;
 
     @Column(name = "date", columnDefinition = "Date")
-    @NotNull(message = "Data nie może być pusta")
+    @NotNull(message = "Data nie może być pusta", groups = OnCreate.class)
     private LocalDate date;
 
     @Column(name = "isoriginal")
-    @NotNull(message = "Pole 'Oryginalne/Nieoryginalne' nie może być puste")
+    @NotNull(message = "Pole 'Oryginalne/Nieoryginalne' nie może być puste", groups = OnCreate.class)
     private Boolean isOriginal;
 
     @Column(name = "condition", length = 64)
@@ -41,16 +40,31 @@ public class PhysicalLocations {
 
     @ManyToOne
     @JoinColumn(name = "idphys") // Column in URLs table that is a foreign key to Location table
-    @NotNull(message = "Pole 'Lokalizacja fizyczna' nie może być puste")
+    @NotNull(message = "Pole 'Lokalizacja fizyczna' nie może być puste", groups = OnCreate.class)
     private Location physical;
 
     @ManyToOne
     @JoinColumn(name = "localaddressid")
-    @NotNull(message = "Pole 'Adres lokalny' nie może być puste")
+    @NotNull(message = "Pole 'Adres lokalny' nie może być puste", groups = OnCreate.class)
     private LocalAddress localaddress;
 
     @ManyToOne
     @JoinColumn(name = "userid")
-    @NotNull(message = "Pole 'Użytkownik' nie może być puste")
+    @NotNull(message = "Pole 'Użytkownik' nie może być puste", groups = OnCreate.class)
     private User user;
+
+    @JsonProperty("physical")
+    public Long getPhysicalId() {
+        return this.physical != null ? this.physical.getId() : null;
+    }
+
+    @JsonProperty("localaddress")
+    public Long getLocalAddressId() {
+        return this.localaddress != null ? this.localaddress.getId() : null;
+    }
+
+    @JsonProperty("user")
+    public Long getUserId() {
+        return this.user != null ? this.user.getId() : null;
+    }
 }

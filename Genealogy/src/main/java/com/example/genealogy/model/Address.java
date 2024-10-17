@@ -1,7 +1,7 @@
 package com.example.genealogy.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import jakarta.persistence.*;
@@ -55,5 +55,6 @@ public class Address {
     private Long latitude;
 
     @OneToMany(mappedBy = "place")
+    @JsonIgnore
     private Set<Document> documents;
 }

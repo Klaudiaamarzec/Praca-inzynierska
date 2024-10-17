@@ -12,6 +12,8 @@ public interface LocalAddressService {
 
     LocalAddress getLocalAddressById(Long id);
 
+    LocalAddress getLocalAddressByAllParams(String country, String voivodeship, String community, String city, String address, String postalCode);
+
     boolean saveLocalAddress(LocalAddress localAddress);
 
     boolean updateLocalAddress(LocalAddress localAddress);

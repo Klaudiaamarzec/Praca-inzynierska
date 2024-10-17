@@ -34,7 +34,7 @@ public class LocalAddressServiceTest {
         address.setVoivodeship("Zachodniopomorskie");
         address.setCity("Szczecin");
         address.setAddress("Słowackiego 2/6");
-        address.setPostalcode("71100");
+        address.setPostalCode("71100");
         boolean result = localAddressService.localAddressExists(address);
         assertThat(result).isTrue();
     }
@@ -66,7 +66,7 @@ public class LocalAddressServiceTest {
         address.setVoivodeship("Zachodniopomorskie");
         address.setCity("Szczecin");
         address.setAddress("Słowackiego 2/6");
-        address.setPostalcode("71100");
+        address.setPostalCode("71100");
 
         boolean result = localAddressService.saveLocalAddress(address);
         assertThat(result).isFalse();

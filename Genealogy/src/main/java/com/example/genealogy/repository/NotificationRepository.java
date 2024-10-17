@@ -2,9 +2,11 @@ package com.example.genealogy.repository;
 
 import com.example.genealogy.model.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,8 +15,8 @@ import java.util.List;
 public interface NotificationRepository extends JpaRepository <Notification, Long> {
 
     // Find notifications for some list of Documents (e.g. just confirmed/not confirmed documents)
-    @Query("SELECT n FROM Notification n WHERE n.document.id IN :documentIDs ORDER BY n.date DESC")
-    List<Notification> findNotificationByDocumentList(@Param("documentIDs") List<Long> documentIDs);
+    @Query("SELECT n FROM Notification n WHERE n.document.id = :documentID ORDER BY n.date DESC")
+    List<Notification> findNotificationByDocumentID(@Param("documentID") Long documentID);
 
     // Find notifications based on user
     @Query("SELECT n FROM Notification n WHERE n.user.id = :userID ORDER BY n.date DESC")
@@ -47,7 +49,7 @@ public interface NotificationRepository extends JpaRepository <Notification, Lon
     List<Notification> findNotificationByParameter(@Param("parameter") String parameter);
 
     // Find notifications about edit
-    @Query("SELECT n FROM Notification n WHERE n.newDocument.id != NULL ORDER BY n.date DESC")
+    @Query("SELECT n FROM Notification n WHERE n.newDocument.id IS NOT NULL ORDER BY n.date DESC")
     List<Notification> findNotificationsAboutEdit();
 
     // Find notifications about adding new document
@@ -55,13 +57,13 @@ public interface NotificationRepository extends JpaRepository <Notification, Lon
     List<Notification> findNotificationsAboutAdd();
 
     @Query("SELECT CASE WHEN COUNT(n) > 0 THEN true ELSE false END FROM Notification n " +
-            "WHERE (:title IS NULL OR LOWER(n.title) = LOWER(:title)) " +
-            "AND (:context IS NULL OR LOWER(n.context) = LOWER(:context)) " +
+            "WHERE (LOWER(n.title) = LOWER(:title) OR :title IS NULL) " +
+            "AND (LOWER(n.context) = LOWER(:context) OR :context IS NULL) " +
             "AND (n.displayed = :displayed) " +
             "AND (n.date = :date OR CAST(:date AS DATE) IS NULL)" +
-            "AND (:userId IS NULL OR n.user.id = :userId) " +
-            "AND (:documentId IS NULL OR n.document.id = :documentId) " +
-            "AND (:newDocumentId IS NULL OR n.newDocument.id = :newDocumentId)")
+            "AND (n.user.id = :userId OR :userId IS NULL) " +
+            "AND (n.document.id = :documentId OR :documentId IS NULL) " +
+            "AND (n.newDocument.id = :newDocumentId OR :newDocumentId IS NULL)")
     boolean existsNotification(@Param("title") String title,
                                @Param("context") String context,
                                @Param("displayed") Boolean displayed,
@@ -69,5 +71,10 @@ public interface NotificationRepository extends JpaRepository <Notification, Lon
                                @Param("userId") Long userId,
                                @Param("documentId") Long documentId,
                                @Param("newDocumentId") Long newDocumentId);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Notification n WHERE n.document.id = :documentId")
+    void deleteByDocumentId(@Param("documentId") Long documentId);
 
 }
