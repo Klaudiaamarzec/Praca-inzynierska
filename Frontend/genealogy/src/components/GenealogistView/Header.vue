@@ -12,7 +12,7 @@
       <div class="right-section">
         <router-link to="/about"><p>O serwisie</p></router-link>
         <router-link to="/help"><p>Pomoc</p></router-link>
-        <button>Wyloguj się</button>
+        <router-link to="/"><button>Wyloguj się</button></router-link>
       </div>
     </section>
 

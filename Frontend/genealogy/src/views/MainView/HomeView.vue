@@ -1,30 +1,45 @@
 <template>
   <div>
-    <Header @open-login-modal="showLoginModal" />
-    <LoginModal v-if="isLoginModalVisible" @close="hideLoginModal" />
-    <!-- Tutaj tylko nagłówek, bez dodatkowych elementów -->
+    <Header/>
+
+    <!-- Sekcja wyszukiwarki lub wyników -->
+    <section v-if="!searchResults">
+      <Browser @searchResults="handleSearchResults"/> <!-- Emituje wyniki do HomeView -->
+    </section>
+
+    <section v-if="searchResults">
+      <Results :results="searchResults" @backToSearch="clearSearch"/> <!-- Przekazuje wyniki do Results -->
+    </section>
+
+<!--    <section>-->
+<!--      <Browser/>-->
+<!--    </section>-->
+
   </div>
 </template>
 
 <script setup>
-import Header from '../../components/MainView/Header.vue';
-import LoginModal from '../../components/MainView/LoginModal.vue';
-
 import { ref } from 'vue';
+import Header from '../../components/MainView/Header.vue';
+import Browser from "@/components/MainView/Browser.vue";
 
-// Stan modal logowania
-const isLoginModalVisible = ref(false);
+import Results from '@/components/MainView/Results.vue';  // Import komponentu wyników
 
-// Funkcje otwierające i zamykające modal
-const showLoginModal = () => {
-  isLoginModalVisible.value = true;
+const searchResults = ref(null);
+
+const handleSearchResults = (results) => {
+  searchResults.value = results; // Odbiera wyniki z Browser i ustawia je
 };
 
-const hideLoginModal = () => {
-  isLoginModalVisible.value = false;
+const clearSearch = () => {
+  searchResults.value = null; // Powrót do wyszukiwarki
 };
 </script>
 
 <style scoped>
-/* Jeśli nie potrzebujesz dodatkowych stylów, można to zostawić puste */
+
+section {
+  margin: 20px 0;
+}
+
 </style>

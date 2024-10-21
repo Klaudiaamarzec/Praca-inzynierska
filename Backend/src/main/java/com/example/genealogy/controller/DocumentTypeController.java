@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/API/DocumentTypes")
 public class DocumentTypeController {
@@ -65,5 +67,12 @@ public class DocumentTypeController {
         return ResponseEntity.ok(documentType);
     }
 
-    // 3. Aktualizacja typu
+    // 3. Pobranie wszystkich typów
+    @GetMapping("All")
+    public ResponseEntity<List<DocumentType>> getAllDocumentTypes() {
+
+        List<DocumentType> docTypes = documentTypeService.getAllDocumentTypes();
+        return ResponseEntity.ok(docTypes);
+
+    }
 }

@@ -12,8 +12,8 @@
       <div class="right-section">
         <router-link to="/about"><p>O serwisie</p></router-link>
         <router-link to="/help"><p>Pomoc</p></router-link>
-        <button @click="$emit('open-login-modal')">Zaloguj się</button>
-        <button>Zarejestruj się</button>
+        <router-link to="/login"><button>Zaloguj się</button></router-link>
+        <router-link to="/register"><button>Zarejestruj się</button></router-link>
       </div>
     </section>
 
