@@ -93,19 +93,20 @@ public class Document {
     @OneToMany(mappedBy = "document") // Relation to `PersonInDocument`
     private Set<PersonDocument> peopleDocuments;
 
-    @JsonProperty("place")
-    public Long getPlaceId() {
-        return this.place != null ? this.place.getId() : null;
-    }
-
     @JsonProperty("owner")
     public Long getOwnerId() {
         return this.owner != null ? this.owner.getId() : null;
     }
 
     @JsonProperty("type")
-    public Integer getTypeId() {
-        return this.type != null ? this.type.getId() : null;
+    public Map<String, Object> getTypeId() {
+        if (this.type != null) {
+            Map<String, Object> typeMap = new HashMap<>();
+            typeMap.put("id", this.type.getId());
+            typeMap.put("name", this.type.getTypeName());
+            return typeMap;
+        }
+        return null;
     }
 
     @JsonProperty("localization")
@@ -124,10 +125,16 @@ public class Document {
     }
 
     @JsonProperty("peopleDocuments")
-    public Set<Long> getPeopleDocumentIds() {
+    public Set<Map<String, Object>> getPeopleDocumentDetails() {
         return this.peopleDocuments != null
                 ? this.peopleDocuments.stream()
-                .map(PersonDocument::getId)
+                .map(personDocument -> {
+                    Map<String, Object> personDetails = new HashMap<>();
+                    personDetails.put("id", personDocument.getId());
+                    personDetails.put("firstName", personDocument.getPerson() != null ? personDocument.getPerson().getName() : null);
+                    personDetails.put("lastName", personDocument.getPerson() != null ? personDocument.getPerson().getSurname() : null);
+                    return personDetails;
+                })
                 .collect(Collectors.toSet())
                 : null;
     }

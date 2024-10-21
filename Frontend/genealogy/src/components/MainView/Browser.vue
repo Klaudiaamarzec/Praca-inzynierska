@@ -1,5 +1,8 @@
 <script setup>
 import { ref, onMounted, defineEmits } from 'vue';
+//import router from "@/router/index.js";
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const emit = defineEmits(['searchResults']); // Definiowanie emitowania zdarzenia
 
 const documentTypes = ref([]);
@@ -37,7 +40,11 @@ const searchDocuments = async () => {
     }
 
     const results = await response.json();
-    emit('searchResults', results); // Emituje wyniki do HomeView
+    //emit('searchResults', results); // Emituje wyniki do HomeView
+
+    await router.push({name: 'SearchResults', query: { results: JSON.stringify(results) },});
+
+    //await router.push({name: 'SearchResults', state: {results}});
 
     // const searchResults = await response.json();
     // console.log(searchResults);
@@ -78,7 +85,7 @@ const searchDocuments = async () => {
           <div class="li-section">
             <li v-for="(type, index) in documentTypes" :key="index">
               <label >
-                <input type="checkbox" :value="type.id" v-model="selectedTypes"> <!-- v-model do przechowywania zaznaczonych typów -->
+                <input type="checkbox" :value="type.id" v-model="selectedTypes">
                 {{ type.typeName }}
               </label>
             </li>
@@ -89,15 +96,6 @@ const searchDocuments = async () => {
     </section>
 
     <button @click="searchDocuments">Szukaj</button>
-
-<!--    <div v-if="searchResults.length">-->
-<!--      <h2>Wyniki wyszukiwania:</h2>-->
-<!--      <ul>-->
-<!--        <li v-for="(result, index) in searchResults" :key="index">-->
-<!--          {{ result | json }} &lt;!&ndash; Zmień na odpowiednie właściwości &ndash;&gt;-->
-<!--        </li>-->
-<!--      </ul>-->
-<!--    </div>-->
 
   </section>
 </template>
@@ -135,30 +133,6 @@ button {
 button:hover {
   background-color: var(--dark-brown);
   color: #eeebe9;
-}
-
-.custom-checkbox {
-  display: none; /* Ukrywa standardowy checkbox */
-}
-
-.label-container {
-  position: relative;
-  padding-left: 30px; /* Odstęp dla niestandardowego checkboxa */
-  cursor: pointer; /* Kursor zmienia się na wskaźnik */
-}
-
-.label-container::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px; /* Szerokość niestandardowego checkboxa */
-  height: 20px; /* Wysokość niestandardowego checkboxa */
-  border: 2px solid var(--brown); /* Brązowy kolor ramki */
-  border-radius: 3px; /* Opcjonalne, zaokrąglone rogi */
-  background-color: white; /* Tło checkboxa */
-  transition: background-color 0.3s, border-color 0.3s; /* Płynna zmiana kolorów */
 }
 
 .custom-checkbox:checked + .label-container::before {
