@@ -70,21 +70,25 @@ const formatPeopleDocuments = (people) => {
          :key="index">
       <div class="title">{{ result.title }}</div>
       <div class="details">
-        <p v-if="result.place.country || result.place.voivodeship || result.place.city">Miejsce: {{ formatPlace(result.place) }}</p>
-        <p v-if="result.startDate || result.endDate">Przedział dat: {{ result.startDate}} - {{ result.endDate }}</p>
-        <p v-if="result.date">Data:
-          <template v-if="result.date">
-              <span>
-                {{ formatDate(result.date) }}
-              </span>
-          </template>
+        <p v-if="result.place.country || result.place.voivodeship || result.place.city">
+          <span class="label">Miejsce:</span>
+          <span class="value">{{ formatPlace(result.place) }}</span>
         </p>
-        <p>Rodzaj: {{ result.type.name }}</p>
+        <p v-if="result.startDate || result.endDate">
+          <span class="label">Przedział dat:</span>
+          <span class="value">{{ result.startDate }} - {{ result.endDate }}</span>
+        </p>
+        <p v-if="result.date">
+          <span class="label">Data:</span>
+          <span class="value">{{ formatDate(result.date) }}</span>
+        </p>
+        <p>
+          <span class="label">Rodzaj:</span>
+          <span class="value">{{ result.type.name }}</span>
+        </p>
         <p v-if="result.peopleDocuments && result.peopleDocuments.length > 0">
-          Osoby występujące w dokumencie:
-          <span >
-            {{ formatPeopleDocuments(result.peopleDocuments) }}
-          </span>
+          <span class="label">Osoby występujące w dokumencie:</span>
+          <span class="value">{{ formatPeopleDocuments(result.peopleDocuments) }}</span>
         </p>
       </div>
     </div>
@@ -95,35 +99,21 @@ const formatPeopleDocuments = (people) => {
 
 <style scoped>
 
-.result-list {
-  display: flex;
-  flex-direction: column;
-  margin: 25px auto;
-  width: 95%;
-  gap: 25px;
+.label {
+  margin-right: 5px; /* Odstęp między nagłówkiem a wartością */
 }
 
-.list-item {
-  width: 100%;
-  border-radius: 15px;
-  border: 2px solid var(--brown);
+
+.value {
+  font-weight: bold;
+  color: var(--dark-brown);
 }
 
-.title {
-  background-color: var(--brown);
-  font-size: 19px;
-  border-top-left-radius: 14px;
-  border-top-right-radius: 14px;
-  margin: auto;
-  font-family: "Quintessential", serif;
-  text-align: center;
-  padding: 5px;
-}
-
-.details {
-  padding: 10px 20px;
-  display: flex;
-  flex-direction: column;
+/* Stylowanie odstępów w ramach sekcji */
+p {
+  margin: 8px 0;
+  font-size: 16px;
+  line-height: 1.5; /* Zwiększenie odstępów między liniami tekstu */
 }
 
 </style>
