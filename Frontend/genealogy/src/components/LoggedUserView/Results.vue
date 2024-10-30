@@ -1,13 +1,40 @@
 <script setup>
 import { defineProps } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
   results: Array
 });
 
 const results = props.results;
+const router = useRouter();
 
-console.log('Przekazane wyniki:', results)
+const decodeJWT = (token) => {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+      .join('')
+  );
+  return JSON.parse(jsonPayload);
+};
+
+const viewDocumentDetails = (documentID) => {
+
+  const token = localStorage.getItem('jwtToken');
+  const decodedToken = decodeJWT(token);
+  const userRole = decodedToken.role;
+
+  if (userRole === 'genealogist') {
+    router.push({ name: 'GenealogistDocumentDetails', params: { documentID } });
+  } else if (userRole === 'user') {
+    router.push({ name: 'UserDocumentDetails', params: { documentID } });
+  } else {
+    console.log("Nieznana rola użytkownika!");
+  }
+};
 
 const formatDate = (date) => {
   const day = date.day ? String(date.day).padStart(2, '0') : '';
@@ -57,7 +84,8 @@ const formatPeopleDocuments = (people) => {
   <section class="result-list">
     <div class="list-item"
          v-for="(result, index) in results"
-         :key="index">
+         :key="index"
+         @click="viewDocumentDetails(result.id)">
       <div class="title">{{ result.title }}</div>
       <div class="details">
         <p v-if="result.place.country || result.place.voivodeship || result.place.city">
@@ -91,7 +119,6 @@ const formatPeopleDocuments = (people) => {
 
 p {
   margin: 8px 0;
-  font-size: 16px;
   line-height: 1.5;
 }
 

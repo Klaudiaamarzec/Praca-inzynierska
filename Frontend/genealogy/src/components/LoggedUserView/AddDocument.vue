@@ -7,6 +7,7 @@ const showModal = ref(false);
 const showSuccess = ref(false);
 let errorText = ref('');
 let successText = ref('');
+const docID = ref(null);
 
 const documentTypes = ref([]);
 const selectedDocumentType = ref(null);
@@ -140,8 +141,6 @@ const addDocument = async () => {
 
     }
 
-    console.log("Parametry", documentData)
-
     const token = localStorage.getItem('jwtToken');
 
     const response = await fetch(`http://127.0.0.1:8080/API/Documents/Add`, {
@@ -162,9 +161,9 @@ const addDocument = async () => {
     }
 
     const results = await response.json();
-    console.log(results);
-    showSuccess.value = true;
+    docID.value = results.documentId;
     successText.value = results.message;
+    showSuccess.value = true;
 
     //await router.push({name: 'GenealogistSearchResults', query: {results: JSON.stringify(results)},});
 
@@ -311,7 +310,7 @@ const addDocument = async () => {
   </section>
 
   <ErrorModal v-if="showModal" :showModal="showModal" :errorDetails="errorText" @close="showModal = false" />
-  <SuccessModal v-if="showSuccess" :showModal="showSuccess" :successDetails="successText" @close="showSuccess = false" />
+  <SuccessModal v-if="showSuccess" :showModal="showSuccess" :successDetails="successText" :docID="docID" @close="showSuccess = false" />
 
 </template>
 
