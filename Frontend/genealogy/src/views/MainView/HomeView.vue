@@ -31,6 +31,7 @@ section {
   display: block;
   padding-left: 0;
   padding-right: 0;
+  margin-top: 0;
 }
 
 </style>

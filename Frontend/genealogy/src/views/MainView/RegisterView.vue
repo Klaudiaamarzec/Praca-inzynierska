@@ -10,26 +10,26 @@
         <form @submit.prevent="handleRegister">
           <div class="login-section">
             <label for="userName">Login:</label>
-            <input type="text" id="userName" v-model="userName" required />
+            <input class="main-input" type="text" id="userName" v-model="userName" required />
           </div>
           <div class="login-section">
             <label for="email">Email:</label>
-            <input type="email" id="email" v-model="mail" @input="validateEmail" required/>
+            <input class="main-input" type="email" id="email" v-model="mail" @input="validateEmail" required/>
             <p v-if="emailErrorMessage" class="error-message">{{ emailErrorMessage }}</p>
           </div>
           <div class="login-section">
             <label for="password">Hasło:</label>
-            <input type="password" id="password" v-model="password" required />
+            <input class="main-input" type="password" id="password" v-model="password" required />
             <p v-if="passwordMessage" class="password-message">{{ passwordMessage }}</p>
           </div>
           <div class="login-section">
             <label for="password2">Powtórz hasło:</label>
-            <input type="password" id="password2" v-model="password2" required />
+            <input class="main-input" type="password" id="password2" v-model="password2" required />
             <p v-if="passwordMismatch" class="error-message">Hasła muszą być takie same!</p>
           </div>
           <div class="login-section">
             <label>Rola</label>
-            <select id="idRole" v-model="idRole" required>
+            <select class="main-select" id="idRole" v-model="idRole" required>
               <option :value="2">Zwykły użytkownik</option>
               <option :value="1">Genealog</option>
             </select>
@@ -124,12 +124,6 @@ const handleRegister = async () => {
 
       showModal.value = true;
 
-      // if(idRole.value === 1)
-      //   window.location.href = '/homeGenealogist'
-      // else if(idRole.value === 2)
-      //   window.location.href = '/homeUser'
-      // else
-      //   window.location.href = '/'
     } else {
       // Obsługa błędów rejestracji
       const errorMsg = await response.text();
@@ -146,31 +140,8 @@ const handleRegister = async () => {
 
 <style scoped>
 
-input, select {
-  border: 2px solid #c9ad6e;
-  border-radius: 10px;
-  height: 35px;
-  padding-left: 5px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-input:focus {
-  border-color: var(--dark-brown);
-  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.15);
-  outline: none;
-}
-
 select {
-  appearance: menulist-button;
-}
-
-.login-container {
-  max-height: 750px;
-}
-
-option {
-  padding-left: 5px;
+  margin-left: 0;
 }
 
 </style>

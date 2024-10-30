@@ -169,17 +169,17 @@ public interface DocumentRepository extends JpaRepository<Document, Long>{
     // Find if exist
     @Query(value = """
     SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM Document d
-    WHERE (:title IS NULL OR unaccent(lower(d.title)) = unaccent(lower(:title)))
+    WHERE (unaccent(lower(d.title)) = unaccent(lower(:title)) OR :title IS NULL)
     AND (d.confirmed = :confirmed)
     AND (d.startDate = :startDate OR CAST(:startDate AS DATE) IS NULL)
     AND (d.endDate = :endDate OR CAST(:endDate AS DATE ) IS NULL)
-    AND (:description IS NULL OR unaccent(lower(d.description)) = unaccent(lower(:description)))
+    AND (unaccent(lower(d.description)) = unaccent(lower(:description)) OR :description IS NULL)
     AND (d.type = :typeId)
     AND (d.place = :placeId)
     AND (d.ownerid = :ownerId)
-    AND (:dateId IS NULL OR d.date = :dateId)
-    AND (:localizationId IS NULL OR d.localization = :localizationId)
-    AND (:photoId IS NULL OR d.photorefers = :photoId)
+    AND (d.date = :dateId OR :dateId IS NULL)
+    AND (d.localization = :localizationId OR :localizationId IS NULL)
+    AND (d.photorefers = :photoId OR :photoId IS NULL)
 """, nativeQuery = true)
     boolean documentExists(@Param("confirmed") Boolean confirmed,
                            @Param("title") String title,

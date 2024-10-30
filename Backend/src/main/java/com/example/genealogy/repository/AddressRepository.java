@@ -92,16 +92,16 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
 
     // Check if already exist in database
     @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM address a " +
-            "WHERE (:country IS NULL OR unaccent(lower(a.country)) = unaccent(lower(:country)) ) " +
-            "AND (:voivodeship IS NULL OR unaccent(lower(a.voivodeship)) = unaccent(lower(:voivodeship)) ) " +
-            "AND (:community IS NULL OR unaccent(lower(a.community)) = unaccent(lower(:community)) ) " +
-            "AND (:city IS NULL OR unaccent(lower(a.city)) = unaccent(lower(:city)) ) " +
-            "AND (:address IS NULL OR unaccent(lower(a.address)) = unaccent(lower(:address)) ) " +
-            "AND (:postalCode IS NULL OR unaccent(lower(a.postalcode)) = unaccent(lower(:postalCode)) ) " +
-            "AND (:parish IS NULL OR unaccent(lower(a.parish)) = unaccent(lower(:parish)) ) " +
-            "AND (:longitude IS NULL OR a.longitude = :longitude) " +
-            "AND (:latitude IS NULL OR a.latitude = :latitude) " +
-            "AND (:secular IS NULL OR unaccent(lower(a.secular)) = unaccent(lower(:secular)))",
+            "WHERE (a.country = :country OR (:country IS NULL AND a.country IS NULL)) " +
+            "AND (a.voivodeship = :voivodeship OR (:voivodeship IS NULL AND a.voivodeship IS NULL)) " +
+            "AND (a.community = :community OR (:community IS NULL AND a.community IS NULL)) " +
+            "AND (a.city = :city OR (:city IS NULL AND a.city IS NULL)) " +
+            "AND (a.address = :address OR (:address IS NULL AND a.address IS NULL)) " +
+            "AND (a.postalcode = :postalCode OR (:postalCode IS NULL AND a.postalcode IS NULL)) " +
+            "AND (a.parish = :parish OR (:parish IS NULL AND a.parish IS NULL)) " +
+            "AND (a.longitude = :longitude OR (:longitude IS NULL AND a.longitude IS NULL)) " +
+            "AND (a.latitude = :latitude OR (:latitude IS NULL AND a.latitude IS NULL)) " +
+            "AND (a.secular = :secular OR (:secular IS NULL AND a.secular IS NULL))",
             nativeQuery = true)
     boolean addressExists(@Param("country") String country,
                           @Param("voivodeship") String voivodeship,

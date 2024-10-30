@@ -67,8 +67,7 @@ public class DocumentController {
             document.setOwner(currentUser);
 
             if (documentService.documentExists(document)) {
-                return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("Dokument już istnieje");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Dokument już istnieje");
             }
 
             // Obsługa daty: znajdź lub utwórz datę
@@ -146,7 +145,7 @@ public class DocumentController {
                 }
 
                 Map<String, Object> response = new HashMap<>();
-                response.put("message", "Dokument został prawidłowo zapisany.");
+                response.put("message", "Dokument został prawidłowo zapisany");
                 response.put("documentId", document.getId());
 
                 return ResponseEntity.status(HttpStatus.OK).body(response);

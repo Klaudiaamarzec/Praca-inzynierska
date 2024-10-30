@@ -280,6 +280,12 @@ public class AddressRepositoryTest {
     }
 
     @Test
+    void testIfExist2() {
+        boolean result = addressRepository.addressExists("Polska", null, null, null, null, null, null, null, null, null);
+        assertThat(result).isEqualTo(false);
+    }
+
+    @Test
     void testIfNotExists() {
 
         boolean result = addressRepository.addressExists("usa", "Los Angeles", "Los Angeles", "Main St", null, null, null, null, null, null);

@@ -6,9 +6,12 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -43,9 +46,19 @@ public class DocumentType {
             try {
                 ObjectMapper mapper = new ObjectMapper();
                 parsedTemplate = mapper.readTree(template);
+
+                // Odczyt pól bez użycia osobnej klasy
+                if (parsedTemplate.has("fields")) {
+                    parsedTemplate.get("fields").forEach(field -> {
+                        String name = field.get("name").asText();
+                        String type = field.get("type").asText();
+                    });
+                }
+
             } catch (Exception e) {
                 System.err.println("Error parsing template JSON: " + e.getMessage());
             }
         }
     }
+
 }

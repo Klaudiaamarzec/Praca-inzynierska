@@ -30,56 +30,8 @@
 
 <style scoped>
 
-.welcome-container {
-  margin-left: 15px;
-  margin-right: 15px;
-  display: flex;
-  justify-content: space-between;
-  background-color: var(--brown);
-  margin-top: 20px;
-  padding: 20px 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
 p {
   margin: 7px 0;
-}
-
-.welcome-text {
-  flex: 1;
-  padding-right: 20px;
-  font-size: 1.1rem;
-  line-height: 1.6;
-}
-
-.welcome-images {
-  flex: 1;
-  position: relative;
-  height: 300px;
-}
-
-.welcome-images img {
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  position: absolute;
-  max-height: 100%;
-}
-
-.image1 {
-  width: 50%;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-
-/* Styl dla drugiego obrazu */
-.image2 {
-  width: 50%;
-  bottom: 0;
-  right: 0;
-  z-index: 0;
-  transform: translateY(20px);
 }
 
 </style>

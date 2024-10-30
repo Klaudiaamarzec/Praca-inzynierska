@@ -74,7 +74,7 @@ const searchDocuments = async () => {
 
     const results = await response.json();
 
-    await router.push({name: 'SearchResults', query: { results: JSON.stringify(results) },});
+    await router.push({name: 'UserSearchResults', query: { results: JSON.stringify(results) },});
 
   } catch (error) {
     console.error('Błąd podczas wyszukiwania dokumentów:', error);

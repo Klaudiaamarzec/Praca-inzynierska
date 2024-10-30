@@ -69,12 +69,14 @@ const searchDocuments = async () => {
     });
 
     if (!response.ok) {
-      throw new Error('Odpowiedź serwera nie była poprawna');
+      const errorDetails = await response.text();
+      console.error('Odpowiedź serwera nie była poprawna:', errorDetails);
+      throw new Error(errorDetails);
     }
 
     const results = await response.json();
 
-    await router.push({name: 'SearchResults', query: { results: JSON.stringify(results) },});
+    await router.push({name: 'GenealogistSearchResults', query: { results: JSON.stringify(results) },});
 
   } catch (error) {
     console.error('Błąd podczas wyszukiwania dokumentów:', error);
@@ -194,7 +196,7 @@ const searchDocuments = async () => {
 
 .browser {
   width: auto;
-  margin: 0 auto 30px;
+  margin: 10px auto 30px;
   background: var(--light-white);
 }
 

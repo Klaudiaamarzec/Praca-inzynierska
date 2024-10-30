@@ -9,11 +9,11 @@
         <form @submit.prevent="handleLogin">
           <div class="login-section">
             <label for="emailOrUsername">Email lub login:</label>
-            <input type="text" id="emailOrUsername" v-model="email" required />
+            <input class="main-input" type="text" id="emailOrUsername" v-model="email" required />
           </div>
           <div class="login-section">
             <label for="password">Hasło:</label>
-            <input type="password" id="password" v-model="password" required />
+            <input class="main-input" type="password" id="password" v-model="password" required />
           </div>
           <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
           <p>Nie pamiętam hasła</p>
@@ -88,20 +88,5 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-
-input {
-  border: 2px solid #c9ad6e;
-  border-radius: 10px;
-  height: 35px;
-  padding-left: 5px;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-input:focus {
-  border-color: var(--dark-brown);
-  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.15);
-  outline: none;
-}
 
 </style>

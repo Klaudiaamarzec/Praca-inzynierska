@@ -23,16 +23,6 @@ const formatDate = (date) => {
   }
 };
 
-// const formatRangeDate = (date) => {
-//   if (!date) return null;
-//
-//   const day = String(date.getDate()).padStart(2, '0');
-//   const month = String(date.getMonth() + 1).padStart(2, '0'); // Miesiące są indeksowane od 0
-//   const year = date.getFullYear();
-//
-//   return { day, month, year };
-// };
-
 const formatPlace = (place) => {
   const parts = [];
   if (place.country) {
@@ -98,7 +88,6 @@ const formatPeopleDocuments = (people) => {
 </template>
 
 <style scoped>
-
 
 p {
   margin: 8px 0;

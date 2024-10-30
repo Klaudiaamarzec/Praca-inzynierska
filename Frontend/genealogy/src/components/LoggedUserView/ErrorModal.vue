@@ -3,27 +3,22 @@
     <div class="modal-content">
       <div>
         <span class="close" @click="closeModal">&times;</span>
-        <h2>Rejestracja przebiegła pomyślnie</h2>
+        <h2>Wystąpił błąd podczas dodawania dokumentu</h2>
       </div>
-      <p>Teraz musisz się zalogować.</p>
-      <button class="main-button" @click="goToLogin">OK</button>
+      <p>{{ errorDetails }}</p> <!-- Wyświetl szczegóły błędu -->
+      <button class="button-modal" @click="closeModal">OK</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineEmits } from 'vue';
-defineProps(['showModal']);
+import { defineProps, defineEmits } from 'vue';
+
+defineProps(['showModal', 'errorDetails']);
 const emit = defineEmits(['close']);
 
 const closeModal = () => {
   emit('close');
-  window.location.href = '/login';
-};
-
-const goToLogin = () => {
-  closeModal();
-  window.location.href = '/login';
 };
 </script>
 
