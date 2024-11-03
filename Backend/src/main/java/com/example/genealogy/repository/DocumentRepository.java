@@ -170,7 +170,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long>{
     @Query(value = """
     SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM Document d
     WHERE (unaccent(lower(d.title)) = unaccent(lower(:title)) OR :title IS NULL)
-    AND (d.confirmed = :confirmed)
     AND (d.startDate = :startDate OR CAST(:startDate AS DATE) IS NULL)
     AND (d.endDate = :endDate OR CAST(:endDate AS DATE ) IS NULL)
     AND (unaccent(lower(d.description)) = unaccent(lower(:description)) OR :description IS NULL)
@@ -178,20 +177,15 @@ public interface DocumentRepository extends JpaRepository<Document, Long>{
     AND (d.place = :placeId)
     AND (d.ownerid = :ownerId)
     AND (d.date = :dateId OR :dateId IS NULL)
-    AND (d.localization = :localizationId OR :localizationId IS NULL)
-    AND (d.photorefers = :photoId OR :photoId IS NULL)
 """, nativeQuery = true)
-    boolean documentExists(@Param("confirmed") Boolean confirmed,
-                           @Param("title") String title,
+    boolean documentExists(@Param("title") String title,
                            @Param("startDate") LocalDate startDate,
                            @Param("endDate") LocalDate endDate,
                            @Param("description") String description,
                            @Param("dateId") Long dateId,
                            @Param("placeId") Long placeId,
                            @Param("ownerId") Long ownerId,
-                           @Param("typeId") Integer typeId,
-                           @Param("localizationId") Long localizationId,
-                           @Param("photoId") Long photoId);
+                           @Param("typeId") Integer typeId);
 
 
     // Add photography to existing document

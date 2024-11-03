@@ -3,9 +3,9 @@
     <div class="modal-content">
       <div>
         <span class="close" @click="closeModal">&times;</span>
-        <h2>Wystąpił błąd podczas dodawania dokumentu</h2>
+        <h2>Wystąpił błąd</h2>
       </div>
-      <p>{{ errorDetails }}</p> <!-- Wyświetl szczegóły błędu -->
+      <p>{{ errorDetails }}</p>
       <button class="button-modal" @click="closeModal">OK</button>
     </div>
   </div>

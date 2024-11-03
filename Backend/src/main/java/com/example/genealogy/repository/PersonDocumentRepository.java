@@ -23,16 +23,10 @@ public interface PersonDocumentRepository extends JpaRepository<PersonDocument, 
     SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM personindocument pd
     WHERE (pd.personid = :personId)
     AND (pd.document = :documentId)
-    AND (unaccent(lower(pd.comment)) LIKE unaccent(lower(CONCAT('%', :comment, '%'))) OR :comment IS NULL)
-    AND (pd.x = :x OR :x IS NULL)
-    AND (pd.y = :y OR :y IS NULL)
 """, nativeQuery = true)
     boolean existsPersonDocument(
             @Param("personId") Long personId,
-            @Param("documentId") Long documentId,
-            @Param("comment") String comment,
-            @Param("x") Integer x,
-            @Param("y") Integer y
+            @Param("documentId") Long documentId
     );
 
     @Modifying

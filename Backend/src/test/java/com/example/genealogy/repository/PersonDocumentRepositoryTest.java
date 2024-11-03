@@ -19,7 +19,7 @@ public class PersonDocumentRepositoryTest {
     @Test
     void checkIfExist() {
 
-        boolean result = personDocumentRepository.existsPersonDocument(8L,2L,null, null, null);
+        boolean result = personDocumentRepository.existsPersonDocument(8L,2L);
         assertThat(result).isEqualTo(true);
     }
 }

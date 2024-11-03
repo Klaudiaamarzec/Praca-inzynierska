@@ -66,10 +66,6 @@ public class DocumentController {
 
             document.setOwner(currentUser);
 
-            if (documentService.documentExists(document)) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Dokument już istnieje");
-            }
-
             // Obsługa daty: znajdź lub utwórz datę
 
             Date insertedDate = document.getDate();
@@ -113,6 +109,10 @@ public class DocumentController {
                     addressService.saveAddress(insertedPlace);
                     document.setPlace(insertedPlace);
                 }
+            }
+
+            if (documentService.documentExists(document)) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Dokument już istnieje");
             }
 
             // Zapisanie nowego dokumentu

@@ -97,7 +97,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
             "AND (a.community = :community OR (:community IS NULL AND a.community IS NULL)) " +
             "AND (a.city = :city OR (:city IS NULL AND a.city IS NULL)) " +
             "AND (a.address = :address OR (:address IS NULL AND a.address IS NULL)) " +
-            "AND (a.postalcode = :postalCode OR (:postalCode IS NULL AND a.postalcode IS NULL)) " +
+            "AND (a.postalCode = :postalCode OR (:postalCode IS NULL AND a.postalCode IS NULL)) " +
             "AND (a.parish = :parish OR (:parish IS NULL AND a.parish IS NULL)) " +
             "AND (a.longitude = :longitude OR (:longitude IS NULL AND a.longitude IS NULL)) " +
             "AND (a.latitude = :latitude OR (:latitude IS NULL AND a.latitude IS NULL)) " +
@@ -138,18 +138,31 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     List<Address> getAddressesByParam(@Param("parameter") String parameter);
 
     // Return addresses by all parameters
-    @Query(value = "SELECT * FROM address a " +
-            "WHERE (:country IS NULL OR unaccent(lower(a.country)) LIKE unaccent(lower(CONCAT('%', :country, '%')))) " +
-            "AND (:voivodeship IS NULL OR unaccent(lower(a.voivodeship)) LIKE unaccent(lower(CONCAT('%', :voivodeship, '%')))) " +
-            "AND (:community IS NULL OR unaccent(lower(a.community)) LIKE unaccent(lower(CONCAT('%', :community, '%')))) " +
-            "AND (:city IS NULL OR unaccent(lower(a.city)) LIKE unaccent(lower(CONCAT('%', :city, '%')))) " +
-            "AND (:longitude IS NULL OR a.longitude = :longitude) " +
-            "AND (:latitude IS NULL OR a.latitude = :latitude) " +
-            "AND (:address IS NULL OR unaccent(lower(a.address)) LIKE unaccent(lower(CONCAT('%', :address, '%')))) " +
-            "AND (:postalCode IS NULL OR unaccent(lower(a.postalCode)) LIKE unaccent(lower(CONCAT('%', :postalCode, '%')))) " +
-            "AND (:parish IS NULL OR unaccent(lower(a.parish)) LIKE unaccent(lower(CONCAT('%', :parish, '%')))) " +
-            "AND (:secular IS NULL OR unaccent(lower(a.secular)) LIKE unaccent(lower(CONCAT('%', :secular, '%'))))",
-            nativeQuery = true)
+//    @Query(value = "SELECT * FROM address a " +
+//            "WHERE (:country IS NULL OR unaccent(lower(a.country)) LIKE unaccent(lower(CONCAT('%', :country, '%')))) " +
+//            "AND (:voivodeship IS NULL OR unaccent(lower(a.voivodeship)) LIKE unaccent(lower(CONCAT('%', :voivodeship, '%')))) " +
+//            "AND (:community IS NULL OR unaccent(lower(a.community)) LIKE unaccent(lower(CONCAT('%', :community, '%')))) " +
+//            "AND (:city IS NULL OR unaccent(lower(a.city)) LIKE unaccent(lower(CONCAT('%', :city, '%')))) " +
+//            "AND (:longitude IS NULL OR a.longitude = :longitude) " +
+//            "AND (:latitude IS NULL OR a.latitude = :latitude) " +
+//            "AND (:address IS NULL OR unaccent(lower(a.address)) LIKE unaccent(lower(CONCAT('%', :address, '%')))) " +
+//            "AND (:postalCode IS NULL OR unaccent(lower(a.postalCode)) LIKE unaccent(lower(CONCAT('%', :postalCode, '%')))) " +
+//            "AND (:parish IS NULL OR unaccent(lower(a.parish)) LIKE unaccent(lower(CONCAT('%', :parish, '%')))) " +
+//            "AND (:secular IS NULL OR unaccent(lower(a.secular)) LIKE unaccent(lower(CONCAT('%', :secular, '%'))))",
+//            nativeQuery = true)
+
+@Query(value = "SELECT * FROM address a " +
+        "WHERE (a.country = :country OR (:country IS NULL AND a.country IS NULL)) " +
+        "AND (a.voivodeship = :voivodeship OR (:voivodeship IS NULL AND a.voivodeship IS NULL)) " +
+        "AND (a.community = :community OR (:community IS NULL AND a.community IS NULL)) " +
+        "AND (a.city = :city OR (:city IS NULL AND a.city IS NULL)) " +
+        "AND (a.longitude = :longitude OR (:longitude IS NULL AND a.longitude IS NULL)) " +
+        "AND (a.latitude = :latitude OR (:latitude IS NULL AND a.latitude IS NULL)) " +
+        "AND (a.address = :address OR (:address IS NULL AND a.address IS NULL)) " +
+        "AND (a.postalCode = :postalCode OR (:postalCode IS NULL AND a.postalCode IS NULL)) " +
+        "AND (a.parish = :parish OR (:parish IS NULL AND a.parish IS NULL)) " +
+        "AND (a.secular = :secular OR (:secular IS NULL AND a.secular IS NULL))",
+        nativeQuery = true)
     Address getAddressByAllParams(
             @Param("country") String country,
             @Param("voivodeship") String voivodeship,

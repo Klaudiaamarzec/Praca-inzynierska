@@ -24,13 +24,13 @@ public class DocumentRepositoryTest {
 
     @Test
     void testExist() {
-        boolean result = documentRepository.documentExists(false, "List od Kim Kardashian", null, null, null, 4L,6L,3L,8, null, null);
+        boolean result = documentRepository.documentExists("List od Kim Kardashian", null, null, null, 4L,6L,3L,8);
         assertThat(result).isEqualTo(true);
     }
 
     @Test
     void testNotExist() {
-        boolean result = documentRepository.documentExists(true, "Kardashian", null, null, null, 4L,null,3L,8, null, null);
+        boolean result = documentRepository.documentExists("Kardashian", null, null, null, 4L,null,3L,8);
         assertThat(result).isEqualTo(false);
     }
 

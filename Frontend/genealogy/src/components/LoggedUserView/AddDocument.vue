@@ -261,12 +261,11 @@ const addDocument = async () => {
 
       <button class="advanced-address" @click="showAdvancedAddress = !showAdvancedAddress">{{ showAdvancedAddress ? 'Ukryj dodatkowe informacje' : 'Więcej informacji o adresie' }}</button>
 
-
       <section :class="['advanced-fields', { 'is-visible': showAdvancedAddress }]">
 
         <div class="parish-section">
           <label >Parafia</label>
-          <input class="main-input" type="text" placeholder="parafia" id="parish" v-model="parish" />
+          <input class="main-input" type="text" placeholder="Parafia" id="parish" v-model="parish" />
         </div>
 
         <div class="parish-section">

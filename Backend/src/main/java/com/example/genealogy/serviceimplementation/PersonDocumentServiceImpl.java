@@ -35,10 +35,7 @@ public class PersonDocumentServiceImpl implements PersonDocumentService {
     public boolean personDocumentExists(@NotNull PersonDocument personDocument) {
         return personDocumentRepository.existsPersonDocument(
                 personDocument.getPerson() != null ? personDocument.getPerson().getId() : null,
-                personDocument.getDocument() != null ? personDocument.getDocument().getId() : null,
-                personDocument.getComment(),
-                personDocument.getX(),
-                personDocument.getY());
+                personDocument.getDocument() != null ? personDocument.getDocument().getId() : null);
     }
 
     @Override

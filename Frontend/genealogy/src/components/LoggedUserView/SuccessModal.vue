@@ -5,9 +5,9 @@
         <span class="close" @click="closeModal">&times;</span>
         <h2>{{ successDetails }}</h2>
       </div>
-      <p>Możesz teraz dodać zdjęcie i osoby do dokumentu oraz lokalizację (miejsce przechowywania)</p> <!-- Wyświetl szczegóły błędu -->
+      <p>Możesz teraz dodać zdjęcie i osoby do dokumentu oraz lokalizacje (miejsce przechowywania)</p> <!-- Wyświetl szczegóły błędu -->
       <button class="button-modal">Dodaj zdjęcie</button>
-      <button class="button-modal">Dodaj osoby</button>
+      <button class="button-modal" @click="addPerson">Dodaj osoby</button>
       <button class="button-modal">Dodaj lokalizacje</button>
       <button class="button-modal" @click="closeModal">Pomiń</button>
     </div>
@@ -15,6 +15,7 @@
 </template>
 
 <script setup>
+
 import { defineProps, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -22,7 +23,6 @@ const props = defineProps(['showModal', 'successDetails', 'docID']);
 const emit = defineEmits(['close']);
 const router = useRouter();
 const documentID = props.docID;
-console.log("Document ID: ", props.docID);
 
 const decodeJWT = (token) => {
   const base64Url = token.split('.')[1];
@@ -51,6 +51,22 @@ const closeModal = () => {
     console.log("Nieznana rola użytkownika!");
   }
 };
+
+const addPerson = () => {
+
+  const token = localStorage.getItem('jwtToken');
+  const decodedToken = decodeJWT(token);
+  const userRole = decodedToken.role;
+
+  if (userRole === 'genealogist') {
+    router.push({ path: '/genealogist/addPersonToDocument', query: { documentID } });
+  } else if (userRole === 'user') {
+    router.push({ path: '/user/addPersonToDocument', query: { documentID } });
+  } else {
+    console.log("Nieznana rola użytkownika!");
+  }
+};
+
 </script>
 
 <style scoped>

@@ -53,6 +53,10 @@ public class PersonDocumentController {
         personDocument.setX(personDocument.getX());
         personDocument.setY(personDocument.getY());
 
+        if(personDocumentService.personDocumentExists(personDocument)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(person.getName() + " " + person.getSurname() + " jest już dodany/a do dokumentu");
+        }
+
         boolean result = personDocumentService.savePersonDocument(personDocument);
 
         if (result) {

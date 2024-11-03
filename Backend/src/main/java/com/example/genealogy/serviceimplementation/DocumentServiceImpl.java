@@ -47,7 +47,6 @@ public class DocumentServiceImpl implements DocumentService {
     public boolean documentExists(@NotNull Document document) {
 
         return documentRepository.documentExists(
-                document.getConfirmed(),
                 document.getTitle(),
                 document.getStartDate(),
                 document.getEndDate(),
@@ -55,9 +54,7 @@ public class DocumentServiceImpl implements DocumentService {
                 document.getDate() != null ? document.getDate().getId() : null,
                 document.getPlace() != null ? document.getPlace().getId() : null,
                 document.getOwner() != null ? document.getOwner().getId() : null,
-                document.getType() != null ? document.getType().getId() : null,
-                document.getLocalization() != null ? document.getLocalization().getId() : null,
-                document.getPhotoRefers() != null ? document.getPhotoRefers().getId() : null
+                document.getType() != null ? document.getType().getId() : null
         );
     }
 
