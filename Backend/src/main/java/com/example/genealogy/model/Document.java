@@ -109,10 +109,10 @@ public class Document {
         return null;
     }
 
-    @JsonProperty("localization")
-    public Long getLocalizationId() {
-        return this.localization != null ? this.localization.getId() : null;
-    }
+//    @JsonProperty("localization")
+//    public Long getLocalizationId() {
+//        return this.localization != null ? this.localization.getId() : null;
+//    }
 
     @JsonProperty("photoRefers")
     public Long getPhotoRefersId() {
@@ -133,6 +133,9 @@ public class Document {
                     personDetails.put("id", personDocument.getId());
                     personDetails.put("firstName", personDocument.getPerson() != null ? personDocument.getPerson().getName() : null);
                     personDetails.put("lastName", personDocument.getPerson() != null ? personDocument.getPerson().getSurname() : null);
+                    personDetails.put("comment", personDocument.getComment());
+                    personDetails.put("x", personDocument.getX());
+                    personDetails.put("y", personDocument.getY());
                     return personDetails;
                 })
                 .collect(Collectors.toSet())
@@ -151,11 +154,4 @@ public class Document {
         return Objects.hash(id);
     }
 
-//    public void addAdditionalField(String fieldName, String fieldValue) {
-//        this.additionalFields.put(fieldName, fieldValue);
-//    }
-//
-//    public String getAdditionalField(String fieldName) {
-//        return this.additionalFields.get(fieldName);
-//    }
 }

@@ -1,6 +1,8 @@
 package com.example.genealogy.controller;
 
 import com.example.genealogy.model.Family;
+import com.example.genealogy.model.Notification;
+import com.example.genealogy.model.User;
 import com.example.genealogy.service.FamilyService;
 import com.example.genealogy.service.PersonService;
 import jakarta.validation.Valid;
@@ -68,6 +70,7 @@ public class PersonController {
         return ResponseEntity.status(HttpStatus.OK).body("{\"personId\": " + person.getId() + "}");
     }
 
+    @GetMapping("GetParents/{personId}")
     public ResponseEntity<Map<String, Person>> getParents(@PathVariable Long personId) {
 
         Person child = personService.getPersonById(personId);
@@ -88,6 +91,7 @@ public class PersonController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("GetChildren/{parentId}")
     public ResponseEntity<List<Person>> getChildren(@PathVariable Long parentId) {
 
         Person parent = personService.getPersonById(parentId);
@@ -103,6 +107,21 @@ public class PersonController {
         }
 
         return ResponseEntity.ok(children);
+    }
+
+    @GetMapping("Search/{parameter}")
+    public ResponseEntity<?> search(@PathVariable String parameter) {
+
+        try {
+
+            List<Person> people = personService.findPersonByParameter(parameter);
+            return ResponseEntity.ok(people);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Wystąpił nieoczekiwany błąd: " + e.getMessage());
+        }
+
     }
 }
 

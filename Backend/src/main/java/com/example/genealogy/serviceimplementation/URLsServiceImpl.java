@@ -34,7 +34,7 @@ public class URLsServiceImpl implements URLsService {
 
     @Override
     public boolean urlExists(@NotNull URLs url) {
-        return urlsRepository.existsURL(url.getUrlID().getUrl(), url.getUrl(), url.getComment());
+        return urlsRepository.existsURL(url.getUrl(), url.getComment());
     }
 
     @Override

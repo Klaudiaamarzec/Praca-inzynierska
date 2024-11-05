@@ -1,17 +1,18 @@
 <script setup>
 import { useRoute } from 'vue-router';
-import Header from "@/components/GenealogistView/Header.vue";
-import AddPersonToDocument from "@/components/LoggedUserView/AddPersonToDocument.vue";
+import Header from "@/components/UserView/Header.vue";
+import AddLocationToDocument from "@/components/LoggedUserView/AddLocationToDocument.vue";
 
 const route = useRoute();
 const documentID = route.query.documentID;
+
 </script>
 
 <template>
 
   <Header/>
 
-  <AddPersonToDocument :documentID="documentID"/>
+  <AddLocationToDocument :documentID="documentID"/>
 
 </template>
 

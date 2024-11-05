@@ -58,30 +58,29 @@ public interface LocalAddressRepository extends JpaRepository<LocalAddress, Long
                              @Param("city") String city,
                              @Param("address") String address);
 
-    @Query(value = """
-        SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM localaddress la
-        WHERE (:country IS NULL OR unaccent(lower(la.country)) LIKE unaccent(lower(CONCAT('%', :country, '%'))))
-        AND (:voivodeship IS NULL OR unaccent(lower(la.voivodeship)) LIKE unaccent(lower(CONCAT('%', :voivodeship, '%'))))
-        AND (:community IS NULL OR unaccent(lower(la.community)) LIKE unaccent(lower(CONCAT('%', :community, '%'))))
-        AND (:city IS NULL OR unaccent(lower(la.city)) = unaccent(lower(:city)))
-        AND (:address IS NULL OR unaccent(lower(la.address)) = unaccent(lower(:address)))
-        AND (:postalcode IS NULL OR unaccent(lower(la.postalcode)) = unaccent(lower(:postalcode)))
-    """, nativeQuery = true)
+    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM LocalAddress l " +
+            "WHERE (l.country = :country OR (:country IS NULL AND l.country IS NULL)) " +
+            "AND (l.voivodeship = :voivodeship OR (:voivodeship IS NULL AND l.voivodeship IS NULL)) " +
+            "AND (l.community = :community OR (:community IS NULL AND l.community IS NULL)) " +
+            "AND (l.city = :city OR (:city IS NULL AND l.city IS NULL)) " +
+            "AND (l.address = :address OR (:address IS NULL AND l.address IS NULL)) " +
+            "AND (l.postalCode = :postalCode OR (:postalCode IS NULL AND l.postalCode IS NULL)) ",
+            nativeQuery = true)
     boolean existsLocalAddress(@Param("country") String country,
                                @Param("voivodeship") String voivodeship,
                                @Param("community") String community,
                                @Param("city") String city,
                                @Param("address") String address,
-                               @Param("postalcode") String postalcode);
+                               @Param("postalCode") String postalCode);
 
     // Return local addresses by all parameters
     @Query(value = "SELECT * FROM localaddress la " +
-            "WHERE (:country IS NULL OR unaccent(lower(la.country)) LIKE unaccent(lower(CONCAT('%', :country, '%')))) " +
-            "AND (:voivodeship IS NULL OR unaccent(lower(la.voivodeship)) LIKE unaccent(lower(CONCAT('%', :voivodeship, '%')))) " +
-            "AND (:community IS NULL OR unaccent(lower(la.community)) LIKE unaccent(lower(CONCAT('%', :community, '%')))) " +
-            "AND (:city IS NULL OR unaccent(lower(la.city)) LIKE unaccent(lower(CONCAT('%', :city, '%')))) " +
-            "AND (:address IS NULL OR unaccent(lower(la.address)) LIKE unaccent(lower(CONCAT('%', :address, '%')))) " +
-            "AND (:postalCode IS NULL OR unaccent(lower(la.postalCode)) LIKE unaccent(lower(CONCAT('%', :postalCode, '%')))) ",
+            "WHERE (la.country = :country OR (:country IS NULL AND la.country IS NULL)) " +
+            "AND (la.voivodeship = :voivodeship OR (:voivodeship IS NULL AND la.voivodeship IS NULL)) " +
+            "AND (la.community = :community OR (:community IS NULL AND la.community IS NULL)) " +
+            "AND (la.city = :city OR (:city IS NULL AND la.city IS NULL)) " +
+            "AND (la.address = :address OR (:address IS NULL AND la.address IS NULL)) " +
+            "AND (la.postalCode = :postalCode OR (:postalCode IS NULL AND la.postalCode IS NULL)) ",
             nativeQuery = true)
     LocalAddress getLocalAddressByAllParams(
             @Param("country") String country,

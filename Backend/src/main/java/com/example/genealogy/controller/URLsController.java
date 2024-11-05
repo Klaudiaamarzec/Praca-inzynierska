@@ -50,6 +50,10 @@ public class URLsController {
 
         urL.setUrlID(document.getLocalization());
 
+        if (urLsService.urlExists(urL)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Adres URL jest już dodany do wybranego dokumentu");
+        }
+
         boolean isSaved = urLsService.saveURL(urL);
 
         if(!isSaved) {

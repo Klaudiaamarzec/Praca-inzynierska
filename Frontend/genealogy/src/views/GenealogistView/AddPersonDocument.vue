@@ -12,9 +12,7 @@ const documentID = route.query.documentID;
 
   <Header/>
 
-  <section>
-    <AddPersonToDocument :documentID="documentID"/>
-  </section>
+  <AddPersonToDocument :documentID="documentID"/>
 
 </template>
 
@@ -22,7 +20,7 @@ const documentID = route.query.documentID;
 
 section {
   background-color: var(--grey);
-  height: 100%;
+  height: 100vh;
   display: block;
   padding: 30px 0;
   margin: 0;

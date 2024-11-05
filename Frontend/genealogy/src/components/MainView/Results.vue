@@ -96,7 +96,7 @@ const formatPeopleDocuments = (people) => {
 
 
 p {
-  margin: 8px 0;
+  margin: 2px 0;
   line-height: 1.5;
 }
 

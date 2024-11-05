@@ -39,12 +39,4 @@ const searchResults = JSON.parse(route.query.results || '[]');
 
 <style scoped>
 
-.results-section {
-  display: flex;
-  flex-direction: column;
-  margin: 0 auto;
-  background-color: var(--grey);
-  padding: 0;
-}
-
 </style>

@@ -20,7 +20,7 @@ import Notifications from "@/components/GenealogistView/Notifications.vue";
 
 section {
   background-color: var(--grey);
-  height: 100%;
+  height: 100vh;
   display: block;
   padding: 0;
   margin: 0;

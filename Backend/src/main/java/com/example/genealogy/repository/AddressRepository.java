@@ -138,18 +138,6 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     List<Address> getAddressesByParam(@Param("parameter") String parameter);
 
     // Return addresses by all parameters
-//    @Query(value = "SELECT * FROM address a " +
-//            "WHERE (:country IS NULL OR unaccent(lower(a.country)) LIKE unaccent(lower(CONCAT('%', :country, '%')))) " +
-//            "AND (:voivodeship IS NULL OR unaccent(lower(a.voivodeship)) LIKE unaccent(lower(CONCAT('%', :voivodeship, '%')))) " +
-//            "AND (:community IS NULL OR unaccent(lower(a.community)) LIKE unaccent(lower(CONCAT('%', :community, '%')))) " +
-//            "AND (:city IS NULL OR unaccent(lower(a.city)) LIKE unaccent(lower(CONCAT('%', :city, '%')))) " +
-//            "AND (:longitude IS NULL OR a.longitude = :longitude) " +
-//            "AND (:latitude IS NULL OR a.latitude = :latitude) " +
-//            "AND (:address IS NULL OR unaccent(lower(a.address)) LIKE unaccent(lower(CONCAT('%', :address, '%')))) " +
-//            "AND (:postalCode IS NULL OR unaccent(lower(a.postalCode)) LIKE unaccent(lower(CONCAT('%', :postalCode, '%')))) " +
-//            "AND (:parish IS NULL OR unaccent(lower(a.parish)) LIKE unaccent(lower(CONCAT('%', :parish, '%')))) " +
-//            "AND (:secular IS NULL OR unaccent(lower(a.secular)) LIKE unaccent(lower(CONCAT('%', :secular, '%'))))",
-//            nativeQuery = true)
 
 @Query(value = "SELECT * FROM address a " +
         "WHERE (a.country = :country OR (:country IS NULL AND a.country IS NULL)) " +

@@ -110,6 +110,10 @@ public class PhysicalLocationsController {
                 }
             }
 
+            if (physicalLocationService.physicalLocationExists(physicalLocations)) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Adres jest już dodany do wybranego dokumentu");
+            }
+
             boolean isSaved = physicalLocationService.savePhysicalLocation(physicalLocations);
             if(!isSaved) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wystąpił błąd podczas dodawania fizycznej lokalizacji");

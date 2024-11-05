@@ -86,6 +86,8 @@ public class LocationServiceImpl implements LocationService {
 
         Document document = documentService.getDocumentById(documentID);
 
+        System.out.println("Dokument: " + document.getId() + ", " + document.getTitle());
+
         if(document.getLocalization() != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lokalizacja jest już ustawiona dla tego dokumentu");
         }
@@ -108,7 +110,7 @@ public class LocationServiceImpl implements LocationService {
         }
 
         document.setLocalization(location);
-        boolean result = documentService.saveDocument(document);
+        boolean result = documentService.updateDocument(document);
 
         if(!result) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nie udało się dodać nowej lokalizacji do dokumentu");

@@ -24,7 +24,7 @@ public class PhysicalLocationRepositoryTest {
     @Test
     void checkIfExist() {
 
-        boolean result = physicalLocationRepository.existsPhysicalLocation(LocalDate.of(1997,10,8), true, null, "Księga urodzenia", null, 1L, 1L, 1L);
+        boolean result = physicalLocationRepository.existsPhysicalLocation(null, "Księga urodzenia", null, 1L, 1L, 1L);
         assertThat(result).isEqualTo(true);
     }
 

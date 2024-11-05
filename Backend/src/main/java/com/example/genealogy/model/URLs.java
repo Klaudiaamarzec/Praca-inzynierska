@@ -1,6 +1,7 @@
 package com.example.genealogy.model;
 
 import com.example.genealogy.validator.OnCreate;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.validation.constraints.NotBlank;
@@ -12,7 +13,6 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "urls")
 @Data
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class URLs {
 
     @Id
@@ -23,7 +23,6 @@ public class URLs {
     @ManyToOne
     @JoinColumn(name = "idurl")
     @NotNull(message = "URL id nie może być puste", groups = OnCreate.class)
-    //@JsonManagedReference("url-location")
     private Location urlID;
 
     @Column(name = "url", length = 256)

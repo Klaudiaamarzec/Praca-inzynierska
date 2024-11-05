@@ -16,7 +16,7 @@ public class URLsRepositoryTest {
 
     @Test
     void checkIfExist() {
-        boolean result = urLsRepository.existsURL(1L, "https://www.drive.com/user/catalog", "Zdjęcie aktu z księgi");
+        boolean result = urLsRepository.existsURL("https://www.drive.com/user/catalog", "Zdjęcie aktu z księgi");
         assertThat(result).isEqualTo(true);
     }
 }

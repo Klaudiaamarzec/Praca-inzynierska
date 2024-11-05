@@ -24,6 +24,7 @@
           <li class="nav-bar"><router-link to="/user/documents">Dokumenty</router-link></li>
           <li class="nav-bar"><router-link to="/user/people">Osoby</router-link></li>
           <li class="nav-bar"><router-link to="/user/addDocument">Dodaj dokument</router-link></li>
+          <li class="nav-bar"><router-link to="/user/myDocuments">Moje dokumenty</router-link></li>
         </ul>
       </nav>
     </section>

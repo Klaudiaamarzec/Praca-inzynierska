@@ -35,8 +35,6 @@ public class PhysicalLocationServiceImpl implements PhysicalLocationService {
     @Override
     public boolean physicalLocationExists(@NotNull PhysicalLocations physicalLocation) {
         return physicalLocationRepository.existsPhysicalLocation(
-                physicalLocation.getDate(),
-                physicalLocation.getIsOriginal(),
                 physicalLocation.getCondition(),
                 physicalLocation.getType(),
                 physicalLocation.getDescription(),

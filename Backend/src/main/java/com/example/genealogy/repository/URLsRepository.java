@@ -13,9 +13,7 @@ public interface URLsRepository extends JpaRepository<URLs, Long>{
         SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM urls u
         WHERE (u.url = :url)
         AND (lower(u.comment) = lower(:comment) OR :comment IS NULL)
-        --AND (u.idurl = :idurl)
     """, nativeQuery = true)
-    boolean existsURL(@Param("idurl") Long idurl,
-                      @Param("url") String url,
+    boolean existsURL(@Param("url") String url,
                       @Param("comment") String comment);
 }

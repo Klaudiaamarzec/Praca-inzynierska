@@ -1,7 +1,10 @@
 package com.example.genealogy.model;
 
 import com.example.genealogy.validator.OnCreate;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -11,6 +14,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "physicallocations")
 @Data
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class PhysicalLocations {
 
     @Id
@@ -39,6 +43,7 @@ public class PhysicalLocations {
     @ManyToOne
     @JoinColumn(name = "idphys") // Column in URLs table that is a foreign key to Location table
     @NotNull(message = "Pole 'Lokalizacja fizyczna' nie może być puste", groups = OnCreate.class)
+    //@JsonBackReference
     private Location physical;
 
     @ManyToOne
@@ -56,10 +61,10 @@ public class PhysicalLocations {
         return this.physical != null ? this.physical.getId() : null;
     }
 
-    @JsonProperty("localaddress")
-    public Long getLocalAddressId() {
-        return this.localaddress != null ? this.localaddress.getId() : null;
-    }
+//    @JsonProperty("localaddress")
+//    public Long getLocalAddressId() {
+//        return this.localaddress != null ? this.localaddress.getId() : null;
+//    }
 
     @JsonProperty("user")
     public Long getUserId() {

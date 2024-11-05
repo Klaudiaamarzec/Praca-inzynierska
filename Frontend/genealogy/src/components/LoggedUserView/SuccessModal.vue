@@ -8,7 +8,7 @@
       <p>Możesz teraz dodać zdjęcie i osoby do dokumentu oraz lokalizacje (miejsce przechowywania)</p> <!-- Wyświetl szczegóły błędu -->
       <button class="button-modal">Dodaj zdjęcie</button>
       <button class="button-modal" @click="addPerson">Dodaj osoby</button>
-      <button class="button-modal">Dodaj lokalizacje</button>
+      <button class="button-modal" @click="addLocation">Dodaj lokalizacje</button>
       <button class="button-modal" @click="closeModal">Pomiń</button>
     </div>
   </div>
@@ -62,6 +62,20 @@ const addPerson = () => {
     router.push({ path: '/genealogist/addPersonToDocument', query: { documentID } });
   } else if (userRole === 'user') {
     router.push({ path: '/user/addPersonToDocument', query: { documentID } });
+  } else {
+    console.log("Nieznana rola użytkownika!");
+  }
+};
+
+const addLocation = () => {
+  const token = localStorage.getItem('jwtToken');
+  const decodedToken = decodeJWT(token);
+  const userRole = decodedToken.role;
+
+  if (userRole === 'genealogist') {
+    router.push({ path: '/genealogist/addLocation', query: { documentID } });
+  } else if (userRole === 'user') {
+    router.push({ path: '/user/addLocation', query: { documentID } });
   } else {
     console.log("Nieznana rola użytkownika!");
   }

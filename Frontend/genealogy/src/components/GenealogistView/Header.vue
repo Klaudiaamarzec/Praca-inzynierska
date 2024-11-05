@@ -3,6 +3,7 @@
 </script>
 
 <template>
+
   <header>
     <section class="header-section">
       <div class="left-section">
