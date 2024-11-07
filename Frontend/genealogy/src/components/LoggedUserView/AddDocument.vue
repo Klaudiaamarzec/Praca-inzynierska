@@ -1,13 +1,20 @@
 <script setup>
 import {onMounted, ref, watch} from "vue";
 import ErrorModal from './ErrorModal.vue';
+import ErrorPhotoModal from "@/components/LoggedUserView/ErrorPhotoModal.vue";
 import SuccessModal from "@/components/LoggedUserView/SuccessModal.vue";
+import PhotoModal from "@/components/LoggedUserView/PhotoModal.vue";
 
 const showModal = ref(false);
+const showErrorModal = ref(false);
 const showSuccess = ref(false);
+const showPhotoModal = ref(false);
 let errorText = ref('');
 let successText = ref('');
+let errorModalText = ref('');
 const docID = ref(null);
+const photoData = ref(null);
+const photoFile = ref(null);
 
 const documentTypes = ref([]);
 const selectedDocumentType = ref(null);
@@ -92,6 +99,17 @@ const toggleDateSelection = (type) => {
   }
 };
 
+const choosePhoto = () => {
+  showPhotoModal.value = true;
+};
+
+const handlePhotoSubmit = (data) => {
+  //photoData.value = photo;
+  photoData.value = data.photoBase64;
+  photoFile.value = data.photoFile;
+  showPhotoModal.value = false;
+};
+
 const addDocument = async () => {
 
   try {
@@ -163,17 +181,46 @@ const addDocument = async () => {
     const results = await response.json();
     docID.value = results.documentId;
     successText.value = results.message;
-    showSuccess.value = true;
 
-    //await router.push({name: 'GenealogistSearchResults', query: {results: JSON.stringify(results)},});
+    if (photoData.value) {
+      await uploadPhoto(docID.value, photoFile.value);
+    }
 
   } catch (error) {
     console.error('Błąd podczas dodawania dokumentu:', error);
     showModal.value = true;
     errorText.value = "Wystąpił problem z połączeniem z serwerem.";
   }
-
 }
+
+const uploadPhoto = async (docId, photoFile) => {
+  try {
+    const formData = new FormData();
+    formData.append('photoFile', photoFile);  // Attach the photo
+
+    const response = await fetch(`http://127.0.0.1:8080/API/Documents/AddPath/${docId}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      showErrorModal.value = true;
+      const errorDetails = await response.text();
+      const errorMessage = errorDetails.error || "Wystąpił błąd podczas dodawania zdjęcia do dokumentu";
+      console.error('Odpowiedź serwera nie była poprawna:', errorDetails);
+      errorModalText.value = errorMessage;
+      return;
+    }
+
+    showSuccess.value = true;
+
+  } catch (error) {
+    console.error('Błąd podczas wysyłania zdjęcia:', error);
+  }
+};
 
 </script>
 
@@ -183,13 +230,23 @@ const addDocument = async () => {
     <section class="advanced-section-adding">
 
       <div class="type-section">
-        <label>Rodzaj dokumentu <span class="required-asterisk">*</span></label>
-        <select class="main-select" v-model="selectedDocumentType" required>
-          <option disabled value="">Wybierz rodzaj dokumentu</option>
-          <option v-for="documentType in documentTypes" :key="documentType.id" :value="documentType.id">
-            {{ documentType.typeName }}
-          </option>
-        </select>
+        <div>
+          <label>Rodzaj dokumentu <span class="required-asterisk">*</span></label>
+          <select class="main-select" v-model="selectedDocumentType" required>
+            <option disabled value="">Wybierz rodzaj dokumentu</option>
+            <option v-for="documentType in documentTypes" :key="documentType.id" :value="documentType.id">
+              {{ documentType.typeName }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <div v-if="photoData" class="photo-preview">
+            <img :src="photoData" alt="Podgląd zdjęcia dokumentu" />
+          </div>
+          <button v-else class="photo-button" type="button" @click="choosePhoto">
+            Dodaj zdjęcie dokumentu
+          </button>
+        </div>
       </div>
 
       <div class="date-section">
@@ -308,7 +365,9 @@ const addDocument = async () => {
 
   </section>
 
+  <PhotoModal v-if="showPhotoModal" :showModal="showPhotoModal" @submit="handlePhotoSubmit" @close="showPhotoModal = false" />
   <ErrorModal v-if="showModal" :showModal="showModal" :errorDetails="errorText" @close="showModal = false" />
+  <ErrorPhotoModal v-if="showErrorModal" :showModal="showErrorModal" :errorDetails="errorModalText" :docID="docID" @close="showModal = false"></ErrorPhotoModal>
   <SuccessModal v-if="showSuccess" :showModal="showSuccess" :successDetails="successText" :docID="docID" @close="showSuccess = false" />
 
 </template>
@@ -327,6 +386,15 @@ const addDocument = async () => {
 
 p {
   margin: 5px 0;
+}
+
+.photo-preview img {
+  max-width: 50%;
+  height: auto;
+}
+
+.photo-preview {
+  justify-content: flex-end;
 }
 
 </style>

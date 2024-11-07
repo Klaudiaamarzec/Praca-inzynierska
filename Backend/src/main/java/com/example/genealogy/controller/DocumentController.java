@@ -4,14 +4,20 @@ import com.example.genealogy.model.*;
 import com.example.genealogy.service.*;
 import com.example.genealogy.token.JwtUtil;
 import com.example.genealogy.validator.OnUpdate;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -505,6 +511,28 @@ public class DocumentController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Wystąpił nieoczekiwany błąd: " + e.getMessage());
+        }
+    }
+
+    // Endpoint to add a path (photo) to a document
+    @RequestMapping(value = "AddPath/{id}", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> addPathToDocument(
+            @PathVariable Long id,
+            @RequestParam("photoFile") MultipartFile photoFile) {
+
+        Document document = documentService.getDocumentById(id);
+
+        try {
+            // Call the service method to add the photo to the document
+            boolean result = documentService.addPathToDocument(document, photoFile);
+
+            if (result) {
+                return ResponseEntity.status(HttpStatus.OK).body("Zdjęcie zostało dodane do dokumentu.");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wystąpił błąd podczas dodawania zdjęcia.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wystąpił nieoczekiwany błąd: " + e.getMessage());
         }
     }
 

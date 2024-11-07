@@ -77,6 +77,9 @@ public class Document {
     @JoinColumn(name = "photorefers")
     private Document photoRefers;
 
+    @Column(name="path")
+    private String path;
+
     // Opposite relation
 
     @OneToMany(mappedBy = "photoRefers")

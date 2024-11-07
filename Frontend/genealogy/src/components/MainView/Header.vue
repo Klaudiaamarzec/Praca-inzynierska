@@ -5,7 +5,7 @@
 <template>
   <header>
     <section class="header-section">
-      <div class="left-section">
+      <div class="left-section-header">
         <router-link to="/"><img src="../../icons/tree.png" alt="Logo" class="logo-image"/></router-link>
         <router-link to="/"><h1>Genealogia</h1></router-link>
       </div>

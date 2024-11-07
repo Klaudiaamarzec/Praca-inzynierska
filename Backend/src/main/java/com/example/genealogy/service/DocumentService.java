@@ -2,7 +2,9 @@ package com.example.genealogy.service;
 
 import com.example.genealogy.model.Document;
 import com.example.genealogy.model.User;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,6 +41,7 @@ public interface DocumentService {
 
     List<Document> searchDocuments(String name, String surname, List<Integer> typeIds, LocalDate fromDate, LocalDate toDate, List<Long> placeIds);
 
+    boolean addPathToDocument(@NotNull Document document, MultipartFile photoFile);
     boolean addPhotoToDocument(Document document, Document photo);
 
     ResponseEntity<String> approveChanges(Long oldDocumentId, Long newDocumentId);

@@ -11,18 +11,29 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class DocumentServiceImpl implements DocumentService {
+
+    @Value("${documents.photo.dir}")
+    private String documentsPhotoDir;
 
     private final DocumentRepository documentRepository;
     private final DateService dateService;
@@ -231,6 +242,40 @@ public class DocumentServiceImpl implements DocumentService {
         photo.setPhotoRefers(document);
 
         return true;
+    }
+
+    @Override
+    public boolean addPathToDocument(@NotNull Document document, MultipartFile photoFile) {
+
+        // Upewnij się, że plik jest zdjęciem
+        if (!Objects.requireNonNull(photoFile.getContentType()).startsWith("image")) {
+            throw new IllegalArgumentException("Plik nie jest zdjęciem");
+        }
+
+        // Utwórz katalog dla dokumentu: docPhotos/id/
+        Path documentPhotoDir = Paths.get(documentsPhotoDir, String.valueOf(document.getId()));
+        //Path documentPhotoDir = Paths.get(documentsPhotoDir + document.getId());
+        try {
+            Files.createDirectories(documentPhotoDir);
+        } catch (IOException e) {
+            throw new RuntimeException("Nie udało się utworzyć katalogu na zdjęcie", e);
+        }
+
+        // Określ ścieżkę docelową pliku
+        Path photoPath = documentPhotoDir.resolve(Objects.requireNonNull(photoFile.getOriginalFilename()));
+        try {
+            // Zapisz plik na serwerze
+            Files.copy(photoFile.getInputStream(), photoPath);
+
+            // Zaktualizuj dokument o ścieżkę zdjęcia
+            String relativePath = "docPhotos/" + document.getId() + "/" + photoFile.getOriginalFilename();
+            document.setPath(relativePath);
+            documentRepository.save(document);
+            return true;
+
+        } catch (IOException e) {
+            throw new RuntimeException("Nie udało się zapisać zdjęcia", e);
+        }
     }
 
     @Override
