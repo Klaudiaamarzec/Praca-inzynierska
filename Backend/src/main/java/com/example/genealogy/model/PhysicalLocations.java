@@ -1,10 +1,7 @@
 package com.example.genealogy.model;
 
 import com.example.genealogy.validator.OnCreate;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -14,7 +11,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "physicallocations")
 @Data
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class PhysicalLocations {
 
     @Id
@@ -41,18 +38,18 @@ public class PhysicalLocations {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "idphys") // Column in URLs table that is a foreign key to Location table
+    @JoinColumn(name = "idphys", nullable = false) // Column in URLs table that is a foreign key to Location table
     @NotNull(message = "Pole 'Lokalizacja fizyczna' nie może być puste", groups = OnCreate.class)
-    //@JsonBackReference
+    @JsonBackReference
     private Location physical;
 
     @ManyToOne
-    @JoinColumn(name = "localaddressid")
+    @JoinColumn(name = "localaddressid", nullable = false)
     @NotNull(message = "Pole 'Adres lokalny' nie może być puste", groups = OnCreate.class)
     private LocalAddress localaddress;
 
     @ManyToOne
-    @JoinColumn(name = "userid")
+    @JoinColumn(name = "userid", nullable = false)
     @NotNull(message = "Pole 'Użytkownik' nie może być puste", groups = OnCreate.class)
     private User user;
 
@@ -60,11 +57,6 @@ public class PhysicalLocations {
     public Long getPhysicalId() {
         return this.physical != null ? this.physical.getId() : null;
     }
-
-//    @JsonProperty("localaddress")
-//    public Long getLocalAddressId() {
-//        return this.localaddress != null ? this.localaddress.getId() : null;
-//    }
 
     @JsonProperty("user")
     public Long getUserId() {

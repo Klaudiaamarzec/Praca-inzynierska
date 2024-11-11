@@ -67,23 +67,23 @@ const formatPeopleDocuments = (people) => {
       <div class="details">
         <p v-if="result.place.country || result.place.voivodeship || result.place.city">
           <span class="label">Miejsce:</span>
-          <span class="value">{{ formatPlace(result.place) }}</span>
+          <span>{{ formatPlace(result.place) }}</span>
         </p>
         <p v-if="result.startDate || result.endDate">
           <span class="label">Przedział dat:</span>
-          <span class="value">{{ result.startDate }} - {{ result.endDate }}</span>
+          <span>{{ result.startDate }} - {{ result.endDate }}</span>
         </p>
         <p v-if="result.date">
           <span class="label">Data:</span>
-          <span class="value">{{ formatDate(result.date) }}</span>
+          <span>{{ formatDate(result.date) }}</span>
         </p>
         <p>
           <span class="label">Rodzaj:</span>
-          <span class="value">{{ result.type.name }}</span>
+          <span>{{ result.type.name }}</span>
         </p>
         <p v-if="result.peopleDocuments && result.peopleDocuments.length > 0">
           <span class="label">Osoby występujące w dokumencie:</span>
-          <span class="value">{{ formatPeopleDocuments(result.peopleDocuments) }}</span>
+          <span>{{ formatPeopleDocuments(result.peopleDocuments) }}</span>
         </p>
       </div>
     </div>

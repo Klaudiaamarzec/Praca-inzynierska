@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,7 +36,7 @@ public class Person {
     @Column(name = "birthdate", columnDefinition = "Date")
     private LocalDate birthDate;
 
-    @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
     private Set<PersonDocument> personDocuments;
 
     @OneToOne(mappedBy = "child")
@@ -58,9 +60,15 @@ public class Person {
 
     // Niestandardowy getter, zwraca tylko ID dla personDocuments
     @JsonProperty("personDocuments")
-    public Set<Long> getPersonDocumentIds() {
+    public Set<Map<String, Object>> getPersonDocumentIds() {
         return personDocuments != null ? personDocuments.stream()
-                .map(PersonDocument::getId)
+                .map(personDocument -> {
+                    Map<String, Object> documentData = new HashMap<>();
+                    documentData.put("personDocumentId", personDocument.getId());
+                    documentData.put("documentId", personDocument.getDocument().getId());
+                    documentData.put("documentTitle", personDocument.getDocument().getTitle());
+                    return documentData;
+                })
                 .collect(Collectors.toSet()) : null;
     }
 

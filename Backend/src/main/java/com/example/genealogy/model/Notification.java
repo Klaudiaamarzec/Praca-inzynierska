@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Entity
@@ -49,8 +51,13 @@ public class Notification {
     private Document newDocument;
 
     @JsonProperty("user")
-    public Long getUserId() {
-        return user != null ? user.getId() : null;
+    public Map<String, Object> getUserDetails() {
+        Map<String, Object> userDetails = new HashMap<>();
+        if (user != null) {
+            userDetails.put("userId", user.getId());
+            userDetails.put("username", user.getUserName());
+        }
+        return userDetails.isEmpty() ? null : userDetails;
     }
 
     @JsonProperty("document")

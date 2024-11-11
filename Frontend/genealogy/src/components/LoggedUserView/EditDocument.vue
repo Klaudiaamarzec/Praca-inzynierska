@@ -1,9 +1,9 @@
 <script setup>
 
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { ref, computed, onMounted } from 'vue';
 
-const router = useRouter();
+//const router = useRouter();
 const route = useRoute();
 
 // Pobierz dokument z danych przekazanych przez route
@@ -24,17 +24,6 @@ onMounted(async () => {
   }
 });
 
-const goBack = () => {
-  router.back();
-};
-
-const formatDate = (date) => {
-  const day = date.day ? String(date.day).padStart(2, '0') : '';
-  const month = date.month ? String(date.month).padStart(2, '0') : '';
-  const year = date.year ? date.year : '';
-  return day && month ? `${day}.${month}.${year}` : month ? `${month}.${year}` : `${year}`;
-};
-
 const formatPlace = (place) => {
   const parts = [];
   if (place.country) parts.push(place.country);
@@ -45,47 +34,6 @@ const formatPlace = (place) => {
 
 const formatPersonDocument = (personDocument) => {
   return `${personDocument.firstName} ${personDocument.lastName}`;
-};
-
-const decodeJWT = (token) => {
-  const base64Url = token.split('.')[1];
-  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(
-    atob(base64)
-      .split('')
-      .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-      .join('')
-  );
-  return JSON.parse(jsonPayload);
-};
-
-const viewPersonDetails = (personID) => {
-  const token = localStorage.getItem('jwtToken');
-  const decodedToken = decodeJWT(token);
-  const userRole = decodedToken.role;
-
-  if (userRole === 'genealogist') {
-    router.push({ name: 'GenealogistPersonDetails', params: { personID } });
-  } else if (userRole === 'user') {
-    router.push({ name: 'UserPersonDetails', params: { personID } });
-  } else {
-    console.log("Nieznana rola użytkownika!");
-  }
-}
-
-const editDocument = (documentID) => {
-
-  const token = localStorage.getItem('jwtToken');
-  const decodedToken = decodeJWT(token);
-  const userRole = decodedToken.role;
-
-  if (userRole === 'genealogist') {
-    router.push({ name: 'GenealogistEditDocument', params: { documentID } });
-  } else if (userRole === 'user') {
-    router.push({ name: 'UserEditDocument', params: { documentID } });
-  } else {
-    console.log("Nieznana rola użytkownika!");
-  }
 };
 
 </script>
@@ -103,47 +51,44 @@ const editDocument = (documentID) => {
 
       <section class="header-section">
         <div class="left-section">
-          <button class="button-modal" @click="goBack">Powrót</button>
+          <a @click="goBack"><p>Powrót</p></a>
         </div>
         <div class="right-section">
-          <button class="button-modal" @click="editDocument(documentID)">Edytuj</button>
+          <button class="button-modal" @click="editDocument">Zapisz</button>
         </div>
       </section>
 
       <section v-if="!document.path" class="advanced-section-adding">
 
         <div class="detail">
-          <strong>Rodzaj: </strong> {{ document.type.name }}
+          <strong>Rodzaj:</strong> {{ document.type.name }}
         </div>
 
         <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail">
-          <strong>Miejsce: </strong> {{ formatPlace(document.place) }}
+          <strong>Miejsce:</strong> {{ formatPlace(document.place) }}
         </div>
 
         <div v-if="document.startDate || document.endDate" class="detail">
-          <strong>Przedział dat: </strong> {{ document.startDate }} - {{ document.endDate }}
+          <strong>Przedział dat:</strong> {{ document.startDate }} - {{ document.endDate }}
         </div>
+        <!--        &lt;!&ndash;      <div class="detail">&ndash;&gt;-->
+        <!--        &lt;!&ndash;        <strong>Data:</strong> {{ formatDate(document.date) }}&ndash;&gt;-->
+        <!--        &lt;!&ndash;      </div>&ndash;&gt;-->
 
-        <div v-if="document.date" class="detail">
-          <strong>Data: </strong> {{ formatDate(document.date) }}
-        </div>
-
-        <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail-section2">
-          <strong style="padding-left: 15px">Osoby występujące w dokumencie:</strong>
+        <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail">
+          <strong>Osoby występujące w dokumencie:</strong>
           <ul class="people-list">
-            <li v-for="(personDocument, index) in document.peopleDocuments" :key="index" class="person" @click="viewPersonDetails(personDocument.id)">
-              <a href="#">
-                {{ formatPersonDocument(personDocument) }}
-                <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
-              </a>
+            <li v-for="(personDocument, index) in document.peopleDocuments" :key="index">
+              - {{ formatPersonDocument(personDocument) }}
+              <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
             </li>
           </ul>
         </div>
 
         <div v-if="document.localization" >
 
-          <div v-if="document.localization.urls && document.localization.urls.length > 0" class="detail-section3">
-            <strong class="address-url">Adresy URL:</strong>
+          <div v-if="document.localization.urls && document.localization.urls.length > 0" class="detail">
+            <strong>Adresy URL:</strong>
             <ul class="url-list">
               <li v-for="(urlObject, index) in document.localization.urls" :key="index">
                 - <a :href="urlObject.url" target="_blank" rel="noopener noreferrer" class="urls">{{ urlObject.url }}</a>
@@ -152,19 +97,15 @@ const editDocument = (documentID) => {
             </ul>
           </div>
 
-          <div v-if="document.localization.physicalLocations && document.localization.physicalLocations.length > 0" class="detail-section2">
-            <strong style="padding-left: 15px">Fizyczne lokalizacje:</strong>
+          <div v-if="document.localization.physicalLocations && document.localization.physicalLocations.length > 0" class="detail">
+            <strong>Fizyczne lokalizacje:</strong>
             <ul class="physical-locations-list">
               <li v-for="(location, index) in document.localization.physicalLocations" :key="index" class="physical-location-item">
                 <div v-if="location.type">
                   <strong>Rodzaj:</strong> {{ location.type }}<br />
                 </div>
-                <div>
-                  <strong>Data dodania:</strong> {{ location.date }}<br />
-                </div>
-                <div>
-                  <strong>Oryginalny:</strong> {{ location.isOriginal ? 'Tak' : 'Nie' }}<br />
-                </div>
+                <strong>Data dodania:</strong> {{ location.date }}<br />
+                <strong>Oryginalny:</strong> {{ location.isOriginal ? 'Tak' : 'Nie' }}<br />
                 <div v-if="location.condition">
                   <strong>Kondycja:</strong> {{ location.condition }}<br />
                 </div>
@@ -174,8 +115,8 @@ const editDocument = (documentID) => {
                 <div v-if="location.localaddress">
                   <strong>Adres: </strong>
                   <span v-if="location.localaddress.country">{{ location.localaddress.country }}</span>
-                  <span v-if="location.localaddress.voivodeship">, {{ location.localaddress.voivodeship }}</span>
-                  <span v-if="location.localaddress.community">, {{ location.localaddress.community }}</span>
+                  <span v-if="location.localaddress.voivodeship">{{ location.localaddress.voivodeship }}</span>
+                  <span v-if="location.localaddress.community">{{ location.localaddress.community }}</span>
                   <span v-if="location.localaddress.city">, {{ location.localaddress.city }}</span>
                   <span v-if="location.localaddress.address">, {{ location.localaddress.address }}</span>
                   <span v-if="location.localaddress.postalCode">, {{ location.localaddress.postalCode }}</span>
@@ -195,38 +136,35 @@ const editDocument = (documentID) => {
 
           <section class="advanced-section-adding">
 
-            <div class="detail-small">
-              <strong>Rodzaj: </strong> {{ document.type.name }}
+            <div class="detail">
+              <strong>Rodzaj:</strong> {{ document.type.name }}
             </div>
 
-            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail-small">
-              <strong>Miejsce: </strong> {{ formatPlace(document.place) }}
+            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail">
+              <strong>Miejsce:</strong> {{ formatPlace(document.place) }}
             </div>
 
-            <div v-if="document.startDate || document.endDate" class="detail-small">
-              <strong>Przedział dat: </strong> {{ document.startDate }} - {{ document.endDate }}
+            <div v-if="document.startDate || document.endDate" class="detail">
+              <strong>Przedział dat:</strong> {{ document.startDate }} - {{ document.endDate }}
             </div>
+            <!--        &lt;!&ndash;      <div class="detail">&ndash;&gt;-->
+            <!--        &lt;!&ndash;        <strong>Data:</strong> {{ formatDate(document.date) }}&ndash;&gt;-->
+            <!--        &lt;!&ndash;      </div>&ndash;&gt;-->
 
-            <div v-if="document.date" class="detail-small">
-              <strong>Data: </strong> {{ formatDate(document.date) }}
-            </div>
-
-            <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail-section2">
-              <strong style="padding-left: 15px">Osoby występujące w dokumencie:</strong>
+            <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail">
+              <strong>Osoby występujące w dokumencie:</strong>
               <ul class="people-list">
-                <li v-for="(personDocument, index) in document.peopleDocuments" :key="index" class="person" @click="viewPersonDetails(personDocument.id)">
-                  <a href="#">
-                    {{ formatPersonDocument(personDocument) }}
-                    <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
-                  </a>
+                <li v-for="(personDocument, index) in document.peopleDocuments" :key="index">
+                  - {{ formatPersonDocument(personDocument) }}
+                  <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
                 </li>
               </ul>
             </div>
 
             <div v-if="document.localization" >
 
-              <div v-if="document.localization.urls && document.localization.urls.length > 0" class="detail-section3">
-                <strong class="address-url">Adresy URL:</strong>
+              <div v-if="document.localization.urls && document.localization.urls.length > 0" class="detail">
+                <strong>Adresy URL:</strong>
                 <ul class="url-list">
                   <li v-for="(urlObject, index) in document.localization.urls" :key="index">
                     - <a :href="urlObject.url" target="_blank" rel="noopener noreferrer" class="urls">{{ urlObject.url }}</a>
@@ -235,19 +173,15 @@ const editDocument = (documentID) => {
                 </ul>
               </div>
 
-              <div v-if="document.localization.physicalLocations && document.localization.physicalLocations.length > 0" class="detail-section2">
-                <strong style="padding-left: 15px">Fizyczne lokalizacje:</strong>
+              <div v-if="document.localization.physicalLocations && document.localization.physicalLocations.length > 0" class="detail">
+                <strong>Fizyczne lokalizacje:</strong>
                 <ul class="physical-locations-list">
                   <li v-for="(location, index) in document.localization.physicalLocations" :key="index" class="physical-location-item">
                     <div v-if="location.type">
                       <strong>Rodzaj:</strong> {{ location.type }}<br />
                     </div>
-                    <div>
-                      <strong>Data dodania:</strong> {{ location.date }}<br />
-                    </div>
-                    <div>
-                      <strong>Oryginalny:</strong> {{ location.isOriginal ? 'Tak' : 'Nie' }}<br />
-                    </div>
+                    <strong>Data dodania:</strong> {{ location.date }}<br />
+                    <strong>Oryginalny:</strong> {{ location.isOriginal ? 'Tak' : 'Nie' }}<br />
                     <div v-if="location.condition">
                       <strong>Kondycja:</strong> {{ location.condition }}<br />
                     </div>
@@ -257,8 +191,8 @@ const editDocument = (documentID) => {
                     <div v-if="location.localaddress">
                       <strong>Adres: </strong>
                       <span v-if="location.localaddress.country">{{ location.localaddress.country }}</span>
-                      <span v-if="location.localaddress.voivodeship">, {{ location.localaddress.voivodeship }}</span>
-                      <span v-if="location.localaddress.community">, {{ location.localaddress.community }}</span>
+                      <span v-if="location.localaddress.voivodeship">{{ location.localaddress.voivodeship }}</span>
+                      <span v-if="location.localaddress.community">{{ location.localaddress.community }}</span>
                       <span v-if="location.localaddress.city">, {{ location.localaddress.city }}</span>
                       <span v-if="location.localaddress.address">, {{ location.localaddress.address }}</span>
                       <span v-if="location.localaddress.postalCode">, {{ location.localaddress.postalCode }}</span>
@@ -300,6 +234,10 @@ const editDocument = (documentID) => {
   width: 100%;
 }
 
+a {
+  color: var(--dark-brown);
+}
+
 .browser {
   margin-top: 10px;
   padding-bottom: 50px;
@@ -308,15 +246,6 @@ const editDocument = (documentID) => {
 
 button {
   padding: 8px 16px;
-}
-
-.urls {
-  color: black;
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.urls:hover {
-  transform: scale(1.05);
 }
 
 </style>

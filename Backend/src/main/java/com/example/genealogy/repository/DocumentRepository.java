@@ -1,6 +1,7 @@
 package com.example.genealogy.repository;
 
 import com.example.genealogy.model.Document;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +14,23 @@ import java.util.List;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long>{
+
+    @Query(value = """
+    SELECT d.*
+    FROM Document d
+    LEFT JOIN Date dt ON d.date = dt.dateid
+    ORDER BY
+        CASE
+            WHEN dt.dateid IS NOT NULL THEN 1
+            ELSE 2
+        END,
+        dt.year DESC NULLS LAST,
+        dt.month DESC NULLS LAST,
+        dt.day DESC NULLS LAST,
+        d.startDate DESC
+    """, nativeQuery = true)
+    @NotNull
+    List<Document> findAll();
 
     // Return all documents based on name and surname
     @Query(value = "SELECT d.* FROM Document d " +

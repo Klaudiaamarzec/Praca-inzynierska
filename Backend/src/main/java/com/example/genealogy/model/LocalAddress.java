@@ -1,6 +1,8 @@
 package com.example.genealogy.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -44,5 +46,6 @@ public class LocalAddress {
     private String postalCode;
 
     @OneToMany(mappedBy = "localaddress")
+    @JsonIgnore
     private Set<PhysicalLocations> physicalLocations;
 }

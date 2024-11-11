@@ -2,6 +2,7 @@ package com.example.genealogy.repository;
 
 import com.example.genealogy.model.Person;
 import jakarta.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +14,10 @@ import java.util.List;
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long>{
 
+    @Query("SELECT p FROM Person p ORDER BY p.surname ASC")
+    @NotNull
+    List<Person> findAll();
+
     // Get simple person list
     @Query("SELECT p.name, p.surname FROM Person p")
     List<Object[]> getPersonList();
@@ -22,19 +27,21 @@ public interface PersonRepository extends JpaRepository<Person, Long>{
 
     @Query(value = "SELECT * FROM Person p " +
             "WHERE unaccent(lower(p.name)) LIKE unaccent(lower(CONCAT('%', :name, '%'))) " +
-            "AND unaccent(lower(p.surname)) LIKE unaccent(lower(CONCAT('%', :surname, '%'))) ",
+            "AND unaccent(lower(p.surname)) LIKE unaccent(lower(CONCAT('%', :surname, '%'))) " +
+            "ORDER BY p.surname ASC",
             nativeQuery = true)
     List<Person> findPersonByNameAndSurname(@Param("name") String name, @Param("surname") String surname);
 
     // Search person by parameter
     @Query(value = "SELECT * FROM Person p " +
             "WHERE unaccent(lower(p.name)) LIKE unaccent(lower(CONCAT('%', :parameter, '%'))) " +
-            "OR unaccent(lower(p.surname)) LIKE unaccent(lower(CONCAT('%', :parameter, '%'))) ",
+            "OR unaccent(lower(p.surname)) LIKE unaccent(lower(CONCAT('%', :parameter, '%'))) " +
+            "ORDER BY p.surname ASC",
             nativeQuery = true)
     List<Person> findPersonByParameter(@Param("parameter") String parameter);
 
     // Find all persons in a specific document
-    @Query("SELECT p FROM Person p JOIN p.personDocuments pd WHERE pd.document.id = :documentId")
+    @Query("SELECT p FROM Person p JOIN p.personDocuments pd WHERE pd.document.id = :documentId ORDER BY p.surname ASC")
     List<Person> findAllPersonsInDocument(@Param("documentId") long documentId);
 
     @Query("""

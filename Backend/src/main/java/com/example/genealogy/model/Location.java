@@ -1,8 +1,6 @@
 package com.example.genealogy.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
 import jakarta.persistence.*;
 
@@ -27,12 +25,15 @@ public class Location {
     private Long url;
 
     @OneToOne(mappedBy = "localization")
+    @JsonIgnore
     private Document document;
 
-    @OneToMany(mappedBy = "urlID", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "urlID", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<URLs> urls;
 
-    @OneToMany(mappedBy = "physical", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "physical", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<PhysicalLocations> physicalLocations;
 
     @Override

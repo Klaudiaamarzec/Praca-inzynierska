@@ -101,6 +101,11 @@ public class Document {
         return this.owner != null ? this.owner.getId() : null;
     }
 
+    @JsonProperty("localization")
+    public Location getLocalizationData() {
+        return this.localization != null ? this.localization : null;
+    }
+
     @JsonProperty("type")
     public Map<String, Object> getTypeId() {
         if (this.type != null) {
@@ -111,11 +116,6 @@ public class Document {
         }
         return null;
     }
-
-//    @JsonProperty("localization")
-//    public Long getLocalizationId() {
-//        return this.localization != null ? this.localization.getId() : null;
-//    }
 
     @JsonProperty("photoRefers")
     public Long getPhotoRefersId() {
@@ -133,7 +133,7 @@ public class Document {
                 ? this.peopleDocuments.stream()
                 .map(personDocument -> {
                     Map<String, Object> personDetails = new HashMap<>();
-                    personDetails.put("id", personDocument.getId());
+                    personDetails.put("id", personDocument.getPerson().getId());
                     personDetails.put("firstName", personDocument.getPerson() != null ? personDocument.getPerson().getName() : null);
                     personDetails.put("lastName", personDocument.getPerson() != null ? personDocument.getPerson().getSurname() : null);
                     personDetails.put("comment", personDocument.getComment());

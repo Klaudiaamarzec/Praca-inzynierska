@@ -1,6 +1,7 @@
 package com.example.genealogy.repository;
 
 import com.example.genealogy.model.Location;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +13,7 @@ import java.util.List;
 public interface LocationRepository extends JpaRepository<Location, Long>{
 
     // Search locations based on Physical Location
+    @EntityGraph(attributePaths = {"physicalLocations"})
     @Query("SELECT l FROM Location l WHERE l.physical = :physicalID")
     List<Location> findByPhysicalID(@Param("physicalID") long physicalID);
 

@@ -28,7 +28,6 @@ const goBack = () => {
   router.back();
 };
 
-// Funkcje formatowania
 const formatDate = (date) => {
   const day = date.day ? String(date.day).padStart(2, '0') : '';
   const month = date.month ? String(date.month).padStart(2, '0') : '';
@@ -44,8 +43,8 @@ const formatPlace = (place) => {
   return parts.join(', ');
 };
 
-const formatPeopleDocuments = (people) => {
-  return people.map(person => `${person.firstName} ${person.lastName}`).join(', ');
+const formatPersonDocument = (personDocument) => {
+  return `${personDocument.firstName} ${personDocument.lastName}`;
 };
 
 </script>
@@ -61,23 +60,183 @@ const formatPeopleDocuments = (people) => {
 
       <div class="separator"></div>
 
-      <section class="advanced-section-adding">
+      <section class="header-section">
+        <div class="left-section">
+          <button class="button-modal" @click="goBack">Powrót</button>
+        </div>
+        <div class="right-section">
+          <button class="button-modal" @click="editDocument(documentID)">Edytuj</button>
+        </div>
+      </section>
+
+      <section v-if="!document.path" class="advanced-section-adding">
+
+        <div class="detail">
+          <strong>Rodzaj: </strong> {{ document.type.name }}
+        </div>
+
         <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail">
-          <strong>Miejsce:</strong> {{ formatPlace(document.place) }}
+          <strong>Miejsce: </strong> {{ formatPlace(document.place) }}
         </div>
 
         <div v-if="document.startDate || document.endDate" class="detail">
-          <strong>Przedział dat:</strong> {{ document.startDate }} - {{ document.endDate }}
-        </div>
-        <div class="detail">
-          <strong>Rodzaj:</strong> {{ document.type.name }}
-        </div>
-        <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail">
-          <strong>Osoby występujące:</strong> {{ formatPeopleDocuments(document.peopleDocuments) }}
+          <strong>Przedział dat: </strong> {{ document.startDate }} - {{ document.endDate }}
         </div>
 
-        <button class="button-modal" @click="goBack">Powrót</button>
+        <div v-if="document.date" class="detail">
+          <strong>Data: </strong> {{ formatDate(document.date) }}
+        </div>
+
+        <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail-section">
+          <strong>Osoby występujące w dokumencie:</strong>
+          <ul class="people-list">
+            <li v-for="(personDocument, index) in document.peopleDocuments" :key="index">
+              <!--              - {{ formatPersonDocument(personDocument) }}-->
+              - <a href="#" @click="viewPersonDetails(personDocument.id)" class="urls">{{ formatPersonDocument(personDocument) }}</a>
+              <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
+            </li>
+          </ul>
+        </div>
+
+        <div v-if="document.localization" >
+
+          <div v-if="document.localization.urls && document.localization.urls.length > 0" class="detail-section3">
+            <strong class="address-url">Adresy URL:</strong>
+            <ul class="url-list">
+              <li v-for="(urlObject, index) in document.localization.urls" :key="index">
+                - <a :href="urlObject.url" target="_blank" rel="noopener noreferrer" class="urls">{{ urlObject.url }}</a>
+                <div v-if="urlObject.comment" class="comment">({{ urlObject.comment }})</div>
+              </li>
+            </ul>
+          </div>
+
+          <div v-if="document.localization.physicalLocations && document.localization.physicalLocations.length > 0" class="detail-section2">
+            <strong style="padding-left: 15px">Fizyczne lokalizacje:</strong>
+            <ul class="physical-locations-list">
+              <li v-for="(location, index) in document.localization.physicalLocations" :key="index" class="physical-location-item">
+                <div v-if="location.type">
+                  <strong>Rodzaj:</strong> {{ location.type }}<br />
+                </div>
+                <div>
+                  <strong>Data dodania:</strong> {{ location.date }}<br />
+                </div>
+                <div>
+                  <strong>Oryginalny:</strong> {{ location.isOriginal ? 'Tak' : 'Nie' }}<br />
+                </div>
+                <div v-if="location.condition">
+                  <strong>Kondycja:</strong> {{ location.condition }}<br />
+                </div>
+                <div v-if="location.description">
+                  <strong>Opis:</strong> {{ location.description }}<br />
+                </div>
+                <div v-if="location.localaddress">
+                  <strong>Adres: </strong>
+                  <span v-if="location.localaddress.country">{{ location.localaddress.country }}</span>
+                  <span v-if="location.localaddress.voivodeship">, {{ location.localaddress.voivodeship }}</span>
+                  <span v-if="location.localaddress.community">, {{ location.localaddress.community }}</span>
+                  <span v-if="location.localaddress.city">, {{ location.localaddress.city }}</span>
+                  <span v-if="location.localaddress.address">, {{ location.localaddress.address }}</span>
+                  <span v-if="location.localaddress.postalCode">, {{ location.localaddress.postalCode }}</span>
+                  <br />
+                </div>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
       </section>
+
+      <section v-if="document.path" class="content-details">
+
+        <div class="left-site-details">
+
+          <section class="advanced-section-adding">
+
+            <div class="detail-small">
+              <strong>Rodzaj: </strong> {{ document.type.name }}
+            </div>
+
+            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail-small">
+              <strong>Miejsce: </strong> {{ formatPlace(document.place) }}
+            </div>
+
+            <div v-if="document.startDate || document.endDate" class="detail-small">
+              <strong>Przedział dat: </strong> {{ document.startDate }} - {{ document.endDate }}
+            </div>
+
+            <div v-if="document.date" class="detail-small">
+              <strong>Data: </strong> {{ formatDate(document.date) }}
+            </div>
+
+            <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail-section">
+              <strong>Osoby występujące w dokumencie:</strong>
+              <ul class="people-list">
+                <li v-for="(personDocument, index) in document.peopleDocuments" :key="index">
+                  <!--                  - {{ formatPersonDocument(personDocument) }}-->
+                  - <a href="#" @click="viewPersonDetails(personDocument.id)" class="urls">{{ formatPersonDocument(personDocument) }}</a>
+                  <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
+                </li>
+              </ul>
+            </div>
+
+            <div v-if="document.localization" >
+
+              <div v-if="document.localization.urls && document.localization.urls.length > 0" class="detail-section3">
+                <strong class="address-url">Adresy URL:</strong>
+                <ul class="url-list">
+                  <li v-for="(urlObject, index) in document.localization.urls" :key="index">
+                    - <a :href="urlObject.url" target="_blank" rel="noopener noreferrer" class="urls">{{ urlObject.url }}</a>
+                    <div v-if="urlObject.comment" class="comment">({{ urlObject.comment }})</div>
+                  </li>
+                </ul>
+              </div>
+
+              <div v-if="document.localization.physicalLocations && document.localization.physicalLocations.length > 0" class="detail-section2">
+                <strong style="padding-left: 15px">Fizyczne lokalizacje:</strong>
+                <ul class="physical-locations-list">
+                  <li v-for="(location, index) in document.localization.physicalLocations" :key="index" class="physical-location-item">
+                    <div v-if="location.type">
+                      <strong>Rodzaj:</strong> {{ location.type }}<br />
+                    </div>
+                    <div>
+                      <strong>Data dodania:</strong> {{ location.date }}<br />
+                    </div>
+                    <div>
+                      <strong>Oryginalny:</strong> {{ location.isOriginal ? 'Tak' : 'Nie' }}<br />
+                    </div>
+                    <div v-if="location.condition">
+                      <strong>Kondycja:</strong> {{ location.condition }}<br />
+                    </div>
+                    <div v-if="location.description">
+                      <strong>Opis:</strong> {{ location.description }}<br />
+                    </div>
+                    <div v-if="location.localaddress">
+                      <strong>Adres: </strong>
+                      <span v-if="location.localaddress.country">{{ location.localaddress.country }}</span>
+                      <span v-if="location.localaddress.voivodeship">, {{ location.localaddress.voivodeship }}</span>
+                      <span v-if="location.localaddress.community">, {{ location.localaddress.community }}</span>
+                      <span v-if="location.localaddress.city">, {{ location.localaddress.city }}</span>
+                      <span v-if="location.localaddress.address">, {{ location.localaddress.address }}</span>
+                      <span v-if="location.localaddress.postalCode">, {{ location.localaddress.postalCode }}</span>
+                      <br />
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+        <div v-if="document.path" class="right-site-details">
+          <img :src="`/${document.path}`" alt="Zdjęcie dokumentu" class="document-image"/>
+        </div>
+
+      </section>
+
     </section>
   </section>
 
@@ -86,23 +245,24 @@ const formatPeopleDocuments = (people) => {
 <style scoped>
 
 .main-section {
-  margin: 0;
-  background-color: var(--grey);
-  height: 100vh;
+  height: 100%;
+}
+
+.header-section {
+  width: 100%;
+  padding: 0 20px 20px;
+}
+
+.button-modal {
+  width: 100%;
 }
 
 .browser {
   margin-top: 10px;
+  padding-bottom: 50px;
+  width: 75%;
 }
 
-.document-details {
-  padding: 20px;
-  font-size: 16px;
-}
-
-.detail {
-  margin-bottom: 12px;
-}
 button {
   padding: 8px 16px;
 }
