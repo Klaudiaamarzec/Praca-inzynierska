@@ -166,7 +166,7 @@ public class DocumentController {
     }
 
     // 2. Dodanie zdjęć do dokumentu
-    @PostMapping("AddPhoto/{id}")
+    @PostMapping("AddPhotos/{id}")
     public ResponseEntity<String> addPhotoToDocument(@PathVariable Long id, @RequestBody List<Long> photoIds) {
 
         Document document = documentService.getDocumentById(id);
@@ -188,8 +188,13 @@ public class DocumentController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dokument " + photo.getTitle() + " nie jest zdjęciem");
             }
 
+            // Sprawdź, czy zdjęcie już odnosi się do dokumentu, do którego próbujemy je dodać
+            if (photo.getPhotoRefers() != null && photo.getPhotoRefers().getId().equals(document.getId())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Zdjęcie " + photo.getTitle() + " jest już przypisane do tego dokumentu");
+            }
+
             if(photo.getPhotoRefers() != null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Zdjęcie " + photo.getTitle() + " odwołuje się już do dokumentu: " + photo.getPhotoRefers());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Zdjęcie " + photo.getTitle() + " odwołuje się już do dokumentu: " + photo.getPhotoRefers().getTitle());
             }
 
             // Dodaj zdjęcie do dokumentu
@@ -446,6 +451,8 @@ public class DocumentController {
     public ResponseEntity<List<Document>> searchDocuments(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String surname,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String description,
             @RequestParam(required = false) List<Integer> typeIds,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
@@ -475,7 +482,7 @@ public class DocumentController {
                 .map(Address::getId) // Załóżmy, że Address ma metodę getId()
                 .collect(Collectors.toList());
 
-        List<Document> documents = documentService.searchDocuments(name, surname, typeIds, fromDate, toDate, placeIds);
+        List<Document> documents = documentService.searchDocuments(name, surname, title, description, typeIds, fromDate, toDate, placeIds);
         return ResponseEntity.ok(documents);
     }
 

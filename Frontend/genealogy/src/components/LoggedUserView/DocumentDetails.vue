@@ -2,9 +2,13 @@
 
 import { useRouter, useRoute } from 'vue-router';
 import { ref, computed, onMounted } from 'vue';
+import PhotoDetails from "@/components/LoggedUserView/PhotoDetails.vue";
 
 const router = useRouter();
 const route = useRoute();
+
+const photoModal = ref(false);
+const showMorePhotos = ref(false);
 
 // Pobierz dokument z danych przekazanych przez route
 const documentID = computed(() => route.params.documentID || {});
@@ -26,6 +30,10 @@ onMounted(async () => {
 
 const goBack = () => {
   router.back();
+};
+
+const toggleShowMorePhotos = () => {
+  showMorePhotos.value = !showMorePhotos.value;
 };
 
 const formatDate = (date) => {
@@ -88,6 +96,14 @@ const editDocument = (documentID) => {
   }
 };
 
+const filteredPeopleDocuments = computed(() => {
+  return document.value.peopleDocuments.filter(person => person.x !== null && person.y !== null);
+});
+
+const showPhoto  = async () => {
+  photoModal.value = true;
+}
+
 </script>
 
 <template>
@@ -111,6 +127,10 @@ const editDocument = (documentID) => {
       </section>
 
       <section v-if="!document.path" class="advanced-section-adding">
+
+        <div v-if="document.type.id === 1">
+          <p style="color: var(--dark-brown); padding-bottom: 8px">Dodaj zdjęcie dokumentu, aby móc dodawć je do innych dokumentów !</p>
+        </div>
 
         <div class="detail">
           <strong>Rodzaj: </strong> {{ document.type.name }}
@@ -275,13 +295,36 @@ const editDocument = (documentID) => {
         </div>
 
         <div v-if="document.path" class="right-site-details">
-          <img :src="`/${document.path}`" alt="Zdjęcie dokumentu" class="document-image"/>
+          <img :src="`/${document.path}`" alt="Zdjęcie dokumentu" @click="showPhoto" class="document-image"/>
         </div>
 
       </section>
 
+      <div v-if="document.photos.length > 0" class="separator"></div>
+
+      <div v-if="document.photos.length > 0" class="browser-header">
+        <p>Powiązane zdjęcia</p>
+      </div>
+
+      <div v-if="document.photos.length > 0" ref="photoGrid" :class="['photo-grid', { 'is-visible': showMorePhotos }]">
+
+        <div v-for="(photo) in document.photos.slice(0, showMorePhotos ? document.photos.length : 4)" :key="photo.id" class="photo-item">
+          <img :src="`/${photo.path}`" alt="Zdjęcie" class="photo-image" />
+          <p>{{ photo.title }}</p>
+        </div>
+
+      </div>
+
+      <div class="photo-button-div" v-if="document.photos.length > 4">
+        <button @click="toggleShowMorePhotos" class="advanced-search">
+          {{ showMorePhotos ? 'Pokaż mniej' : 'Pokaż więcej' }}
+        </button>
+      </div>
+
     </section>
   </section>
+
+  <PhotoDetails v-if="photoModal" :showModal="photoModal" :path="document.path" :peopleDocuments="filteredPeopleDocuments"  @close="photoModal = false"></PhotoDetails>
 
 </template>
 

@@ -52,6 +52,13 @@ const formatPlace = (place) => {
   return parts.join(', ');
 };
 
+const formatDate = (date) => {
+  const day = date.day ? String(date.day).padStart(2, '0') : '';
+  const month = date.month ? String(date.month).padStart(2, '0') : '';
+  const year = date.year ? date.year : '';
+  return day && month ? `${day}.${month}.${year}` : month ? `${month}.${year}` : `${year}`;
+};
+
 const formatPersonDocument = (personDocument) => {
   return `${personDocument.firstName} ${personDocument.lastName}`;
 };
@@ -227,9 +234,9 @@ const addPhysicalLocation = async () => {
           <strong>Przedział dat:</strong> {{ document.startDate }} - {{ document.endDate }}
         </div>
 
-        <!--        <div class="detail">-->
-        <!--          <strong>Data:</strong> {{ formatDate(document.date) }}-->
-        <!--        </div>-->
+        <div v-if="document.date" class="detail">
+          <strong>Data: </strong> {{ formatDate(document.date) }}
+        </div>
 
         <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail">
           <strong>Osoby występujące w dokumencie:</strong>
@@ -378,7 +385,7 @@ button {
 
 .header-section {
   width: 100%;
-  padding: 0 20px;
+  padding: 0 20px 10px;
 }
 
 .button-modal {

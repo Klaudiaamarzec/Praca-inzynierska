@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.Doc;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,6 +26,8 @@ public interface DocumentService {
 
     List<Document> getAllDocuments();
 
+    List<Document> findDocumentsByTitleAndDescription(String name, String surname, String title, String description);
+
     List<Document> findByNameAndSurname(String name, String surname);
 
     List<Document> findConfirmedDocuments();
@@ -39,7 +42,8 @@ public interface DocumentService {
 
     List<Document> findDocumentsByOwner(User owner);
 
-    List<Document> searchDocuments(String name, String surname, List<Integer> typeIds, LocalDate fromDate, LocalDate toDate, List<Long> placeIds);
+    List<Document> searchDocuments(String name, String surname, String title, String description, List<Integer> typeIds,
+                                   LocalDate fromDate, LocalDate toDate, List<Long> placeIds);
 
     boolean addPathToDocument(@NotNull Document document, MultipartFile photoFile);
     boolean addPhotoToDocument(Document document, Document photo);

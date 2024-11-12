@@ -131,6 +131,15 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
+    public List<Document> findDocumentsByTitleAndDescription(String name, String surname, String title, String description) {
+        if (name != null && !name.isEmpty() || surname != null && !surname.isEmpty()) {
+            return documentRepository.findDocumentsByTitleAndDescriptionPerson(name, surname, title, description);
+        } else {
+            return documentRepository.findDocumentsByTitleAndDescription(title, description);
+        }
+    }
+
+    @Override
     public List<Document> findConfirmedDocuments() {
         return documentRepository.findConfirmedDocuments();
     }
@@ -190,7 +199,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public List<Document> searchDocuments(String name, String surname, List<Integer> typeIds,
+    public List<Document> searchDocuments(String name, String surname, String title, String description, List<Integer> typeIds,
                                           LocalDate fromDate, LocalDate toDate, List<Long> placeIds) {
 
         List<Document> documents;
@@ -204,6 +213,12 @@ public class DocumentServiceImpl implements DocumentService {
 
         List<Document> confirmedDocuments = findConfirmedDocuments();
         documents.retainAll(confirmedDocuments);
+
+        // Filtering by title and description
+        if ((title != null && !title.isEmpty()) || (description != null && !description.isEmpty())) {
+            List<Document> titleDescriptionFilteredDocuments = findDocumentsByTitleAndDescription(name, surname, title, description);
+            documents.retainAll(titleDescriptionFilteredDocuments);
+        }
 
         // Filtering by document types
         if (typeIds != null && !typeIds.isEmpty()) {

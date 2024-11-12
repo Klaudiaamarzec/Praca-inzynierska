@@ -6,6 +6,8 @@ const router = useRouter();
 const documentTypes = ref([]);
 const name = ref('');
 const surname = ref('');
+const title = ref('');
+const description = ref('');
 const selectedTypes = ref([]);
 const showAdvancedSearch = ref(false);
 const fromDate = ref('');
@@ -41,6 +43,8 @@ const searchDocuments = async () => {
     const params = new URLSearchParams({
       name: name.value,
       surname: surname.value,
+      title: title.value,
+      description: description.value,
       typeIds: selectedTypes.value.join(','),
       fromDate: fromDate.value,
       toDate: toDate.value,
@@ -60,6 +64,12 @@ const searchDocuments = async () => {
       minLatitude: minLatitude.value,
       maxLatitude: maxLatitude.value
     });
+
+    for (let [key, value] of params) {
+      if (value === '' || value === null || value === undefined) {
+        params.delete(key);
+      }
+    }
 
     const response = await fetch(`http://127.0.0.1:8080/API/Documents/Search?${params}`, {
       method: 'GET',
@@ -129,6 +139,16 @@ const searchDocuments = async () => {
       <div class="separator"></div>
 
       <div class="advanced-section">
+
+        <div class="main-title-section">
+          <label >Tytuł</label>
+          <input class="main-input" type="text" id="parish" v-model="title" />
+        </div>
+
+        <div class="main-title-section">
+          <label >Opis</label>
+          <input class="main-input" type="text" id="parish" v-model="description" />
+        </div>
 
         <div class="data-section">
           <label for="fromDate">Przedział dat</label>

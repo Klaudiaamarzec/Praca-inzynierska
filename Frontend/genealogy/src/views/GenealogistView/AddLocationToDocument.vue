@@ -20,7 +20,7 @@ const documentID = route.query.documentID;
 
 section {
   background-color: var(--grey);
-  height: 100vh;
+  height: 100%;
   display: block;
   padding: 30px 0;
   margin: 0;

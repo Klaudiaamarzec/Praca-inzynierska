@@ -123,8 +123,18 @@ public class Document {
     }
 
     @JsonProperty("photos")
-    public Set<Long> getPhotoIds() {
-        return this.photos != null ? this.photos.stream().map(Document::getId).collect(Collectors.toSet()) : null;
+    public Set<Map<String, Object>> getPhotosWithPaths() {
+        return this.photos != null
+                ? this.photos.stream()
+                .map(photo -> {
+                    Map<String, Object> photoDetails = new HashMap<>();
+                    photoDetails.put("id", photo.getId());
+                    photoDetails.put("path", photo.getPath());
+                    photoDetails.put("title", photo.getTitle());
+                    return photoDetails;
+                })
+                .collect(Collectors.toSet())
+                : null;
     }
 
     @JsonProperty("peopleDocuments")

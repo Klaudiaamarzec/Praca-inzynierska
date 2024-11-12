@@ -185,6 +185,9 @@ const addDocument = async () => {
     if (photoData.value) {
       await uploadPhoto(docID.value, photoFile.value);
     }
+    else {
+      showSuccess.value = true;
+    }
 
   } catch (error) {
     console.error('Błąd podczas dodawania dokumentu:', error);
@@ -247,6 +250,10 @@ const uploadPhoto = async (docId, photoFile) => {
             Dodaj zdjęcie dokumentu
           </button>
         </div>
+      </div>
+
+      <div v-if="selectedDocumentType === 1">
+        <p style="color: var(--dark-brown)">Dodaj zdjęcie dokumentu, aby móc dodawć je do innych dokumentów !</p>
       </div>
 
       <div class="date-section">

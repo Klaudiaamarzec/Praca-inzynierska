@@ -48,6 +48,21 @@ public class DocumentRepositoryTest {
     }
 
     @Test
+    void testFindByTitleAndDescription() {
+        List<Document> documents = documentRepository.findDocumentsByTitleAndDescription("List", null);
+        assertThat(documents).hasSize(3);
+    }
+
+    @Test
+    void testFindByTitleAndDescription2() {
+        List<Document> documents = documentRepository.findDocumentsByTitleAndDescription(null, "string");
+        assertThat(documents).hasSize(2);
+
+        assertThat(documents.get(0).getId()).isEqualTo(34L);
+        assertThat(documents.get(1).getId()).isEqualTo(33L);
+    }
+
+    @Test
     void testFindConfirmedDocuments() {
 
         List<Document> confirmedDocuments = documentRepository.findConfirmedDocuments();

@@ -2,9 +2,13 @@
 
 import { useRouter, useRoute } from 'vue-router';
 import { ref, computed, onMounted } from 'vue';
+import PhotoDetails from "@/components/LoggedUserView/PhotoDetails.vue";
 
 const router = useRouter();
 const route = useRoute();
+
+const photoModal = ref(false);
+const showMorePhotos = ref(false);
 
 // Pobierz dokument z danych przekazanych przez route
 const documentID = computed(() => route.params.documentID || {});
@@ -28,6 +32,10 @@ const goBack = () => {
   router.back();
 };
 
+const toggleShowMorePhotos = () => {
+  showMorePhotos.value = !showMorePhotos.value;
+};
+
 const formatDate = (date) => {
   const day = date.day ? String(date.day).padStart(2, '0') : '';
   const month = date.month ? String(date.month).padStart(2, '0') : '';
@@ -46,6 +54,14 @@ const formatPlace = (place) => {
 const formatPersonDocument = (personDocument) => {
   return `${personDocument.firstName} ${personDocument.lastName}`;
 };
+
+const filteredPeopleDocuments = computed(() => {
+  return document.value.peopleDocuments.filter(person => person.x !== null && person.y !== null);
+});
+
+const showPhoto  = async () => {
+  photoModal.value = true;
+}
 
 </script>
 
@@ -71,6 +87,10 @@ const formatPersonDocument = (personDocument) => {
 
       <section v-if="!document.path" class="advanced-section-adding">
 
+        <div v-if="document.type.id === 1">
+          <p style="color: var(--dark-brown); padding-bottom: 8px">Dodaj zdjęcie dokumentu, aby móc dodawć je do innych dokumentów !</p>
+        </div>
+
         <div class="detail">
           <strong>Rodzaj: </strong> {{ document.type.name }}
         </div>
@@ -87,13 +107,14 @@ const formatPersonDocument = (personDocument) => {
           <strong>Data: </strong> {{ formatDate(document.date) }}
         </div>
 
-        <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail-section">
-          <strong>Osoby występujące w dokumencie:</strong>
+        <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail-section2">
+          <strong style="padding-left: 15px">Osoby występujące w dokumencie:</strong>
           <ul class="people-list">
-            <li v-for="(personDocument, index) in document.peopleDocuments" :key="index">
-              <!--              - {{ formatPersonDocument(personDocument) }}-->
-              - <a href="#" @click="viewPersonDetails(personDocument.id)" class="urls">{{ formatPersonDocument(personDocument) }}</a>
-              <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
+            <li v-for="(personDocument, index) in document.peopleDocuments" :key="index" class="person" @click="viewPersonDetails(personDocument.id)">
+              <a href="#">
+                {{ formatPersonDocument(personDocument) }}
+                <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
+              </a>
             </li>
           </ul>
         </div>
@@ -169,13 +190,14 @@ const formatPersonDocument = (personDocument) => {
               <strong>Data: </strong> {{ formatDate(document.date) }}
             </div>
 
-            <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail-section">
-              <strong>Osoby występujące w dokumencie:</strong>
+            <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail-section2">
+              <strong style="padding-left: 15px">Osoby występujące w dokumencie:</strong>
               <ul class="people-list">
-                <li v-for="(personDocument, index) in document.peopleDocuments" :key="index">
-                  <!--                  - {{ formatPersonDocument(personDocument) }}-->
-                  - <a href="#" @click="viewPersonDetails(personDocument.id)" class="urls">{{ formatPersonDocument(personDocument) }}</a>
-                  <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
+                <li v-for="(personDocument, index) in document.peopleDocuments" :key="index" class="person" @click="viewPersonDetails(personDocument.id)">
+                  <a href="#">
+                    {{ formatPersonDocument(personDocument) }}
+                    <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -232,13 +254,36 @@ const formatPersonDocument = (personDocument) => {
         </div>
 
         <div v-if="document.path" class="right-site-details">
-          <img :src="`/${document.path}`" alt="Zdjęcie dokumentu" class="document-image"/>
+          <img :src="`/${document.path}`" alt="Zdjęcie dokumentu" @click="showPhoto" class="document-image"/>
         </div>
 
       </section>
 
+      <div v-if="document.photos.length > 0" class="separator"></div>
+
+      <div v-if="document.photos.length > 0" class="browser-header">
+        <p>Powiązane zdjęcia</p>
+      </div>
+
+      <div v-if="document.photos.length > 0" ref="photoGrid" :class="['photo-grid', { 'is-visible': showMorePhotos }]">
+
+        <div v-for="(photo) in document.photos.slice(0, showMorePhotos ? document.photos.length : 4)" :key="photo.id" class="photo-item">
+          <img :src="`/${photo.path}`" alt="Zdjęcie" class="photo-image" />
+          <p>{{ photo.title }}</p>
+        </div>
+
+      </div>
+
+      <div class="photo-button-div" v-if="document.photos.length > 4">
+        <button @click="toggleShowMorePhotos" class="advanced-search">
+          {{ showMorePhotos ? 'Pokaż mniej' : 'Pokaż więcej' }}
+        </button>
+      </div>
+
     </section>
   </section>
+
+  <PhotoDetails v-if="photoModal" :showModal="photoModal" :path="document.path" :peopleDocuments="filteredPeopleDocuments"  @close="photoModal = false"></PhotoDetails>
 
 </template>
 

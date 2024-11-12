@@ -1,7 +1,9 @@
 <script setup>
-import {defineProps, onMounted, ref, watch} from 'vue';
+import {computed, defineProps, onMounted, ref, watch} from 'vue';
 import { useRouter } from 'vue-router';
 import ErrorModal from "@/components/LoggedUserView/ErrorModal.vue";
+import ImageModal from "@/components/LoggedUserView/ImageModal.vue";
+import PhotoDetails from "@/components/LoggedUserView/PhotoDetails.vue";
 
 const props = defineProps(['documentID']);
 const documentID = props.documentID;
@@ -14,8 +16,13 @@ const selectedPerson = ref(null);
 const searchQuery = ref('');
 const router = useRouter();
 
+const photoModal = ref(false);
 const showModal = ref(false);
+const showImage = ref(false);
 let errorText = ref('');
+
+const x = ref(null);
+const y = ref(null);
 
 const showAdvancedPerson = ref(false);
 
@@ -78,6 +85,13 @@ const searchPeople = async (query) => {
   }
 };
 
+const formatDate = (date) => {
+  const day = date.day ? String(date.day).padStart(2, '0') : '';
+  const month = date.month ? String(date.month).padStart(2, '0') : '';
+  const year = date.year ? date.year : '';
+  return day && month ? `${day}.${month}.${year}` : month ? `${month}.${year}` : `${year}`;
+};
+
 const formatPlace = (place) => {
   const parts = [];
   if (place.country) parts.push(place.country);
@@ -121,7 +135,14 @@ const save = () => {
 const addPerson = async () => {
 
   if (!selectedPerson.value) {
-    console.error("Nie wybrano osoby.");
+    showModal.value = true;
+    errorText.value = "Nie wybrano osoby";
+    return;
+  }
+
+  if((!x.value || !y.value) && document.value.path) {
+    showModal.value = true;
+    errorText.value = "Nie zaznaczono osoby na zdjęciu";
     return;
   }
 
@@ -133,7 +154,9 @@ const addPerson = async () => {
         id: selectedPerson.value
       },
 
-      comment: comment.value || null
+      comment: comment.value || null,
+      x: x.value || null,
+      y: y.value || null
 
     }
 
@@ -169,6 +192,23 @@ const addPerson = async () => {
 
 }
 
+const tagPerson  = async () => {
+  showImage.value = true;
+}
+
+const handleTagSaved = (tag) => {
+  x.value = tag.x;
+  y.value = tag.y;
+};
+
+const filteredPeopleDocuments = computed(() => {
+  return document.value.peopleDocuments.filter(person => person.x !== null && person.y !== null);
+});
+
+const showPhoto  = async () => {
+  photoModal.value = true;
+}
+
 </script>
 
 <template>
@@ -190,7 +230,7 @@ const addPerson = async () => {
         </div>
       </section>
 
-      <section class="advanced-section-adding">
+      <section v-if="!document.path" class="advanced-section-adding">
 
         <div class="detail">
           <strong>Rodzaj:</strong> {{ document.type.name }}
@@ -204,18 +244,64 @@ const addPerson = async () => {
           <strong>Przedział dat:</strong> {{ document.startDate }} - {{ document.endDate }}
         </div>
 
-<!--        <div class="detail">-->
-<!--          <strong>Data:</strong> {{ formatDate(document.date) }}-->
-<!--        </div>-->
+        <div v-if="document.date" class="detail">
+          <strong>Data: </strong> {{ formatDate(document.date) }}
+        </div>
 
-        <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail">
-          <strong>Osoby występujące w dokumencie:</strong>
+        <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail-section2">
+          <strong style="padding-left: 15px">Osoby występujące w dokumencie:</strong>
           <ul class="people-list">
-            <li v-for="(personDocument, index) in document.peopleDocuments" :key="index">
-              - {{ formatPersonDocument(personDocument) }}
-              <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
+            <li v-for="(personDocument, index) in document.peopleDocuments" :key="index" class="person" @click="viewPersonDetails(personDocument.id)">
+              <a href="#">
+                {{ formatPersonDocument(personDocument) }}
+                <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
+              </a>
             </li>
           </ul>
+        </div>
+
+      </section>
+
+      <section v-if="document.path" class="content-details">
+
+        <div class="left-site-details">
+
+          <section class="advanced-section-adding">
+
+            <div class="detail-small">
+              <strong>Rodzaj: </strong> {{ document.type.name }}
+            </div>
+
+            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail-small">
+              <strong>Miejsce: </strong> {{ formatPlace(document.place) }}
+            </div>
+
+            <div v-if="document.startDate || document.endDate" class="detail-small">
+              <strong>Przedział dat: </strong> {{ document.startDate }} - {{ document.endDate }}
+            </div>
+
+            <div v-if="document.date" class="detail-small">
+              <strong>Data: </strong> {{ formatDate(document.date) }}
+            </div>
+
+            <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail-section2">
+              <strong style="padding-left: 15px">Osoby występujące w dokumencie:</strong>
+              <ul class="people-list">
+                <li v-for="(personDocument, index) in document.peopleDocuments" :key="index" class="person" @click="viewPersonDetails(personDocument.id)">
+                  <a href="#">
+                    {{ formatPersonDocument(personDocument) }}
+                    <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+          </section>
+
+        </div>
+
+        <div v-if="document.path" class="right-site-details">
+          <img :src="`/${document.path}`" alt="Zdjęcie dokumentu" @click="showPhoto" class="document-image"/>
         </div>
 
       </section>
@@ -234,6 +320,7 @@ const addPerson = async () => {
               {{ person.name }} {{ person.surname }}
             </option>
           </select>
+          <button class="advanced-search" type="button" @click="tagPerson">Oznacz</button>
           <button class="add-button2" type="button" @click="addPerson">Dodaj</button>
         </div>
 
@@ -247,14 +334,35 @@ const addPerson = async () => {
         </section>
 
       </section>
+
     </section>
   </section>
 
   <ErrorModal v-if="showModal" :showModal="showModal" :errorDetails="errorText" @close="showModal = false" />
+  <ImageModal
+    v-if="showImage"
+    :showModal="showImage"
+    :path="document.path"
+    @tag="handleTagSaved"
+    @close="showImage = false" />
+
+  <PhotoDetails v-if="photoModal" :showModal="photoModal" :path="document.path" :peopleDocuments="filteredPeopleDocuments"  @close="photoModal = false"></PhotoDetails>
 
 </template>
 
 <style scoped>
+
+.content-details {
+  margin-bottom: 20px;
+}
+
+.main-section {
+  height: 100%;
+}
+
+.advanced-search {
+  margin-left: 0;
+}
 
 .browser {
   margin-top: 10px;
@@ -267,11 +375,19 @@ button {
 
 .header-section {
   width: 100%;
-  padding: 0 20px;
+  padding: 0 20px 10px;
 }
 
 .button-modal {
   width: 100%;
+}
+
+.comment-section{
+  margin-right: 240px;
+}
+
+.document-image {
+  width: 50%;
 }
 
 </style>
