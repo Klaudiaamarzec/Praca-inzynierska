@@ -15,13 +15,14 @@ public class JwtUtil {
     private final String SECRET_KEY = "BardzoBezpiecznyKlucz98JeszczeBardziejBezpieczny";
 
     // Generowanie tokenu JWT
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, String role, Long userId) {
 
         SecretKey key = createKey();
 
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", role)
+                .claim("id", userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 3)) // 3 godziny
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -59,6 +60,11 @@ public class JwtUtil {
     // Wyodrębnianie roli z tokenu
     public String extractRole(String token) {
         return extractClaims(token).get("role", String.class);
+    }
+
+    // Wyodrębnianie id użytkownika z tokenu
+    public Long extractUserId(String token) {
+        return extractClaims(token).get("id", Long.class);
     }
 
     // Sprawdzanie, czy token jest wygasły

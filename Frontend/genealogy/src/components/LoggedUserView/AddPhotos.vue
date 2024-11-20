@@ -29,6 +29,7 @@ const formatPlace = (place) => {
   const parts = [];
   if (place.country) parts.push(place.country);
   if (place.voivodeship) parts.push(place.voivodeship);
+  if (place.community) parts.push(place.community);
   if (place.city) parts.push(place.city);
   return parts.join(', ');
 };
@@ -227,7 +228,18 @@ const fetchPhotoPaths = async () => {
         </div>
 
         <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail">
-          <strong>Miejsce:</strong> {{ formatPlace(document.place) }}
+          <strong>Miejsce: </strong>
+          <div>
+            {{ formatPlace(document.place) }}
+            <p v-if="document.place.address && document.place.postalCode"> {{document.place.address}}, {{document.place.postalCode}}</p>
+            <p v-if="document.place.address && !document.place.postalCode"> {{document.place.address}}</p>
+            <p v-if="document.place.postalCode && !document.place.address"> Kod pocztowy: {{document.place.postalCode}}</p>
+            <p v-if="document.place.latitude"> Szerokość geograficzna: {{document.place.latitude}}</p>
+            <p v-if="document.place.longitude"> Szerokość geograficzna: {{document.place.longitude}}</p>
+            <p v-if="document.place.parish"> Przynależność parafialna: {{document.place.parish}}</p>
+            <p v-if="document.place.secular"> Przynależność świecka: {{document.place.secular}}</p>
+
+          </div>
         </div>
 
         <div v-if="document.startDate || document.endDate" class="detail">

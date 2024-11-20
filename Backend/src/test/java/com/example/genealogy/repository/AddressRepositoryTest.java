@@ -158,7 +158,7 @@ public class AddressRepositoryTest {
     @Test
     void testFindByCoordinates() {
 
-        List<Address> addresses = addressRepository.findByCoordinates(140L, 36L);
+        List<Address> addresses = addressRepository.findByCoordinates(140.0, 36.0);
         assertThat(addresses).hasSize(1);
 
         // ID Check
@@ -168,7 +168,7 @@ public class AddressRepositoryTest {
     @Test
     void testFindByCoordinates2() {
 
-        List<Address> addresses = addressRepository.findByCoordinates(140L, null);
+        List<Address> addresses = addressRepository.findByCoordinates(140.0, null);
         assertThat(addresses).hasSize(1);
 
         // ID Check
@@ -178,7 +178,7 @@ public class AddressRepositoryTest {
     @Test
     void testFindByLongitudeBetween() {
 
-        List<Address> addresses = addressRepository.findByLongitudeBetween(-15L, 160L);
+        List<Address> addresses = addressRepository.findByLongitudeBetween(-15.0, 160.0);
         assertThat(addresses).hasSize(2);
 
         // ID Check
@@ -189,7 +189,7 @@ public class AddressRepositoryTest {
     @Test
     void testFindByLatitudeBetween() {
 
-        List<Address> addresses = addressRepository.findByLatitudeBetween(34L, 36L);
+        List<Address> addresses = addressRepository.findByLatitudeBetween(34.0, 36.0);
 
         assertThat(addresses).hasSize(3);
 

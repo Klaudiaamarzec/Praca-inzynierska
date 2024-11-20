@@ -74,8 +74,8 @@ public class AddressServiceTest {
         Address address = new Address();
         address.setCity("Paris");
         address.setCountry("France");
-        address.setLongitude(2L);
-        address.setLatitude(49L);
+        address.setLongitude(2D);
+        address.setLatitude(49D);
 
         boolean isSaved = addressService.saveAddress(address);
 
@@ -234,8 +234,8 @@ public class AddressServiceTest {
     @Test
     void testFindByCoordinates() {
 
-        Long testLongitude = 2L;
-        Long testLatitude = 49L;
+        Double testLongitude = 2D;
+        Double testLatitude = 49D;
 
         List<Address> addresses = addressService.findByCoordinates(testLongitude, testLatitude);
 
@@ -248,8 +248,8 @@ public class AddressServiceTest {
     @Test
     void testFindByLongitudeBetween() {
 
-        Long minLongitude = -118L;
-        Long maxLongitude = 130L;
+        Double minLongitude = -118D;
+        Double maxLongitude = 130D;
 
         List<Address> addresses = addressService.findByLongitudeBetween(minLongitude, maxLongitude);
 
@@ -264,8 +264,8 @@ public class AddressServiceTest {
     @Test
     void testFindByLatitudeBetween() {
 
-        Long minLatitude = 35L;
-        Long maxLatitude = 50L;
+        Double minLatitude = 35D;
+        Double maxLatitude = 50D;
 
         List<Address> addresses = addressService.findByLatitudeBetween(minLatitude, maxLatitude);
 
@@ -329,7 +329,7 @@ public class AddressServiceTest {
     @Test
     void testSearchAddress4() {
 
-        List<Address> addresses = addressService.searchAddress("USA", "California", null, null, null, null, null, null,null, null, null, -120L, 0L, 32L, 42L);
+        List<Address> addresses = addressService.searchAddress("USA", "California", null, null, null, null, null, null,null, null, null, -120D, 0D, 32D, 42D);
 
         assertThat(addresses).hasSize(3);
 
@@ -342,7 +342,7 @@ public class AddressServiceTest {
     @Test
     void testSearchAddress5() {
 
-        List<Address> addresses = addressService.searchAddress("USA", "California", null, null, "Main St", null, null, null,null, null, null, -120L, 0L, 32L, 42L);
+        List<Address> addresses = addressService.searchAddress("USA", "California", null, null, "Main St", null, null, null,null, null, null, -120D, 0D, 32D, 42D);
 
         assertThat(addresses).hasSize(2);
 
@@ -354,7 +354,7 @@ public class AddressServiceTest {
     @Test
     void testSearchAddress6() {
 
-        List<Address> addresses = addressService.searchAddress("USA", "California", null, "Angeles", "Main St", null, null, null, null, null, null, -120L, 0L, 32L, 42L);
+        List<Address> addresses = addressService.searchAddress("USA", "California", null, "Angeles", "Main St", null, null, null, null, null, null, -120D, 0D, 32D, 42D);
 
         assertThat(addresses).hasSize(1);
 
@@ -365,7 +365,7 @@ public class AddressServiceTest {
     @Test
     void testSearchAddress7() {
 
-        List<Address> addresses = addressService.searchAddress("USA", "California", null, null, "Main St", null, null, null, null, null, null, -120L, 0L, 0L, 20L);
+        List<Address> addresses = addressService.searchAddress("USA", "California", null, null, "Main St", null, null, null, null, null, null, -120D, 0D, 0D, 20D);
 
         assertThat(addresses).hasSize(0);
     }

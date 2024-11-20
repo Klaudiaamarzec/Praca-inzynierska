@@ -49,9 +49,9 @@ public class Address {
     @Column(name = "secular", columnDefinition = "TEXT")
     private String secular;
 
-    private Long longitude;
+    private Double longitude;
 
-    private Long latitude;
+    private Double latitude;
 
     @OneToMany(mappedBy = "place")
     @JsonIgnore

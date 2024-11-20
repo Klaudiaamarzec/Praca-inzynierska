@@ -28,8 +28,38 @@ onMounted(async () => {
   }
 });
 
+const getNotConfirmedDocument = computed(()  => {
+
+  const token = localStorage.getItem('jwtToken');
+  const decodedToken = decodeJWT(token);
+  const currentUser = decodedToken.id;
+
+  if (document.value.owner && document.value.owner === currentUser && !document.value.confirmed) {
+    return true;
+  }
+
+  return false;
+});
+
 const goBack = () => {
-  router.back();
+
+  const previousPage = sessionStorage.getItem('previousPage');
+
+  const token = localStorage.getItem('jwtToken');
+  const decodedToken = decodeJWT(token);
+  const userRole = decodedToken.role;
+
+  if (previousPage) {
+    router.push(previousPage);
+  } else {
+    if (userRole === 'genealogist') {
+      router.push({ name: 'GenealogistDocuments' });
+    } else if (userRole === 'user') {
+      router.push({ name: 'UserDocuments' });
+    } else {
+      console.log("Nieznana rola użytkownika!");
+    }
+  }
 };
 
 const toggleShowMorePhotos = () => {
@@ -47,6 +77,7 @@ const formatPlace = (place) => {
   const parts = [];
   if (place.country) parts.push(place.country);
   if (place.voivodeship) parts.push(place.voivodeship);
+  if (place.community) parts.push(place.community);
   if (place.city) parts.push(place.city);
   return parts.join(', ');
 };
@@ -126,6 +157,10 @@ const showPhoto  = async () => {
         </div>
       </section>
 
+      <div v-if="getNotConfirmedDocument" class="left-section">
+        <p style="color: var(--dark-brown); padding-bottom: 8px">Dokument niezatwierdzony przez genealoga</p>
+      </div>
+
       <section v-if="!document.path" class="advanced-section-adding">
 
         <div v-if="document.type.id === 1">
@@ -136,8 +171,23 @@ const showPhoto  = async () => {
           <strong>Rodzaj: </strong> {{ document.type.name }}
         </div>
 
+        <div v-if="document.description" class="detail">
+          <strong>Opis: </strong> {{ document.description }}
+        </div>
+
         <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail">
-          <strong>Miejsce: </strong> {{ formatPlace(document.place) }}
+          <strong>Miejsce: </strong>
+          <div>
+            {{ formatPlace(document.place) }}
+            <p v-if="document.place.address && document.place.postalCode"> {{document.place.address}}, {{document.place.postalCode}}</p>
+            <p v-if="document.place.address && !document.place.postalCode"> {{document.place.address}}</p>
+            <p v-if="document.place.postalCode && !document.place.address"> Kod pocztowy: {{document.place.postalCode}}</p>
+            <p v-if="document.place.latitude"> Szerokość geograficzna: {{document.place.latitude}}</p>
+            <p v-if="document.place.longitude"> Szerokość geograficzna: {{document.place.longitude}}</p>
+            <p v-if="document.place.parish"> Przynależność parafialna: {{document.place.parish}}</p>
+            <p v-if="document.place.secular"> Przynależność świecka: {{document.place.secular}}</p>
+
+          </div>
         </div>
 
         <div v-if="document.startDate || document.endDate" class="detail">
@@ -207,6 +257,12 @@ const showPhoto  = async () => {
 
         </div>
 
+        <div v-if="document.additionalFields">
+          <div v-for="(fieldValue, fieldName) in document.additionalFields" :key="fieldName" class="additional-detail">
+            <strong>{{ fieldName }}: </strong> {{ fieldValue }}
+          </div>
+        </div>
+
       </section>
 
       <section v-if="document.path" class="content-details">
@@ -219,8 +275,23 @@ const showPhoto  = async () => {
               <strong>Rodzaj: </strong> {{ document.type.name }}
             </div>
 
-            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail-small">
-              <strong>Miejsce: </strong> {{ formatPlace(document.place) }}
+            <div v-if="document.description" class="detail">
+              <strong>Opis: </strong> {{ document.description }}
+            </div>
+
+            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail">
+              <strong>Miejsce: </strong>
+              <div>
+                {{ formatPlace(document.place) }}
+                <p v-if="document.place.address && document.place.postalCode"> {{document.place.address}}, {{document.place.postalCode}}</p>
+                <p v-if="document.place.address && !document.place.postalCode"> {{document.place.address}}</p>
+                <p v-if="document.place.postalCode && !document.place.address"> Kod pocztowy: {{document.place.postalCode}}</p>
+                <p v-if="document.place.latitude"> Szerokość geograficzna: {{document.place.latitude}}</p>
+                <p v-if="document.place.longitude"> Szerokość geograficzna: {{document.place.longitude}}</p>
+                <p v-if="document.place.parish"> Przynależność parafialna: {{document.place.parish}}</p>
+                <p v-if="document.place.secular"> Przynależność świecka: {{document.place.secular}}</p>
+
+              </div>
             </div>
 
             <div v-if="document.startDate || document.endDate" class="detail-small">
@@ -290,6 +361,12 @@ const showPhoto  = async () => {
 
             </div>
 
+            <div v-if="document.additionalFields">
+              <div v-for="(fieldValue, fieldName) in document.additionalFields" :key="fieldName" class="additional-detail">
+                <strong>{{ fieldName }}: </strong> {{ fieldValue }}
+              </div>
+            </div>
+
           </section>
 
         </div>
@@ -329,6 +406,12 @@ const showPhoto  = async () => {
 </template>
 
 <style scoped>
+
+.right-site-details {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 20px;
+}
 
 .main-section {
   height: 100%;

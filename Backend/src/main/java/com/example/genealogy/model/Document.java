@@ -7,6 +7,7 @@ import jakarta.validation.constraints.PastOrPresent;
 import lombok.Data;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -63,6 +64,7 @@ public class Document {
     private DocumentType type;
 
     @Getter
+    @Setter
     @ElementCollection
     @CollectionTable(name = "additional_fields", joinColumns = @JoinColumn(name = "document_id"))
     @MapKeyColumn(name = "field_name")

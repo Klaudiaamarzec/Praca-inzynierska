@@ -12,7 +12,7 @@ import java.util.List;
 public interface DateRepository extends JpaRepository<Date, Long> {
 
     @Query("SELECT d FROM Date d WHERE d.day = :day AND d.month = :month AND d.year = :year")
-    Date findDate(@Param("day") int day, @Param("month") int month, @Param("year") int year);
+    Date findDate(@Param("day") Integer day, @Param("month") Integer month, @Param("year") Integer year);
 
     @Query("SELECT d FROM Date d WHERE " +
             "(d.day = :day AND d.month = :month AND d.year = :year) OR " +
@@ -27,10 +27,10 @@ public interface DateRepository extends JpaRepository<Date, Long> {
             "    WHEN (d.year = :year) THEN 4 " +
             "    ELSE 5 " +
             "END")
-    List<Date> findDates(@Param("day") int day, @Param("month") int month, @Param("year") int year);
+    List<Date> findDates(@Param("day") Integer day, @Param("month") Integer month, @Param("year") Integer year);
 
-    @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM Date d WHERE d.day = :day AND d.month = :month AND d.year = :year")
-    boolean exist(@Param("day") int day, @Param("month") int month, @Param("year") int year);
+    @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM Date d WHERE (d.day = :day OR d.day IS NULL) AND (d.month = :month OR d.month IS NULL) AND d.year = :year")
+    boolean exist(@Param("day") Integer day, @Param("month") Integer month, @Param("year") Integer year);
 
     // Return all dates based on the date range
     @Query("""
@@ -47,12 +47,12 @@ public interface DateRepository extends JpaRepository<Date, Long> {
         (d.year = :toYear AND d.month = :toMonth AND d.day <= :toDay)
     """)
     List<Date> findDatesByDateRange(
-            @Param("fromYear") int fromYear,
-            @Param("fromMonth") int fromMonth,
-            @Param("fromDay") int fromDay,
-            @Param("toYear") int toYear,
-            @Param("toMonth") int toMonth,
-            @Param("toDay") int toDay
+            @Param("fromYear") Integer fromYear,
+            @Param("fromMonth") Integer fromMonth,
+            @Param("fromDay") Integer fromDay,
+            @Param("toYear") Integer toYear,
+            @Param("toMonth") Integer toMonth,
+            @Param("toDay") Integer toDay
     );
 
 }

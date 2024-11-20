@@ -232,6 +232,24 @@ public class DocumentController {
         return ResponseEntity.ok(document);
     }
 
+    // 7. Pobranie "Moich" dokumentów
+    @GetMapping("GetMyDocuments")
+    public ResponseEntity<?> getMyDocuments(HttpServletRequest request) {
+
+        try {
+
+            String token = request.getHeader("Authorization").substring(7);
+            String username = jwtUtil.extractUsername(token);
+            User currentUser = userService.findByUserName(username);
+            List<Document> documents = documentService.findDocumentsByOwner(currentUser);
+            return ResponseEntity.ok(documents);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Wystąpił nieoczekiwany błąd: " + e.getMessage());
+        }
+    }
+
     // 7. Aktualizacja dokumentu
     @PutMapping("Update/{id}")
     public ResponseEntity<?> updateDocument(@PathVariable Long id, @Valid @RequestBody Document updatedDocument, HttpServletRequest request) {
@@ -319,7 +337,7 @@ public class DocumentController {
             }
 
             // Zapisz zaktualizowany dokument
-            boolean isUpdated = documentService.saveDocument(existingDocument);
+            boolean isUpdated = documentService.updateDocument(existingDocument);
             if (isUpdated) {
                 return ResponseEntity.status(HttpStatus.OK).body("Dokument został pomyślnie zaktualizowany");
             } else {
@@ -415,8 +433,8 @@ public class DocumentController {
                 newDocument.setPlace(existingDocument.getPlace());
             }
 
-            boolean isSaved = documentService.saveDocument(newDocument);
-            if (isSaved) {
+            boolean isUpdated = documentService.updateDocument(newDocument);
+            if (isUpdated) {
                 // Wyślij powiadomienie do genealogów
                 Notification notification = new Notification();
                 notification.setUser(currentUser);
@@ -465,12 +483,12 @@ public class DocumentController {
             @RequestParam(required = false) String startPostalCode,
             @RequestParam(required = false) String endPostalCode,
             @RequestParam(required = false) String parish,
-            @RequestParam(required = false) Long longitude,
-            @RequestParam(required = false) Long latitude,
-            @RequestParam(required = false) Long minLongitude,
-            @RequestParam(required = false) Long maxLongitude,
-            @RequestParam(required = false) Long minLatitude,
-            @RequestParam(required = false) Long maxLatitude) {
+            @RequestParam(required = false) Double longitude,
+            @RequestParam(required = false) Double latitude,
+            @RequestParam(required = false) Double minLongitude,
+            @RequestParam(required = false) Double maxLongitude,
+            @RequestParam(required = false) Double minLatitude,
+            @RequestParam(required = false) Double maxLatitude) {
 
         // Najpierw wyszukujemy adresy
         List<Address> addresses = addressService.searchAddress(

@@ -51,15 +51,15 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
 
     // Searching addresses based on coordinates
     @Query("SELECT a FROM Address a WHERE a.longitude = :longitude AND a.latitude = :latitude")
-    List<Address> findByCoordinates(@Param("longitude") Long longitude, @Param("latitude") Long latitude);
+    List<Address> findByCoordinates(@Param("longitude") Double longitude, @Param("latitude") Double latitude);
 
     // Searching addresses based on coordinates ( longitude )
     @Query("SELECT a FROM Address a WHERE a.longitude BETWEEN :minLongitude AND :maxLongitude")
-    List<Address> findByLongitudeBetween(@Param("minLongitude") Long minLongitude, @Param("maxLongitude") Long maxLongitude);
+    List<Address> findByLongitudeBetween(@Param("minLongitude") Double minLongitude, @Param("maxLongitude") Double maxLongitude);
 
     // Searching addresses based on coordinates (latitude)
     @Query("SELECT a FROM Address a WHERE a.latitude BETWEEN :minLatitude AND :maxLatitude")
-    List<Address> findByLatitudeBetween(@Param("minLatitude") Long minLatitude, @Param("maxLatitude") Long maxLatitude);
+    List<Address> findByLatitudeBetween(@Param("minLatitude") Double minLatitude, @Param("maxLatitude") Double maxLatitude);
 
     // Searching addresses based on city and voivodeship
     @Query(value = "SELECT * FROM address a " +
@@ -110,8 +110,8 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
                           @Param("address") String address,
                           @Param("postalCode") String postalCode,
                           @Param("parish") String parish,
-                          @Param("longitude") Long longitude,
-                          @Param("latitude") Long latitude,
+                          @Param("longitude") Double longitude,
+                          @Param("latitude") Double latitude,
                           @Param("secular") String secular);
 
     // Return address
@@ -156,8 +156,8 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
             @Param("voivodeship") String voivodeship,
             @Param("community") String community,
             @Param("city") String city,
-            @Param("longitude") Long longitude,
-            @Param("latitude") Long latitude,
+            @Param("longitude") Double longitude,
+            @Param("latitude") Double latitude,
             @Param("address") String address,
             @Param("postalCode") String postalCode,
             @Param("parish") String parish,

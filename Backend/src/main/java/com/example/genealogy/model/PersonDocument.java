@@ -30,7 +30,7 @@ public class PersonDocument {
     @Column(name = "comment", columnDefinition = "text")
     private String comment;
 
-    private Integer x;
+    private Double x;
 
-    private Integer y;
+    private Double y;
 }

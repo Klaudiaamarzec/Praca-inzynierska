@@ -130,6 +130,9 @@ const viewNotificationDetails = (notificationID) => {
       <div class="filterMenu">
         <input class="filter-input" type="text" placeholder="Znajdź" id="parameter" v-model="parameter" @keyup.enter="searchNotification" required />
         <button class="search-button" @click="searchNotification">Szukaj</button>
+
+        <div class="separator-menu"></div>
+
         <button class="search-button" @click="notDisplayedNotification">Niewyświetlone</button>
         <button class="search-button" @click="editingNotifications">Edytowanie dokumentów</button>
         <button class="search-button" @click="addingNotifications">Dodawanie dokumentów</button>

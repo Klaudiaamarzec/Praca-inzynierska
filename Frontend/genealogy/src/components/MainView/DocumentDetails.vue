@@ -29,7 +29,7 @@ onMounted(async () => {
 });
 
 const goBack = () => {
-  router.back();
+  router.push({ name: 'Documents' });
 };
 
 const toggleShowMorePhotos = () => {
@@ -47,6 +47,7 @@ const formatPlace = (place) => {
   const parts = [];
   if (place.country) parts.push(place.country);
   if (place.voivodeship) parts.push(place.voivodeship);
+  if (place.community) parts.push(place.community);
   if (place.city) parts.push(place.city);
   return parts.join(', ');
 };
@@ -96,7 +97,18 @@ const showPhoto  = async () => {
         </div>
 
         <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail">
-          <strong>Miejsce: </strong> {{ formatPlace(document.place) }}
+          <strong>Miejsce: </strong>
+          <div>
+            {{ formatPlace(document.place) }}
+            <p v-if="document.place.address && document.place.postalCode"> {{document.place.address}}, {{document.place.postalCode}}</p>
+            <p v-if="document.place.address && !document.place.postalCode"> {{document.place.address}}</p>
+            <p v-if="document.place.postalCode && !document.place.address"> Kod pocztowy: {{document.place.postalCode}}</p>
+            <p v-if="document.place.latitude"> Szerokość geograficzna: {{document.place.latitude}}</p>
+            <p v-if="document.place.longitude"> Szerokość geograficzna: {{document.place.longitude}}</p>
+            <p v-if="document.place.parish"> Przynależność parafialna: {{document.place.parish}}</p>
+            <p v-if="document.place.secular"> Przynależność świecka: {{document.place.secular}}</p>
+
+          </div>
         </div>
 
         <div v-if="document.startDate || document.endDate" class="detail">
@@ -166,6 +178,12 @@ const showPhoto  = async () => {
 
         </div>
 
+        <div v-if="document.additionalFields">
+          <div v-for="(fieldValue, fieldName) in document.additionalFields" :key="fieldName" class="additional-detail">
+            <strong>{{ fieldName }}: </strong> {{ fieldValue }}
+          </div>
+        </div>
+
       </section>
 
       <section v-if="document.path" class="content-details">
@@ -178,8 +196,19 @@ const showPhoto  = async () => {
               <strong>Rodzaj: </strong> {{ document.type.name }}
             </div>
 
-            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail-small">
-              <strong>Miejsce: </strong> {{ formatPlace(document.place) }}
+            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail">
+              <strong>Miejsce: </strong>
+              <div>
+                {{ formatPlace(document.place) }}
+                <p v-if="document.place.address && document.place.postalCode"> {{document.place.address}}, {{document.place.postalCode}}</p>
+                <p v-if="document.place.address && !document.place.postalCode"> {{document.place.address}}</p>
+                <p v-if="document.place.postalCode && !document.place.address"> Kod pocztowy: {{document.place.postalCode}}</p>
+                <p v-if="document.place.latitude"> Szerokość geograficzna: {{document.place.latitude}}</p>
+                <p v-if="document.place.longitude"> Szerokość geograficzna: {{document.place.longitude}}</p>
+                <p v-if="document.place.parish"> Przynależność parafialna: {{document.place.parish}}</p>
+                <p v-if="document.place.secular"> Przynależność świecka: {{document.place.secular}}</p>
+
+              </div>
             </div>
 
             <div v-if="document.startDate || document.endDate" class="detail-small">
@@ -249,6 +278,12 @@ const showPhoto  = async () => {
 
             </div>
 
+            <div v-if="document.additionalFields">
+              <div v-for="(fieldValue, fieldName) in document.additionalFields" :key="fieldName" class="additional-detail">
+                <strong>{{ fieldName }}: </strong> {{ fieldValue }}
+              </div>
+            </div>
+
           </section>
 
         </div>
@@ -288,6 +323,12 @@ const showPhoto  = async () => {
 </template>
 
 <style scoped>
+
+.right-site-details {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 20px;
+}
 
 .main-section {
   height: 100%;

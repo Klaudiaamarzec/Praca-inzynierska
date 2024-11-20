@@ -23,6 +23,8 @@ const decodeJWT = (token) => {
 
 const viewDocumentDetails = (documentID) => {
 
+  sessionStorage.setItem('previousPage', window.location.pathname);
+
   const token = localStorage.getItem('jwtToken');
   const decodedToken = decodeJWT(token);
   const userRole = decodedToken.role;
@@ -35,20 +37,6 @@ const viewDocumentDetails = (documentID) => {
     console.log("Nieznana rola użytkownika!");
   }
 };
-
-// const formatDate = (date) => {
-//   const day = date.day ? String(date.day).padStart(2, '0') : '';
-//   const month = date.month ? String(date.month).padStart(2, '0') : '';
-//   const year = date.year ? date.year : '';
-//
-//   if (day && month) {
-//     return `${day}.${month}.${year}`;
-//   } else if (month) {
-//     return `${month}.${year}`;
-//   } else {
-//     return `${year}`;
-//   }
-// };
 
 const formatDate = (date) => {
   const day = date.day ? String(date.day).padStart(2, '0') : '';

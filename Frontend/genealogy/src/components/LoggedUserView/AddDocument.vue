@@ -27,7 +27,6 @@ const notExactDate = ref(false);    // Czy dokładna data jest zaznaczona
 const isDateRange = ref(false);    // Czy przedział dat jest zaznaczony
 
 // Zmienne na daty
-let exactDate = ref(null);       // Dokładna data
 let startDate = ref(null);       // Data początkowa (przedział dat)
 let endDate = ref(null);         // Data końcowa (przedział dat)
 
@@ -36,7 +35,6 @@ const description = ref('');
 const year = ref('');
 const month = ref('');
 const day = ref('');
-const placeID = ref('');
 const country = ref('');
 const voivodeship = ref('');
 const community = ref('');
@@ -88,14 +86,16 @@ watch(selectedDocumentType, (newTypeId) => {
 
 const toggleDateSelection = (type) => {
   if (type === 'exact') {
-    notExactDate.value = true;
-    isDateRange.value = false;
-    startDate.value = null;
-    endDate.value = null;
+    if (!notExactDate.value) {
+      day.value = null;
+      month.value = null;
+      year.value = null;
+    }
   } else if (type === 'range') {
-    notExactDate.value = false;
-    isDateRange.value = true;
-    exactDate.value = null;
+    if (!isDateRange.value) {
+      startDate.value = null;
+      endDate.value = null;
+    }
   }
 };
 
@@ -142,7 +142,6 @@ const addDocument = async () => {
         }
         : null,
       place: {
-        id: placeID.value || null,
         country: country.value || null,
         voivodeship: voivodeship.value || null,
         community: community.value || null,
@@ -359,7 +358,7 @@ const uploadPhoto = async (docId, photoFile) => {
 
           <input class="main-input" v-if="field.type === 'text'" v-model="field.value" :id="field.name" type="text" />
           <input class="main-input" v-if="field.type === 'date'" v-model="field.value" :id="field.name" type="date" />
-          <input class="main-input" v-if="field.type === 'number'" v-model="field.value" :id="field.name" type="number" />
+          <input class="main-input" v-if="field.type === 'bigint'" v-model="field.value" :id="field.name" type="number" />
 
         </div>
 

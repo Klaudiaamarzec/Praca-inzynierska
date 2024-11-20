@@ -94,7 +94,7 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public Address getAddressByAllParams(String country, String voivodeship, String community, String city, Long longitude, Long latitude, String address, String postalCode, String parish, String secular) {
+    public Address getAddressByAllParams(String country, String voivodeship, String community, String city, Double longitude, Double latitude, String address, String postalCode, String parish, String secular) {
         return addressRepository.getAddressByAllParams(country, voivodeship, community, city, longitude, latitude, address, postalCode, parish, secular);
     }
 
@@ -134,17 +134,17 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public List<Address> findByCoordinates(Long longitude, Long latitude) {
+    public List<Address> findByCoordinates(Double longitude, Double latitude) {
         return addressRepository.findByCoordinates(longitude, latitude);
     }
 
     @Override
-    public List<Address> findByLongitudeBetween(Long minLongitude, Long maxLongitude) {
+    public List<Address> findByLongitudeBetween(Double minLongitude, Double maxLongitude) {
         return addressRepository.findByLongitudeBetween(minLongitude, maxLongitude);
     }
 
     @Override
-    public List<Address> findByLatitudeBetween(Long minLatitude, Long maxLatitude) {
+    public List<Address> findByLatitudeBetween(Double minLatitude, Double maxLatitude) {
         return addressRepository.findByLatitudeBetween(minLatitude, maxLatitude);
     }
 
@@ -155,7 +155,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<Address> searchAddress(String country, String voivodeship, String community, String city, String address, String postalCode, String startPostalCode, String endPostalCode, String parish,
-                                       Long longitude, Long latitude, Long minLongitude, Long maxLongitude, Long minLatitude, Long maxLatitude) {
+                                       Double longitude, Double latitude, Double minLongitude, Double maxLongitude, Double minLatitude, Double maxLatitude) {
 
         List<Address> addresses = getAllAddresses();
 
