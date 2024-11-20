@@ -2,11 +2,14 @@
 
 import { ref, onMounted } from 'vue';
 import {useRouter} from "vue-router";
+import LogoutModal from "@/components/MainView/LogoutModal.vue";
 
 const notifications = ref([]);
 const parameter = ref("");
 const router = useRouter();
 
+const showLogoutModal = ref(false);
+let logoutText = ref('');
 
 onMounted(async () => {
   await fetchAllNotification();
@@ -34,6 +37,11 @@ const fetchAllNotification = async () => {
       },
     });
 
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
+
     notifications.value = await response.json();
 
   } catch (error) {
@@ -54,6 +62,12 @@ const searchNotification = async () => {
           'Authorization': `Bearer ${token}`,
         },
       });
+
+      if (response.status === 401) {
+        showLogoutModal.value = true;
+        logoutText.value = await response.text();
+      }
+
       notifications.value = await response.json();
     } catch (error) {
       console.error('Błąd podczas wyszukiwania powiadomień:', error);
@@ -70,6 +84,12 @@ const notDisplayedNotification = async () => {
         'Authorization': `Bearer ${token}`,
       },
     });
+
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
+
     notifications.value = await response.json();
   } catch (error) {
     console.error('Błąd podczas pobierania powiadomień:', error);
@@ -85,6 +105,12 @@ const editingNotifications = async () => {
         'Authorization': `Bearer ${token}`,
       },
     });
+
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
+
     notifications.value = await response.json();
   } catch (error) {
     console.error('Błąd podczas pobierania powiadomień:', error);
@@ -100,6 +126,12 @@ const addingNotifications = async () => {
         'Authorization': `Bearer ${token}`,
       },
     });
+
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
+
     notifications.value = await response.json();
   } catch (error) {
     console.error('Błąd podczas pobierania powiadomień:', error);
@@ -157,6 +189,8 @@ const viewNotificationDetails = (notificationID) => {
 
     </div>
   </section>
+
+  <LogoutModal v-if="showLogoutModal" :showModal="showLogoutModal" :errorDetails="logoutText" @close="showLogoutModal = false" />
 
 </template>
 

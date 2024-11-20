@@ -3,12 +3,16 @@
 import { useRouter, useRoute } from 'vue-router';
 import { ref, computed, onMounted } from 'vue';
 import PhotoDetails from "@/components/LoggedUserView/PhotoDetails.vue";
+import LogoutModal from "@/components/MainView/LogoutModal.vue";
 
 const router = useRouter();
 const route = useRoute();
 
 const photoModal = ref(false);
 const showMorePhotos = ref(false);
+
+const showLogoutModal = ref(false);
+let logoutText = ref('');
 
 // Pobierz dokument z danych przekazanych przez route
 const documentID = computed(() => route.params.documentID || {});
@@ -402,6 +406,7 @@ const showPhoto  = async () => {
   </section>
 
   <PhotoDetails v-if="photoModal" :showModal="photoModal" :path="document.path" :peopleDocuments="filteredPeopleDocuments"  @close="photoModal = false"></PhotoDetails>
+  <LogoutModal v-if="showLogoutModal" :showModal="showLogoutModal" :errorDetails="logoutText" @close="showLogoutModal = false" />
 
 </template>
 

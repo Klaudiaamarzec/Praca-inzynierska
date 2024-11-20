@@ -4,6 +4,7 @@ import ErrorModal from './ErrorModal.vue';
 import ErrorPhotoModal from "@/components/LoggedUserView/ErrorPhotoModal.vue";
 import SuccessModal from "@/components/LoggedUserView/SuccessModal.vue";
 import PhotoModal from "@/components/LoggedUserView/PhotoModal.vue";
+import LogoutModal from "@/components/MainView/LogoutModal.vue";
 
 const showModal = ref(false);
 const showErrorModal = ref(false);
@@ -15,6 +16,8 @@ let errorModalText = ref('');
 const docID = ref(null);
 const photoData = ref(null);
 const photoFile = ref(null);
+const showLogoutModal = ref(false);
+let logoutText = ref('');
 
 const documentTypes = ref([]);
 const selectedDocumentType = ref(null);
@@ -169,6 +172,11 @@ const addDocument = async () => {
       body: JSON.stringify(documentData)
     });
 
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
+
     if (!response.ok) {
       showModal.value = true;
       const errorDetails = await response.text();
@@ -207,6 +215,11 @@ const uploadPhoto = async (docId, photoFile) => {
       },
       body: formData,
     });
+
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
 
     if (!response.ok) {
       showErrorModal.value = true;
@@ -375,6 +388,7 @@ const uploadPhoto = async (docId, photoFile) => {
   <ErrorModal v-if="showModal" :showModal="showModal" :errorDetails="errorText" @close="showModal = false" />
   <ErrorPhotoModal v-if="showErrorModal" :showModal="showErrorModal" :errorDetails="errorModalText" :docID="docID" @close="showModal = false"></ErrorPhotoModal>
   <SuccessModal v-if="showSuccess" :showModal="showSuccess" :successDetails="successText" :docID="docID" @close="showSuccess = false" />
+  <LogoutModal v-if="showLogoutModal" :showModal="showLogoutModal" :errorDetails="logoutText" @close="showLogoutModal = false" />
 
 </template>
 

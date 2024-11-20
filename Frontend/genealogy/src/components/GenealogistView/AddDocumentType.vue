@@ -9,10 +9,13 @@ const fields = ref([
 
 import ErrorModal from "@/components/LoggedUserView/ErrorModal.vue";
 import SuccessInfo from "@/components/GenealogistView/SuccessInfo.vue";
+import LogoutModal from "@/components/MainView/LogoutModal.vue";
 const showSuccess = ref(false);
 let successText = ref('');
 const showModal = ref(false);
 let errorText = ref('');
+const showLogoutModal = ref(false);
+let logoutText = ref('');
 
 const addField = () => {
   fields.value.push({name: "", type: ""});
@@ -37,6 +40,12 @@ const addDocumentType = async () => {
 
     }
 
+    if(typeName.value === '') {
+      showModal.value = true;
+      errorText.value = "Uzupełnij wszystkie wymagane pola";
+      return;
+    }
+
     const token = localStorage.getItem('jwtToken');
 
     const response = await fetch(`http://127.0.0.1:8080/API/DocumentTypes/Add`, {
@@ -47,6 +56,11 @@ const addDocumentType = async () => {
       },
       body: JSON.stringify(documentTypeData)
     });
+
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
 
     if (!response.ok) {
       showModal.value = true;
@@ -96,16 +110,6 @@ const addDocumentType = async () => {
         <button class="button-plus" @click="removeField(index)">-</button>
       </div>
 
-<!--      <div class="template-field">-->
-<!--        <input class="main-input" type="text" id="name" placeholder="Nazwa" v-model="name" />-->
-<!--        <select class="main-select" v-model="type" required>-->
-<!--          <option disabled value="">Wybierz typ danych</option>-->
-<!--          <option>Tekst</option>-->
-<!--          <option>Liczba</option>-->
-<!--          <option>Data</option>-->
-<!--        </select>-->
-<!--      </div>-->
-
       <section class="header-section">
         <div class="left-section">
           <button class="button-plus" @click="addField">+</button>
@@ -121,6 +125,7 @@ const addDocumentType = async () => {
 
   <ErrorModal v-if="showModal" :showModal="showModal" :errorDetails="errorText" @close="showModal = false" />
   <SuccessInfo v-if="showSuccess" :showModal="showSuccess" :successDetails="successText" redirectTo="stay" @close="showSuccess = false" />
+  <LogoutModal v-if="showLogoutModal" :showModal="showLogoutModal" :errorDetails="logoutText" @close="showLogoutModal = false" />
 
 </template>
 

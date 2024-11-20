@@ -2,6 +2,7 @@
 import {defineProps, onMounted, ref} from 'vue';
 import { useRouter } from 'vue-router';
 import ErrorModal from "@/components/LoggedUserView/ErrorModal.vue";
+import LogoutModal from "@/components/MainView/LogoutModal.vue";
 
 const props = defineProps(['documentID']);
 const documentID = props.documentID;
@@ -26,6 +27,8 @@ const postalCode = ref('');
 
 const showModal = ref(false);
 let errorText = ref('');
+const showLogoutModal = ref(false);
+let logoutText = ref('');
 
 onMounted(async () => {
   await fetchDocument();
@@ -118,6 +121,11 @@ const addURL = async () => {
       body: JSON.stringify(urlData)
     });
 
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
+
     if (!response.ok) {
       showModal.value = true;
       const errorDetails = await response.text();
@@ -170,6 +178,11 @@ const addPhysicalLocation = async () => {
       },
       body: JSON.stringify(physicalData)
     });
+
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
 
     if (!response.ok) {
       showModal.value = true;
@@ -381,6 +394,7 @@ const addPhysicalLocation = async () => {
   </section>
 
   <ErrorModal v-if="showModal" :showModal="showModal" :errorDetails="errorText" @close="showModal = false" />
+  <LogoutModal v-if="showLogoutModal" :showModal="showLogoutModal" :errorDetails="logoutText" @close="showLogoutModal = false" />
 
 </template>
 

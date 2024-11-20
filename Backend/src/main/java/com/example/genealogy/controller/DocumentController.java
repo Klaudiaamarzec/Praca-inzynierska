@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,11 +62,15 @@ public class DocumentController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Brak tokenu JWT lub token jest nieprawidłowy");
             }
 
-            String token = authorizationHeader.substring(7); // Pobranie samego tokenu
-            String username = jwtUtil.extractUsername(token); // Wyodrębnienie nazwy użytkownika z tokenu
+            String token = authorizationHeader.substring(7);
+            String username = jwtUtil.extractUsername(token);
 
             // Pobierz zalogowanego użytkownika na podstawie wyodrębnionego username
             User currentUser = userService.findByUserName(username);
+
+            if(jwtUtil.isTokenExpired(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesja wygasła. Proszę się zalogować ponownie.");
+            }
 
             // Jeśli to zwykły użytkownik, ustaw confirmed na false
             document.setConfirmed(currentUser.getIdRole().getId() == 1);
@@ -241,6 +246,11 @@ public class DocumentController {
             String token = request.getHeader("Authorization").substring(7);
             String username = jwtUtil.extractUsername(token);
             User currentUser = userService.findByUserName(username);
+
+            if(jwtUtil.isTokenExpired(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesja wygasła. Proszę się zalogować ponownie.");
+            }
+
             List<Document> documents = documentService.findDocumentsByOwner(currentUser);
             return ResponseEntity.ok(documents);
 
@@ -258,6 +268,10 @@ public class DocumentController {
             String token = request.getHeader("Authorization").substring(7);
             String username = jwtUtil.extractUsername(token);
             User currentUser = userService.findByUserName(username);
+
+            if(jwtUtil.isTokenExpired(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesja wygasła. Proszę się zalogować ponownie.");
+            }
 
             if(currentUser.getIdRole().getId() == 1) {
                 return updateGenealogist(id, updatedDocument, request);
@@ -355,6 +369,10 @@ public class DocumentController {
             String token = request.getHeader("Authorization").substring(7);
             String username = jwtUtil.extractUsername(token);
             User currentUser = userService.findByUserName(username);
+
+            if(jwtUtil.isTokenExpired(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesja wygasła. Proszę się zalogować ponownie.");
+            }
 
             Document existingDocument = documentService.getDocumentById(id);
             if (existingDocument == null) {
@@ -514,6 +532,10 @@ public class DocumentController {
             String token = request.getHeader("Authorization").substring(7);
             String username = jwtUtil.extractUsername(token);
             User currentUser = userService.findByUserName(username);
+
+            if(jwtUtil.isTokenExpired(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesja wygasła. Proszę się zalogować ponownie.");
+            }
 
             if(currentUser.getIdRole().getId() == 2) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Brak uprawnień do wykonania tej operacji");

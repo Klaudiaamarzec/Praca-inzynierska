@@ -3,6 +3,7 @@
 import {defineProps, onMounted, ref, computed} from 'vue';
 import { useRouter } from 'vue-router';
 import ErrorModal from "@/components/LoggedUserView/ErrorModal.vue";
+import LogoutModal from "@/components/MainView/LogoutModal.vue";
 
 const props = defineProps(['documentID']);
 const documentID = props.documentID;
@@ -17,6 +18,8 @@ const photosWithPath = computed(() => photos.value.filter(photo => photo.path));
 
 const showModal = ref(false);
 let errorText = ref('');
+const showLogoutModal = ref(false);
+let logoutText = ref('');
 
 const formatDate = (date) => {
   const day = date.day ? String(date.day).padStart(2, '0') : '';
@@ -110,6 +113,11 @@ const addPhotos = async () => {
         },
         body: JSON.stringify(selectedPhotos.value),
       });
+
+      if (response.status === 401) {
+        showLogoutModal.value = true;
+        logoutText.value = await response.text();
+      }
 
       if (!response.ok) {
         showModal.value = true;
@@ -288,6 +296,7 @@ const fetchPhotoPaths = async () => {
   </section>
 
   <ErrorModal v-if="showModal" :showModal="showModal" :errorDetails="errorText" @close="showModal = false" />
+  <LogoutModal v-if="showLogoutModal" :showModal="showLogoutModal" :errorDetails="logoutText" @close="showLogoutModal = false" />
 
 </template>
 

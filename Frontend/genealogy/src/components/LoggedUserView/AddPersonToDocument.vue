@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import ErrorModal from "@/components/LoggedUserView/ErrorModal.vue";
 import ImageModal from "@/components/LoggedUserView/ImageModal.vue";
 import PhotoDetails from "@/components/LoggedUserView/PhotoDetails.vue";
+import LogoutModal from "@/components/MainView/LogoutModal.vue";
 
 const props = defineProps(['documentID']);
 const documentID = props.documentID;
@@ -20,6 +21,8 @@ const photoModal = ref(false);
 const showModal = ref(false);
 const showImage = ref(false);
 let errorText = ref('');
+const showLogoutModal = ref(false);
+let logoutText = ref('');
 
 const x = ref(null);
 const y = ref(null);
@@ -171,6 +174,11 @@ const addPerson = async () => {
       },
       body: JSON.stringify(personData)
     });
+
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
 
     if (!response.ok) {
       showModal.value = true;
@@ -359,6 +367,7 @@ const showPhoto  = async () => {
     @close="showImage = false" />
 
   <PhotoDetails v-if="photoModal" :showModal="photoModal" :path="document.path" :peopleDocuments="filteredPeopleDocuments"  @close="photoModal = false"></PhotoDetails>
+  <LogoutModal v-if="showLogoutModal" :showModal="showLogoutModal" :errorDetails="logoutText" @close="showLogoutModal = false" />
 
 </template>
 

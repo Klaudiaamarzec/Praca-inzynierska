@@ -3,6 +3,7 @@
 import {useRoute, useRouter} from 'vue-router';
 import { ref, computed, onMounted } from 'vue';
 import ErrorModal from "@/components/LoggedUserView/ErrorModal.vue";
+import LogoutModal from "@/components/MainView/LogoutModal.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -10,6 +11,8 @@ const router = useRouter();
 const showModal = ref(false);
 const showAdvancedAddress = ref(false);
 let errorText = ref('');
+const showLogoutModal = ref(false);
+let logoutText = ref('');
 
 const notExactDate = ref(false);
 const isDateRange = ref(false);
@@ -212,6 +215,11 @@ const editDocument = async() => {
       },
       body: JSON.stringify(documentData)
     });
+
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
 
     if (!response.ok) {
       showModal.value = true;
@@ -504,6 +512,7 @@ const editDocument = async() => {
   </section>
 
   <ErrorModal v-if="showModal" :showModal="showModal" :errorDetails="errorText" @close="showModal = false" />
+  <LogoutModal v-if="showLogoutModal" :showModal="showLogoutModal" :errorDetails="logoutText" @close="showLogoutModal = false" />
 
 </template>
 

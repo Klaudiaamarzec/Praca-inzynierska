@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/API/PhysicalLocations")
@@ -47,6 +48,10 @@ public class PhysicalLocationsController {
             String username = jwtUtil.extractUsername(token);
             User currentUser = userService.findByUserName(username);
 
+            if(jwtUtil.isTokenExpired(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesja wygasła. Proszę się zalogować ponownie.");
+            }
+
             return ResponseEntity.ok(physicalLocationService.findAllByUser(currentUser));
 
         } catch (Exception e) {
@@ -71,6 +76,10 @@ public class PhysicalLocationsController {
 
             // Pobierz zalogowanego użytkownika na podstawie wyodrębnionego username
             User currentUser = userService.findByUserName(username);
+
+            if(jwtUtil.isTokenExpired(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesja wygasła. Proszę się zalogować ponownie.");
+            }
 
             physicalLocations.setUser(currentUser);
             physicalLocations.setDate(LocalDate.now());
@@ -136,6 +145,10 @@ public class PhysicalLocationsController {
             String token = request.getHeader("Authorization").substring(7);
             String username = jwtUtil.extractUsername(token);
             User currentUser = userService.findByUserName(username);
+
+            if(jwtUtil.isTokenExpired(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesja wygasła. Proszę się zalogować ponownie.");
+            }
 
             PhysicalLocations existingPhysicalLocation = physicalLocationService.getPhysicalLocationsById(id);
 

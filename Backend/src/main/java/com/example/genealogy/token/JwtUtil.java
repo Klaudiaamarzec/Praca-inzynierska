@@ -69,7 +69,7 @@ public class JwtUtil {
 
     // Sprawdzanie, czy token jest wygasły
     public boolean isTokenExpired(String token) {
-        return !extractExpiration(token).before(new Date());
+        return extractExpiration(token).before(new Date());
     }
 
     // Weryfikacja tokenu

@@ -2,8 +2,12 @@
 
 import Header from "@/components/UserView/Header.vue";
 import Results from "@/components/LoggedUserView/Results.vue";
+import LogoutModal from "@/components/MainView/LogoutModal.vue";
 import {onMounted, ref} from "vue";
 let searchResults = ref([]);
+
+const showModal = ref(false);
+let errorText = ref('');
 
 const fetchDocuments = async () => {
   try {
@@ -16,6 +20,11 @@ const fetchDocuments = async () => {
         'Authorization': `Bearer ${token}`,
       }
     });
+
+    if (response.status === 401) {
+      showModal.value = true;
+      errorText.value = await response.text();
+    }
 
     if (!response.ok) {
       console.error(`Nie udało się pobrać dokumentów: ${response.status} - ${response.statusText}`);
@@ -48,6 +57,8 @@ onMounted(() => {
       <Results v-if="searchResults.length" :results="searchResults" />
     </div>
   </section>
+
+  <LogoutModal v-if="showModal" :showModal="showModal" :errorDetails="errorText" @close="showModal = false" />
 
 </template>
 

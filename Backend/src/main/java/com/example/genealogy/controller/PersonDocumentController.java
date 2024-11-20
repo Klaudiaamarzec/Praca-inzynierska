@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/API")
 public class PersonDocumentController {
@@ -107,6 +109,10 @@ public class PersonDocumentController {
             String token = request.getHeader("Authorization").substring(7);
             String username = jwtUtil.extractUsername(token);
             User currentUser = userService.findByUserName(username);
+
+            if(jwtUtil.isTokenExpired(token)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sesja wygasła. Proszę się zalogować ponownie.");
+            }
 
             if(currentUser.getIdRole().getId() == 2) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Brak uprawnień do wykonania tej operacji");

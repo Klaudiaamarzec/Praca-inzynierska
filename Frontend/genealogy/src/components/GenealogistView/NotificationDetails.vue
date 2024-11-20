@@ -4,6 +4,7 @@ import {useRoute, useRouter} from 'vue-router';
 import {ref, computed, onMounted} from 'vue';
 import ErrorModal from "@/components/LoggedUserView/ErrorModal.vue";
 import SuccessInfo from "@/components/GenealogistView/SuccessInfo.vue";
+import LogoutModal from "@/components/MainView/LogoutModal.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -12,9 +13,10 @@ const photoModal = ref(false);
 const showMorePhotos = ref(false);
 const showSuccess = ref(false);
 let successText = ref('');
-
 const showModal = ref(false);
 let errorText = ref('');
+const showLogoutModal = ref(false);
+let logoutText = ref('');
 
 const notificationID = computed(() => route.params.notificationID || {});
 
@@ -35,6 +37,12 @@ const loadNotificationDetails = async () => {
         'Authorization': `Bearer ${token}`,
       },
     });
+
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
+
     if (response.ok) {
       notification.value = await response.json();
     } else {
@@ -123,6 +131,11 @@ const confirmDocument = async () => {
         'Authorization': `Bearer ${token}`,
       }
     });
+
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
 
     if (!response.ok) {
       showModal.value = true;
@@ -269,6 +282,7 @@ const confirmDocument = async () => {
 
   <ErrorModal v-if="showModal" :showModal="showModal" :errorDetails="errorText" @close="showModal = false" />
   <SuccessInfo v-if="showSuccess" :showModal="showSuccess" :successDetails="successText" redirectTo="/Notifications" @close="showSuccess = false" />
+  <LogoutModal v-if="showLogoutModal" :showModal="showLogoutModal" :errorDetails="logoutText" @close="showLogoutModal = false" />
 
 </template>
 
