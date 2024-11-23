@@ -26,8 +26,8 @@
           <li class="nav-bar"><router-link to="/genealogist/myDocuments">Moje dokumenty</router-link></li>
           <li class="nav-bar"><router-link to="/genealogist/people">Osoby</router-link></li>
           <li class="nav-bar"><router-link to="/genealogist/addDocument">Dodaj dokument</router-link></li>
-          <li class="nav-bar"><router-link to="/genealogist/notifications">Powiadomienia</router-link></li>
           <li class="nav-bar"><router-link to="/genealogist/addDocumentTyp">Dodaj nowy rodzaj dokumentu</router-link></li>
+          <li class="nav-bar"><router-link to="/genealogist/notifications">Powiadomienia</router-link></li>
         </ul>
       </nav>
     </section>

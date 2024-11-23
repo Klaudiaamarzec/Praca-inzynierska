@@ -61,6 +61,20 @@ const viewPersonDetails = (personID) => {
   }
 }
 
+const addPerson = (personID) => {
+  const token = localStorage.getItem('jwtToken');
+  const decodedToken = decodeJWT(token);
+  const userRole = decodedToken.role;
+
+  if (userRole === 'genealogist') {
+    router.push({ name: 'GenealogistAddPerson', params: { personID } });
+  } else if (userRole === 'user') {
+    router.push({ name: 'UserAddPerson', params: { personID } });
+  } else {
+    console.log("Nieznana rola użytkownika!");
+  }
+}
+
 </script>
 
 <template>

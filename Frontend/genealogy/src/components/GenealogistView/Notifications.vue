@@ -10,6 +10,7 @@ const router = useRouter();
 
 const showLogoutModal = ref(false);
 let logoutText = ref('');
+const activeButton = ref(null);
 
 onMounted(async () => {
   await fetchAllNotification();
@@ -179,7 +180,13 @@ const viewNotificationDetails = (notificationID) => {
         </section>
 
         <div class="result-list">
-          <div class="notification-item" v-for="notification in notifications" :key="notification.id" @click="viewNotificationDetails(notification.id)">
+          <div
+            class="notification-item"
+            v-for="notification in notifications"
+            :key="notification.id"
+            @click="viewNotificationDetails(notification.id)"
+            :class="{'hidden': !notification.displayed}"
+          >
             <p>{{ notification.title }}</p>
             <p class="value">{{ notification.date }}</p>
             <p class="value">{{ notification.user.username }}</p>

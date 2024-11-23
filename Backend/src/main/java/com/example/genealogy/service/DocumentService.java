@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.Doc;
 import java.time.LocalDate;
 import java.util.List;
 

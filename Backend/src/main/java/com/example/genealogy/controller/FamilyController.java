@@ -19,11 +19,12 @@ public class FamilyController {
     @PostMapping("AddFamily")
     public ResponseEntity<?> addFamily(@Valid @RequestBody Family family) {
 
-        boolean isSaved = familyService.saveFamily(family);
+        ResponseEntity<String> response  = familyService.saveFamily(family);
 
-        if(!isSaved)
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nie udało się dodać rodziny");
+        if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.getBody());
+        }
 
-        return ResponseEntity.status(HttpStatus.OK).body("Rodzina została prawidłowo dodana");
+        return ResponseEntity.status(HttpStatus.OK).body(response.getBody());
     }
 }

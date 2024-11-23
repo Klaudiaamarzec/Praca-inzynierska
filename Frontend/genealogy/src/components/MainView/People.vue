@@ -50,7 +50,6 @@ const viewPersonDetails = (personID) => {
       <div class="filterMenu">
         <input class="filter-input" type="text" placeholder="Znajdź" id="parameter" v-model="parameter" @keyup.enter="searchPerson" required />
         <button class="search-button" @click="searchPerson">Szukaj</button>
-        <button class="search-button" @click="addPerson">Dodaj osobę</button>
       </div>
 
       <div class="search-results">

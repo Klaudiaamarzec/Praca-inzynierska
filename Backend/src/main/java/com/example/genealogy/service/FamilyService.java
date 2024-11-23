@@ -2,6 +2,7 @@ package com.example.genealogy.service;
 
 import com.example.genealogy.model.Family;
 import com.example.genealogy.model.Person;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface FamilyService {
 
     Family getFamilyById(Long id);
 
-    boolean saveFamily(Family family);
+    ResponseEntity<String> saveFamily(Family family);
 
     boolean updateFamily(Family family);
 

@@ -55,7 +55,7 @@ public class Document {
 
     @ManyToOne
     @JoinColumn(name = "ownerid")
-    @NotNull(message = "Właściciel' nie może być puste", groups = OnCreate.class)
+    @NotNull(message = "Pole 'Właściciel' nie może być puste", groups = OnCreate.class)
     private User owner;
 
     @ManyToOne

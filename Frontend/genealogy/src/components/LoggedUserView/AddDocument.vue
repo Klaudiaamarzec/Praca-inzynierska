@@ -291,7 +291,7 @@ const uploadPhoto = async (docId, photoFile) => {
             @change="toggleDateSelection('exact')"
             :checked="notExactDate"
           />
-          Niedokładna data
+          Data
         </label>
 
         <label>
@@ -303,11 +303,10 @@ const uploadPhoto = async (docId, photoFile) => {
           />
           Przedział dat
         </label>
-
       </div>
 
       <div v-if="notExactDate" class="date-inputs">
-        <label for="exactDateInput">Niedokładna data</label>
+        <label for="exactDateInput">Data</label>
         <input class="date-input" type="number" placeholder="Dzień" id="day" v-model="day" min="1" max="31" />
         <input class="date-input" type="number" placeholder="Miesiąc" id="month" v-model="month" min="1" max="12" />
         <input class="date-input" type="number" placeholder="Rok" id="year" v-model="year" min="1000" max="3000" /><span class="required-asterisk">*</span>

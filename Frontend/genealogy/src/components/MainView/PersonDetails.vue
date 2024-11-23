@@ -59,14 +59,14 @@ const showPerson = (personID) => {
 
       <section class="header-section">
         <div class="left-section">
-          <a @click="goBack"><p>Powrót</p></a>
+          <button class="button-modal" @click="goBack">Powrót</button>
         </div>
       </section>
 
       <section class="advanced-section-adding">
 
         <div v-if="result.person.birthDate" class="detail">
-          <strong>Data urodzenia:</strong> {{ person.birthDate }}
+          <strong>Data urodzenia:</strong> {{ result.person.birthDate }}
         </div>
 
         <div v-if="result.parents && (result.parents.mother || result.parents.father)" class="detail">
@@ -129,6 +129,10 @@ const showPerson = (personID) => {
 .urls {
   color: black;
   font-weight: normal;
+}
+
+.button-modal {
+  width: 100%;
 }
 
 </style>

@@ -9,10 +9,16 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import java.sql.SQLException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class FamilyServiceImpl implements FamilyService {
@@ -45,18 +51,31 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public boolean saveFamily(@NotNull Family family) {
+    public ResponseEntity<String> saveFamily(@NotNull Family family) {
         if (familyExists(family)) {
-            return false;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Rodzina już istnieje");
         }
 
         validateFamily(family);
 
         try {
             familyRepository.save(family);
-            return true;
+            return ResponseEntity.ok("Rodzina została prawidłowo dodana");
+        } catch (DataAccessException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLException) {
+                String errorMessage = cause.getMessage();
+                // Filtrujemy komunikat, aby uzyskać tylko wiadomość po ERROR:
+                if (errorMessage != null && errorMessage.contains("ERROR:")) {
+                    // Wyciągamy tylko istotną część komunikatu
+                    String filteredMessage = extractRelevantErrorMessage(errorMessage);
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(filteredMessage);
+                }
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Błąd zapisu: " + e.getMessage());
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Błąd zapisu: " + e.getMessage());
         } catch (Exception e) {
-            return false;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Błąd: " + e.getMessage());
         }
     }
 
@@ -126,5 +145,16 @@ public class FamilyServiceImpl implements FamilyService {
             }
             throw new ConstraintViolationException("Walidacja rodziny nie powiodła się:\n" + sb, violations);
         }
+    }
+
+    private String extractRelevantErrorMessage(String errorMessage) {
+        String regex = "Osoba o ID \\d+ jest już.*?i nie może być.*";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(errorMessage);
+
+        if (matcher.find()) {
+            return matcher.group();
+        }
+        return "Nieznany błąd";
     }
 }

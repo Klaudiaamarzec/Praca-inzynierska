@@ -56,7 +56,6 @@ public class PersonController {
     @PostMapping("Add")
     public ResponseEntity<String> addPerson(@Valid @RequestBody Person person) {
 
-
         if (personService.personExists(person)) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Osoba już istnieje");

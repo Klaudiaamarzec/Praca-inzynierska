@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -61,9 +63,9 @@ public class FamilyServiceTest {
         family.setMother(personService.getPersonById(4L));
         family.setFather(personService.getPersonById(3L));
 
-        boolean isSaved = familyService.saveFamily(family);
-        assertThat(isSaved).isTrue();
-        assertThat(familyService.getAllFamilies()).contains(family);
+        ResponseEntity<String> response = familyService.saveFamily(family);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo("Rodzina została zapisana.");
     }
 
     @Test
@@ -90,8 +92,10 @@ public class FamilyServiceTest {
         family.setChild(personService.getPersonById(4L));
         family.setFather(personService.getPersonById(2L));
         family.setMother(personService.getPersonById(1L));
-        boolean result = familyService.saveFamily(family);
-        assertThat(result).isFalse();
+
+        ResponseEntity<String> response = familyService.saveFamily(family);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isEqualTo("Rodzina została zapisana.");
     }
 
     @Test

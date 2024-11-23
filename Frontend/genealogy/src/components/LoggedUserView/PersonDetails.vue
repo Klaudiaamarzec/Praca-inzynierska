@@ -1,7 +1,7 @@
 <script setup>
 
 import {useRoute, useRouter} from 'vue-router';
-import {ref, computed, onMounted} from 'vue';
+import {ref, computed, onMounted, watch} from 'vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -31,6 +31,10 @@ const loadPersonData = async () => {
 onMounted(() => {
   loadPersonData();
 });
+watch(personID, () => {
+  loadPersonData();
+});
+
 
 const formatPersonInFamily = (person) => {
   return `${person.name} ${person.surname}`;
@@ -97,44 +101,38 @@ const showPerson = (personID) => {
 
       <section class="header-section">
         <div class="left-section">
-          <a @click="goBack"><p>Powrót</p></a>
+          <button class="button-modal" @click="goBack">Powrót</button>
         </div>
-<!--        <div class="right-section">-->
-<!--          <button class="button-modal" @click="editDocument(documentID)">Edytuj</button>-->
-<!--        </div>-->
       </section>
 
       <section class="advanced-section-adding">
 
         <div v-if="result.person.birthDate" class="detail">
-          <strong>Data urodzenia:</strong> {{ person.birthDate }}
+          <strong>Data urodzenia:</strong> {{ result.person.birthDate }}
         </div>
 
-        <div v-if="result.parents && (result.parents.mother || result.parents.father)" class="detail">
+        <div v-if="result.parents && (result.parents.mother || result.parents.father)" class="detail-section2">
           <strong>Rodzice:</strong>
           <ul class="people-list">
             <li v-if="result.parents.mother">
-<!--              - <strong>Matka:</strong> {{ formatPersonInFamily(result.parents.mother) }}-->
               - <a href="#" @click="showPerson(result.parents.mother.id)" class="urls">{{ formatPersonInFamily(result.parents.mother) }}</a>
             </li>
             <li v-if="result.parents.father">
-<!--              - <strong>Ojciec:</strong> {{ formatPersonInFamily(result.parents.father) }}-->
               - <a href="#" @click="showPerson(result.parents.father.id)" class="urls">{{ formatPersonInFamily(result.parents.father) }}</a>
             </li>
           </ul>
         </div>
 
-        <div v-if="result.children && result.children.length > 0" class="detail">
+        <div v-if="result.children && result.children.length > 0" class="detail-section2">
           <strong>Dzieci:</strong>
           <ul class="people-list">
             <li v-for="(child, index) in result.children" :key="index">
-<!--              - {{ formatPersonInFamily(children) }}-->
               - <a href="#" @click="showPerson(child.id)" class="urls">{{ formatPersonInFamily(child) }}</a>
             </li>
           </ul>
         </div>
 
-        <div v-if="result.person.personDocuments" class="detail">
+        <div v-if="result.person.personDocuments && result.person.personDocuments.length > 0" class="detail-section2">
           <strong>Powiązane dokumenty:</strong>
           <ul class="people-list">
             <li v-for="(document, index) in result.person.personDocuments" :key="index">
@@ -170,6 +168,14 @@ const showPerson = (personID) => {
 .urls {
   color: black;
   font-weight: normal;
+}
+
+.button-modal {
+  width: 100%;
+}
+
+.detail-section2 {
+  padding-left: 15px;
 }
 
 </style>

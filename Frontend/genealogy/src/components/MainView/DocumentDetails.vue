@@ -81,9 +81,6 @@ const showPhoto  = async () => {
         <div class="left-section">
           <button class="button-modal" @click="goBack">Powrót</button>
         </div>
-        <div class="right-section">
-          <button class="button-modal" @click="editDocument(documentID)">Edytuj</button>
-        </div>
       </section>
 
       <section v-if="!document.path" class="advanced-section-adding">
