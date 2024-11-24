@@ -4,10 +4,13 @@ import {useRoute, useRouter} from 'vue-router';
 import { ref, computed, onMounted } from 'vue';
 import ErrorModal from "@/components/LoggedUserView/ErrorModal.vue";
 import LogoutModal from "@/components/MainView/LogoutModal.vue";
+import SuccessInfo from "@/components/LoggedUserView/SuccessInfo.vue";
 
 const route = useRoute();
 const router = useRouter();
 
+const showSuccess = ref(false);
+let successText = ref('');
 const showModal = ref(false);
 const showAdvancedAddress = ref(false);
 let errorText = ref('');
@@ -182,6 +185,7 @@ const editDocument = async() => {
 
     const documentData = {
 
+      id: documentID.value,
       title: title.value,
       description: description.value,
       startDate: startDate.value || null,
@@ -202,8 +206,7 @@ const editDocument = async() => {
         postalCode: postalCode.value || null,
         parish: parish.value || null,
         secular: secular.value || null
-      },
-      additionalFields
+      }
 
     }
 
@@ -229,7 +232,16 @@ const editDocument = async() => {
       return;
     }
 
-    cancel();
+    const responseText = await response.text();
+    console.log(responseText);
+
+    if(response.status === 200 && responseText === "Propozycja zmian została przesłana do zatwierdzenia przez genealoga") {
+      successText.value = responseText;
+      showSuccess.value = true;
+    }
+    else {
+      cancel();
+    }
 
   } catch (error) {
     console.error('Błąd podczas dodawania dokumentu:', error);
@@ -512,6 +524,7 @@ const editDocument = async() => {
   </section>
 
   <ErrorModal v-if="showModal" :showModal="showModal" :errorDetails="errorText" @close="showModal = false" />
+  <SuccessInfo v-if="showSuccess" :showModal="showSuccess" :successDetails="successText" @close="showSuccess = false" />
   <LogoutModal v-if="showLogoutModal" :showModal="showLogoutModal" :errorDetails="logoutText" @close="showLogoutModal = false" />
 
 </template>

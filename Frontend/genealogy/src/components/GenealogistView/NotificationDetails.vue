@@ -9,8 +9,6 @@ import LogoutModal from "@/components/MainView/LogoutModal.vue";
 const router = useRouter();
 const route = useRoute();
 
-const photoModal = ref(false);
-const showMorePhotos = ref(false);
 const showSuccess = ref(false);
 let successText = ref('');
 const showModal = ref(false);
@@ -58,7 +56,6 @@ const getDocumentDetails = async () => {
     const response = await fetch(`http://127.0.0.1:8080/API/Documents/Get/${notification.value.document}`);
     if (response.ok) {
       document.value = await response.json();
-      console.log(document.value);
     } else {
       console.error("Nie udało się pobrać dokumentu");
     }
@@ -72,7 +69,6 @@ const getNewDocumentDetails = async () => {
     const response = await fetch(`http://127.0.0.1:8080/API/Documents/Get/${notification.value.newDocument}`);
     if (response.ok) {
       newDocument.value = await response.json();
-      console.log(newDocument.value);
     } else {
       console.error("Nie udało się pobrać dokumentu");
     }
@@ -92,10 +88,6 @@ onMounted(async () => {
 
 });
 
-const toggleShowMorePhotos = () => {
-  showMorePhotos.value = !showMorePhotos.value;
-};
-
 const formatDate = (date) => {
   const day = date.day ? String(date.day).padStart(2, '0') : '';
   const month = date.month ? String(date.month).padStart(2, '0') : '';
@@ -114,10 +106,6 @@ const formatPlace = (place) => {
 const formatPersonDocument = (personDocument) => {
   return `${personDocument.firstName} ${personDocument.lastName}`;
 };
-
-const showPhoto  = async () => {
-  photoModal.value = true;
-}
 
 const confirmDocument = async () => {
   try {
@@ -155,6 +143,78 @@ const confirmDocument = async () => {
   }
 }
 
+const confirmChange = async () => {
+  try {
+
+    const token = localStorage.getItem('jwtToken');
+
+    const response = await fetch(`http://127.0.0.1:8080/API/Notifications/ApproveUpdate/${notificationID.value}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
+
+    if (!response.ok) {
+      showModal.value = true;
+      const errorDetails = await response.text();
+      console.error('Odpowiedź serwera nie była poprawna:', errorDetails);
+      errorText.value = errorDetails || "Wystąpił błąd podczas zmian i aktualizacji dokumentu";
+      return;
+    }
+
+    successText.value = await response.text();
+    showSuccess.value = true;
+
+  } catch (error) {
+    console.error('Błąd podczas zatwierdzania zmian i aktualizacji dokumentu:', error);
+    showModal.value = true;
+    errorText.value = "Wystąpił problem z połączeniem z serwerem";
+  }
+}
+
+const rejectChanges = async () => {
+  try {
+
+    const token = localStorage.getItem('jwtToken');
+
+    const response = await fetch(`http://127.0.0.1:8080/API/Notifications/RejectUpdate/${notificationID.value}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      }
+    });
+
+    if (response.status === 401) {
+      showLogoutModal.value = true;
+      logoutText.value = await response.text();
+    }
+
+    if (!response.ok) {
+      showModal.value = true;
+      const errorDetails = await response.text();
+      console.error('Odpowiedź serwera nie była poprawna:', errorDetails);
+      errorText.value = errorDetails || "Wystąpił błąd podczas odrzucania zmian";
+      return;
+    }
+
+    successText.value = await response.text();
+    showSuccess.value = true;
+
+  } catch (error) {
+    console.error('Błąd podczas odrzucania zmian:', error);
+    showModal.value = true;
+    errorText.value = "Wystąpił problem z połączeniem z serwerem";
+  }
+}
+
 </script>
 
 <template>
@@ -181,20 +241,20 @@ const confirmDocument = async () => {
           <p>od: {{ notification.user && notification.user.username }}</p>
         </div>
 
-        <div v-if="!notification.newDocument && notification.document" class="end-section">
+        <div v-if="notification.document && !notification.newDocument" class="end-section">
           <button class="add-button" type="submit" @click="confirmDocument">Zatwierdź</button>
         </div>
 
         <div class="separator"></div>
 
-        <section v-if="notification.document && !document.path" class="advanced-section-adding">
+        <section v-if="notification.document && !notification.newDocument" class="advanced-section-adding">
 
           <div class="detail">
             <strong>Tytuł: </strong> {{ document.title }}
           </div>
 
           <div v-if="document.description" class="detail">
-            <strong>Tytuł: </strong> {{ document.description }}
+            <strong>Opis: </strong> {{ document.description }}
           </div>
 
           <div class="detail">
@@ -268,6 +328,67 @@ const confirmDocument = async () => {
                   </div>
                 </li>
               </ul>
+            </div>
+
+          </div>
+
+        </section>
+
+        <div v-if="notification.document && notification.newDocument" class="end-section">
+          <button class="add-button" type="submit" @click="rejectChanges">Odrzuć</button>
+          <button class="add-button" type="submit" @click="confirmChange">Zatwierdź</button>
+        </div>
+
+        <section v-if="notification.document && notification.newDocument" class="content">
+
+          <div class="left-site">
+
+            <p style="color: var(--dark-brown); padding-bottom: 8px">Oryginalny dokument</p>
+
+            <div class="detail">
+              <strong>Tytuł: </strong> {{ document.title }}
+            </div>
+
+            <div v-if="document.description" class="detail">
+              <strong>Opis: </strong> {{ document.description }}
+            </div>
+
+            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail">
+              <strong>Miejsce: </strong> {{ formatPlace(document.place) }}
+            </div>
+
+            <div v-if="document.startDate || document.endDate" class="detail">
+              <strong>Przedział dat: </strong> {{ document.startDate }} - {{ document.endDate }}
+            </div>
+
+            <div v-if="document.date" class="detail">
+              <strong>Data: </strong> {{ formatDate(document.date) }}
+            </div>
+
+          </div>
+
+          <div class="right-site">
+
+            <p style="color: var(--dark-brown); padding-bottom: 8px">Nowa wersja dokumentu</p>
+
+            <div class="detail">
+              <strong>Tytuł: </strong> {{ newDocument.title }}
+            </div>
+
+            <div v-if="newDocument.description" class="detail">
+              <strong>Opis: </strong> {{ newDocument.description }}
+            </div>
+
+            <div v-if="newDocument.place.country || newDocument.place.voivodeship || newDocument.place.city" class="detail">
+              <strong>Miejsce: </strong> {{ formatPlace(newDocument.place) }}
+            </div>
+
+            <div v-if="newDocument.startDate || newDocument.endDate" class="detail">
+              <strong>Przedział dat: </strong> {{ newDocument.startDate }} - {{ newDocument.endDate }}
+            </div>
+
+            <div v-if="newDocument.date" class="detail">
+              <strong>Data: </strong> {{ formatDate(newDocument.date) }}
             </div>
 
           </div>

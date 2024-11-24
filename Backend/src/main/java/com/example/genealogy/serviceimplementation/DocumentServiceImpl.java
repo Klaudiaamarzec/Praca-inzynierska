@@ -6,6 +6,8 @@ import com.example.genealogy.repository.NotificationRepository;
 import com.example.genealogy.repository.PersonDocumentRepository;
 import com.example.genealogy.service.DateService;
 import com.example.genealogy.service.DocumentService;
+import com.example.genealogy.service.NotificationService;
+import com.example.genealogy.service.PersonDocumentService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -33,7 +35,6 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Value("${documents.photo.dir}")
     private String documentsPhotoDir;
-
     private final DocumentRepository documentRepository;
     private final DateService dateService;
     private final PersonDocumentRepository personDocumentRepository;
@@ -83,6 +84,8 @@ public class DocumentServiceImpl implements DocumentService {
         validateDocument(document);
 
         try {
+            System.out.println("CONFIRMED");
+            System.out.println(document.getConfirmed());
             documentRepository.save(document);
             return true;
         } catch (Exception e) {
@@ -110,6 +113,12 @@ public class DocumentServiceImpl implements DocumentService {
     public boolean deleteDocument(Document document) {
         try {
             if (existsById(document.getId())) {
+
+                // Usunięcie powiązań w tabeli PersonDocument
+                personDocumentRepository.deleteByDocumentId(document.getId());
+                // Usunięcie powiązań w tabeli Notification
+                notificationRepository.deleteByDocumentId(document.getId());
+
                 documentRepository.deleteById(document.getId());
                 return true;
             }
@@ -310,12 +319,12 @@ public class DocumentServiceImpl implements DocumentService {
 
         // Usuń wszystkie powiązania z PersonDocument i Notification przed usunięciem dokumentu
         personDocumentRepository.deleteByDocumentId(oldDocumentId);
-        notificationRepository.deleteByDocumentId(oldDocumentId);
+        notificationRepository.deleteByOldDocumentId(oldDocumentId);
 
         newDocument.setConfirmed(true);
-        boolean isSaved = saveDocument(newDocument);
+        boolean isUpdated = updateDocument(newDocument);
 
-        if(!isSaved) {
+        if(!isUpdated) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wystąpił błąd podczas zapisywania nowego dokumentu");
         }
 

@@ -3,12 +3,15 @@
 import { useRouter, useRoute } from 'vue-router';
 import { ref, computed, onMounted } from 'vue';
 import PhotoDetails from "@/components/LoggedUserView/PhotoDetails.vue";
+import MapModal from "@/components/MainView/MapModal.vue";
 
 const router = useRouter();
 const route = useRoute();
 
 const photoModal = ref(false);
 const showMorePhotos = ref(false);
+
+const showMap = ref(false);
 
 // Pobierz dokument z danych przekazanych przez route
 const documentID = computed(() => route.params.documentID || {});
@@ -36,6 +39,10 @@ const toggleShowMorePhotos = () => {
   showMorePhotos.value = !showMorePhotos.value;
 };
 
+const showMapModal = async () => {
+  showMap.value = true;
+}
+
 const formatDate = (date) => {
   const day = date.day ? String(date.day).padStart(2, '0') : '';
   const month = date.month ? String(date.month).padStart(2, '0') : '';
@@ -62,6 +69,34 @@ const filteredPeopleDocuments = computed(() => {
 
 const showPhoto  = async () => {
   photoModal.value = true;
+}
+
+const convertLatitude = (latitude) => {
+  const convertToDMS = (coordinate) => {
+    const direction = coordinate >= 0 ? 'N' : 'S';
+    const absCoord = Math.abs(coordinate);
+    const degrees = Math.floor(absCoord);
+    const minutes = Math.floor((absCoord - degrees) * 60);
+    const seconds = ((absCoord - degrees - minutes / 60) * 3600).toFixed(2);
+
+    return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+  };
+
+  return convertToDMS(latitude);
+}
+
+const convertLongitude = (longitude) => {
+  const convertToDMS = (coordinate) => {
+    const direction = coordinate >= 0 ? 'E' : 'W';
+    const absCoord = Math.abs(coordinate);
+    const degrees = Math.floor(absCoord);
+    const minutes = Math.floor((absCoord - degrees) * 60);
+    const seconds = ((absCoord - degrees - minutes / 60) * 3600).toFixed(2);
+
+    return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+  };
+
+  return convertToDMS(longitude);
 }
 
 </script>
@@ -100,10 +135,14 @@ const showPhoto  = async () => {
             <p v-if="document.place.address && document.place.postalCode"> {{document.place.address}}, {{document.place.postalCode}}</p>
             <p v-if="document.place.address && !document.place.postalCode"> {{document.place.address}}</p>
             <p v-if="document.place.postalCode && !document.place.address"> Kod pocztowy: {{document.place.postalCode}}</p>
-            <p v-if="document.place.latitude"> Szerokość geograficzna: {{document.place.latitude}}</p>
-            <p v-if="document.place.longitude"> Szerokość geograficzna: {{document.place.longitude}}</p>
+            <p v-if="document.place.latitude"> Szerokość geograficzna: {{ convertLatitude(document.place.latitude) }}</p>
+            <p v-if="document.place.longitude"> Długość geograficzna: {{ convertLongitude(document.place.longitude) }}</p>
             <p v-if="document.place.parish"> Przynależność parafialna: {{document.place.parish}}</p>
             <p v-if="document.place.secular"> Przynależność świecka: {{document.place.secular}}</p>
+
+            <div v-if="document.place.latitude && document.place.longitude" class="end-section">
+              <button  class="advanced-search" @click="showMapModal">Pokaż na mapie</button>
+            </div>
 
           </div>
         </div>
@@ -200,10 +239,14 @@ const showPhoto  = async () => {
                 <p v-if="document.place.address && document.place.postalCode"> {{document.place.address}}, {{document.place.postalCode}}</p>
                 <p v-if="document.place.address && !document.place.postalCode"> {{document.place.address}}</p>
                 <p v-if="document.place.postalCode && !document.place.address"> Kod pocztowy: {{document.place.postalCode}}</p>
-                <p v-if="document.place.latitude"> Szerokość geograficzna: {{document.place.latitude}}</p>
-                <p v-if="document.place.longitude"> Szerokość geograficzna: {{document.place.longitude}}</p>
+                <p v-if="document.place.latitude"> Szerokość geograficzna: {{ convertLatitude(document.place.latitude) }}</p>
+                <p v-if="document.place.longitude"> Długość geograficzna: {{ convertLongitude(document.place.longitude) }}</p>
                 <p v-if="document.place.parish"> Przynależność parafialna: {{document.place.parish}}</p>
                 <p v-if="document.place.secular"> Przynależność świecka: {{document.place.secular}}</p>
+
+                <div v-if="document.place.latitude && document.place.longitude" class="end-section">
+                  <button  class="advanced-search" @click="showMapModal">Pokaż na mapie</button>
+                </div>
 
               </div>
             </div>
@@ -316,6 +359,13 @@ const showPhoto  = async () => {
   </section>
 
   <PhotoDetails v-if="photoModal" :showModal="photoModal" :path="document.path" :peopleDocuments="filteredPeopleDocuments"  @close="photoModal = false"></PhotoDetails>
+  <MapModal
+    v-if="showMap"
+    :showMap = "showMap"
+    :latitude="document.place.latitude"
+    :longitude="document.place.longitude"
+    @close="showMap = false"
+  />
 
 </template>
 

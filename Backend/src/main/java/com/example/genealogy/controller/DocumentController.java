@@ -288,7 +288,7 @@ public class DocumentController {
 
             // Sprawdź, czy dokument istnieje
             Document existingDocument = documentService.getDocumentById(id);
-            if (existingDocument == null) {
+            if(existingDocument == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Dokument nie został znaleziony");
             }
 
@@ -446,8 +446,8 @@ public class DocumentController {
                 newDocument.setPlace(existingDocument.getPlace());
             }
 
-            boolean isUpdated = documentService.updateDocument(newDocument);
-            if (isUpdated) {
+            boolean isSaved = documentService.saveDocument(newDocument);
+            if (isSaved) {
                 // Wyślij powiadomienie do genealogów
                 Notification notification = new Notification();
                 notification.setUser(currentUser);
@@ -537,12 +537,6 @@ public class DocumentController {
             }
 
             Document document = documentService.getDocumentById(id);
-
-            // Usunięcie powiązań w tabeli PersonDocument
-            personDocumentService.deleteByDocumentID(id);
-
-            // Usunięcie powiązań w tabeli Notification
-            notificationService.deleteByDocumentID(id);
 
             boolean isDeleted = documentService.deleteDocument(document);
             if (isDeleted) {

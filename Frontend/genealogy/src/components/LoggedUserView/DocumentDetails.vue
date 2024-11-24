@@ -4,6 +4,8 @@ import { useRouter, useRoute } from 'vue-router';
 import { ref, computed, onMounted } from 'vue';
 import PhotoDetails from "@/components/LoggedUserView/PhotoDetails.vue";
 import LogoutModal from "@/components/MainView/LogoutModal.vue";
+import MapModal from "@/components/MainView/MapModal.vue";
+import DeleteModal from "@/components/LoggedUserView/DeleteModal.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -11,8 +13,19 @@ const route = useRoute();
 const photoModal = ref(false);
 const showMorePhotos = ref(false);
 
+const showMap = ref(false);
+
 const showLogoutModal = ref(false);
 let logoutText = ref('');
+
+const showDeleteModal = ref(false);
+
+const isGenealogist = ref(false);
+
+let token = ref(null);
+let decodedToken = ref(null);
+let currentUser = ref(null);
+let userRole = ref(null);
 
 // Pobierz dokument z danych przekazanych przez route
 const documentID = computed(() => route.params.documentID || {});
@@ -20,6 +33,11 @@ const documentID = computed(() => route.params.documentID || {});
 const document = ref({});
 
 onMounted(async () => {
+  await getDocument();
+  await getUser();
+});
+
+const getDocument = async () => {
   try {
     const response = await fetch(`http://127.0.0.1:8080/API/Documents/Get/${documentID.value}`);
     if (response.ok) {
@@ -30,35 +48,39 @@ onMounted(async () => {
   } catch (error) {
     console.error("Błąd:", error);
   }
-});
+}
+
+const getUser = async () => {
+  token.value = localStorage.getItem('jwtToken');
+
+  if (token.value) {
+    decodedToken.value = decodeJWT(token.value);
+    currentUser.value = decodedToken.value.id;
+    userRole.value = decodedToken.value.role;
+
+    // Sprawdzanie roli użytkownika
+    isGenealogist.value = userRole.value === 'genealogist';
+  } else {
+    console.error("Brak tokenu JWT");
+  }
+}
 
 const getNotConfirmedDocument = computed(()  => {
 
-  const token = localStorage.getItem('jwtToken');
-  const decodedToken = decodeJWT(token);
-  const currentUser = decodedToken.id;
+  return !!(document.value.owner && document.value.owner === currentUser.value && !document.value.confirmed);
 
-  if (document.value.owner && document.value.owner === currentUser && !document.value.confirmed) {
-    return true;
-  }
-
-  return false;
 });
 
 const goBack = () => {
 
   const previousPage = sessionStorage.getItem('previousPage');
 
-  const token = localStorage.getItem('jwtToken');
-  const decodedToken = decodeJWT(token);
-  const userRole = decodedToken.role;
-
   if (previousPage) {
     router.push(previousPage);
   } else {
-    if (userRole === 'genealogist') {
+    if (userRole.value === 'genealogist') {
       router.push({ name: 'GenealogistDocuments' });
-    } else if (userRole === 'user') {
+    } else if (userRole.value === 'user') {
       router.push({ name: 'UserDocuments' });
     } else {
       console.log("Nieznana rola użytkownika!");
@@ -103,13 +125,10 @@ const decodeJWT = (token) => {
 };
 
 const viewPersonDetails = (personID) => {
-  const token = localStorage.getItem('jwtToken');
-  const decodedToken = decodeJWT(token);
-  const userRole = decodedToken.role;
 
-  if (userRole === 'genealogist') {
+  if (userRole.value === 'genealogist') {
     router.push({ name: 'GenealogistPersonDetails', params: { personID } });
-  } else if (userRole === 'user') {
+  } else if (userRole.value === 'user') {
     router.push({ name: 'UserPersonDetails', params: { personID } });
   } else {
     console.log("Nieznana rola użytkownika!");
@@ -118,25 +137,57 @@ const viewPersonDetails = (personID) => {
 
 const editDocument = (documentID) => {
 
-  const token = localStorage.getItem('jwtToken');
-  const decodedToken = decodeJWT(token);
-  const userRole = decodedToken.role;
-
-  if (userRole === 'genealogist') {
+  if (userRole.value === 'genealogist') {
     router.push({ name: 'GenealogistEditDocument', params: { documentID } });
-  } else if (userRole === 'user') {
+  } else if (userRole.value === 'user') {
     router.push({ name: 'UserEditDocument', params: { documentID } });
   } else {
     console.log("Nieznana rola użytkownika!");
   }
 };
 
+const deleteDocument = async () => {
+  showDeleteModal.value = true;
+}
+
 const filteredPeopleDocuments = computed(() => {
   return document.value.peopleDocuments.filter(person => person.x !== null && person.y !== null);
 });
 
+const convertLatitude = (latitude) => {
+  const convertToDMS = (coordinate) => {
+    const direction = coordinate >= 0 ? 'N' : 'S';
+    const absCoord = Math.abs(coordinate);
+    const degrees = Math.floor(absCoord);
+    const minutes = Math.floor((absCoord - degrees) * 60);
+    const seconds = ((absCoord - degrees - minutes / 60) * 3600).toFixed(2);
+
+    return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+  };
+
+  return convertToDMS(latitude);
+}
+
+const convertLongitude = (longitude) => {
+  const convertToDMS = (coordinate) => {
+    const direction = coordinate >= 0 ? 'E' : 'W';
+    const absCoord = Math.abs(coordinate);
+    const degrees = Math.floor(absCoord);
+    const minutes = Math.floor((absCoord - degrees) * 60);
+    const seconds = ((absCoord - degrees - minutes / 60) * 3600).toFixed(2);
+
+    return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+  };
+
+  return convertToDMS(longitude);
+}
+
 const showPhoto  = async () => {
   photoModal.value = true;
+}
+
+const showMapModal = async () => {
+  showMap.value = true;
 }
 
 </script>
@@ -157,6 +208,7 @@ const showPhoto  = async () => {
           <button class="button-modal" @click="goBack">Powrót</button>
         </div>
         <div class="right-section">
+          <button v-if="isGenealogist" class="advanced-search" @click="deleteDocument(documentID)">Usuń</button>
           <button class="button-modal" @click="editDocument(documentID)">Edytuj</button>
         </div>
       </section>
@@ -186,10 +238,14 @@ const showPhoto  = async () => {
             <p v-if="document.place.address && document.place.postalCode"> {{document.place.address}}, {{document.place.postalCode}}</p>
             <p v-if="document.place.address && !document.place.postalCode"> {{document.place.address}}</p>
             <p v-if="document.place.postalCode && !document.place.address"> Kod pocztowy: {{document.place.postalCode}}</p>
-            <p v-if="document.place.latitude"> Szerokość geograficzna: {{document.place.latitude}}</p>
-            <p v-if="document.place.longitude"> Szerokość geograficzna: {{document.place.longitude}}</p>
+            <p v-if="document.place.latitude"> Szerokość geograficzna: {{ convertLatitude(document.place.latitude) }}</p>
+            <p v-if="document.place.longitude"> Długość geograficzna: {{ convertLongitude(document.place.longitude) }}</p>
             <p v-if="document.place.parish"> Przynależność parafialna: {{document.place.parish}}</p>
             <p v-if="document.place.secular"> Przynależność świecka: {{document.place.secular}}</p>
+
+            <div v-if="document.place.latitude && document.place.longitude" class="end-section">
+              <button  class="advanced-search" @click="showMapModal">Pokaż na mapie</button>
+            </div>
 
           </div>
         </div>
@@ -262,7 +318,7 @@ const showPhoto  = async () => {
         </div>
 
         <div v-if="document.additionalFields">
-          <div v-for="(fieldValue, fieldName) in document.additionalFields" :key="fieldName" class="additional-detail">
+          <div v-for="(fieldValue, fieldName) in document.additionalFields" :key="fieldName" class="detail">
             <strong>{{ fieldName }}: </strong> {{ fieldValue }}
           </div>
         </div>
@@ -290,10 +346,14 @@ const showPhoto  = async () => {
                 <p v-if="document.place.address && document.place.postalCode"> {{document.place.address}}, {{document.place.postalCode}}</p>
                 <p v-if="document.place.address && !document.place.postalCode"> {{document.place.address}}</p>
                 <p v-if="document.place.postalCode && !document.place.address"> Kod pocztowy: {{document.place.postalCode}}</p>
-                <p v-if="document.place.latitude"> Szerokość geograficzna: {{document.place.latitude}}</p>
-                <p v-if="document.place.longitude"> Szerokość geograficzna: {{document.place.longitude}}</p>
+                <p v-if="document.place.latitude"> Szerokość geograficzna: {{ convertLatitude(document.place.latitude) }}</p>
+                <p v-if="document.place.longitude"> Długość geograficzna: {{ convertLongitude(document.place.longitude) }}</p>
                 <p v-if="document.place.parish"> Przynależność parafialna: {{document.place.parish}}</p>
                 <p v-if="document.place.secular"> Przynależność świecka: {{document.place.secular}}</p>
+
+                <button v-if="document.place.latitude && document.place.longitude" class="button-modal" @click="showMapModal">
+                  Pokaż na mapie
+                </button>
 
               </div>
             </div>
@@ -366,7 +426,7 @@ const showPhoto  = async () => {
             </div>
 
             <div v-if="document.additionalFields">
-              <div v-for="(fieldValue, fieldName) in document.additionalFields" :key="fieldName" class="additional-detail">
+              <div v-for="(fieldValue, fieldName) in document.additionalFields" :key="fieldName" class="detail">
                 <strong>{{ fieldName }}: </strong> {{ fieldValue }}
               </div>
             </div>
@@ -407,6 +467,14 @@ const showPhoto  = async () => {
 
   <PhotoDetails v-if="photoModal" :showModal="photoModal" :path="document.path" :peopleDocuments="filteredPeopleDocuments"  @close="photoModal = false"></PhotoDetails>
   <LogoutModal v-if="showLogoutModal" :showModal="showLogoutModal" :errorDetails="logoutText" @close="showLogoutModal = false" />
+  <DeleteModal v-if="showDeleteModal" :showModal="showDeleteModal" :docID="documentID" @close="showDeleteModal = false" />
+  <MapModal
+    v-if="showMap"
+    :showMap = "showMap"
+    :latitude="document.place.latitude"
+    :longitude="document.place.longitude"
+    @close="showMap = false"
+  />
 
 </template>
 
@@ -448,6 +516,10 @@ button {
 
 .urls:hover {
   transform: scale(1.05);
+}
+
+.advanced-search {
+  margin-right: 15px;
 }
 
 </style>
