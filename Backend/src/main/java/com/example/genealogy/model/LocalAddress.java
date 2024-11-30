@@ -13,12 +13,10 @@ import java.util.Set;
 @Entity
 @Table(name = "localaddress")
 @Data
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class LocalAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Column(name = "id")
     private Long id;
 

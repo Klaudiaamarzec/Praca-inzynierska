@@ -5,7 +5,7 @@
         <span class="close" @click="closeModal">&times;</span>
         <h2>Miejsce wydarzenia</h2>
       </div>
-      <div id="map" style="height: 400px; width: 100%;"></div>
+      <div id="map" style="height: 80%; width: 100%;"></div>
       <button class="button-modal" @click="closeModal">Zamknij</button>
     </div>
   </div>
@@ -44,7 +44,8 @@ onMounted(() => {
 <style scoped>
 
 .modal-content {
-  width: 80%;
-  max-width: 800px;
+  width: 60%;
+  height: 80%;
 }
+
 </style>

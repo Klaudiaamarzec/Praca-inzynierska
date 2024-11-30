@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import ErrorModal from "@/components/LoggedUserView/ErrorModal.vue";
 const router = useRouter();
 
 const documentTypes = ref([]);
@@ -21,12 +22,12 @@ const postalCode = ref('');
 const startPostalCode = ref('');
 const endPostalCode = ref('');
 const parish = ref('');
-const longitude = ref('');
-const latitude = ref('');
-const minLongitude = ref('');
-const maxLongitude = ref('');
-const minLatitude = ref('');
-const maxLatitude = ref('');
+const longitude = ref(null);
+const latitude = ref(null);
+const radius = ref(null);
+
+const showModal = ref(false);
+let errorText = ref('');
 
 onMounted(async () => {
   try {
@@ -40,6 +41,13 @@ onMounted(async () => {
 const searchDocuments = async () => {
 
   try {
+
+    if(radius.value != null && longitude.value === null && latitude.value === null) {
+      showModal.value = true;
+      errorText.value = "Uzupełnij współrzędne, jeżeli chcesz uwzględnić promień";
+      return;
+    }
+
     const params = new URLSearchParams({
       name: name.value,
       surname: surname.value,
@@ -56,14 +64,17 @@ const searchDocuments = async () => {
       postalCode: postalCode.value,
       startPostalCode: startPostalCode.value,
       endPostalCode: endPostalCode.value,
-      parish: parish.value,
-      longitude: longitude.value,
-      latitude: latitude.value,
-      minLongitude: minLongitude.value,
-      maxLongitude: maxLongitude.value,
-      minLatitude: minLatitude.value,
-      maxLatitude: maxLatitude.value
+      parish: parish.value
     });
+
+    if (longitude.value !== null) params.append('longitude', longitude.value);
+    if (latitude.value !== null) params.append('latitude', latitude.value);
+    if (radius.value !== null) {
+      params.append('minLongitude', longitude.value - radius.value);
+      params.append('maxLongitude', longitude.value + radius.value);
+      params.append('minLatitude', latitude.value - radius.value);
+      params.append('maxLatitude', latitude.value + radius.value);
+    }
 
     for (let [key, value] of params) {
       if (value === '' || value === null || value === undefined) {
@@ -177,25 +188,18 @@ const searchDocuments = async () => {
 
         <div class="parish-section">
           <label >Parafia</label>
-          <input class="main-input" type="text" placeholder="parafia" id="parish" v-model="parish" />
+          <input class="main-input" type="text" id="parish" v-model="parish" />
         </div>
 
         <div class="coordinates-section">
           <label >Współrzędne geograficzne</label>
-          <input class="main-input" type="text" placeholder="Szerokość" id="latitude" v-model="latitude" />
-          <input class="main-input" type="text" placeholder="Długość" id="parish" v-model="longitude" />
+          <input class="main-input" type="number" placeholder="Szerokość" id="latitude" v-model="latitude" />
+          <input class="main-input" type="number" placeholder="Długość" id="parish" v-model="longitude" />
         </div>
 
         <div class="coordinates-section">
-          <label >Szerokość geograficzna</label>
-          <input class="main-input" type="text" placeholder="Minimum" id="minLatitude" v-model="minLatitude" />
-          <input class="main-input" type="text" placeholder="Maximum" id="maxLatitude" v-model="maxLatitude" />
-        </div>
-
-        <div class="coordinates-section">
-          <label >Długość geograficzna</label>
-          <input class="main-input" type="text" placeholder="Minimum" id="minLongitude" v-model="minLongitude" />
-          <input class="main-input" type="text" placeholder="Maximum" id="maxLongitude" v-model="maxLongitude" />
+          <label >Promień</label>
+          <input class="main-input" type="number" id="latitude" v-model="radius" />
         </div>
 
       </div>
@@ -208,6 +212,9 @@ const searchDocuments = async () => {
     </div>
 
   </section>
+
+  <ErrorModal v-if="showModal" :showModal="showModal" :errorDetails="errorText" @close="showModal = false" />
+
 </template>
 
 <style scoped>

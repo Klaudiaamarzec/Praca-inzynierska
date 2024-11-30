@@ -263,16 +263,6 @@ const addPhysicalLocation = async () => {
           <strong>Data: </strong> {{ formatDate(document.date) }}
         </div>
 
-        <div v-if="document.peopleDocuments && document.peopleDocuments.length > 0" class="detail">
-          <strong>Osoby występujące w dokumencie:</strong>
-          <ul class="people-list">
-            <li v-for="(personDocument, index) in document.peopleDocuments" :key="index">
-              - {{ formatPersonDocument(personDocument) }}
-              <span v-if="personDocument.comment" class="comment"> ({{ personDocument.comment }})</span>
-            </li>
-          </ul>
-        </div>
-
         <div v-if="document.localization" >
 
           <div v-if="document.localization.urls && document.localization.urls.length > 0" class="detail">

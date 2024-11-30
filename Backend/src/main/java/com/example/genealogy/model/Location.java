@@ -38,7 +38,7 @@ public class Location {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id); // Użyj tylko unikalnych identyfikatorów
+        return Objects.hash(id);
     }
 
     @Override

@@ -411,114 +411,111 @@ const editDocument = async() => {
 
       </section>
 
-      <div v-if="document.path">
+      <section v-if="document.path" class="content-details">
 
-        <section class="content-details">
+        <div class="left-site-details">
 
-          <div class="left-site-details">
+          <section class="advanced-section-adding">
 
-            <section class="advanced-section-adding">
+            <div>
+              <strong>Opis:</strong>
 
-              <div>
-                <strong>Opis:</strong>
-
-                <textarea class="edit-textarea"
-                          id="description"
-                          v-model="description"
-                          @input="autoResize"
-                          :placeholder="description ? '' : 'Wpisz opis dokumentu'"
-                ></textarea>
-              </div>
-
-              <div class="coordinates-section">
-                <label><strong>Rodzaj daty</strong></label>
-                <label>
-                  <input class="main-input"
-                         type="checkbox"
-                         v-model="notExactDate"
-                         @change="toggleDateSelection('exact')"
-                         :checked="notExactDate"
-                  />
-                  Niedokładna data
-                </label>
-
-                <label>
-                  <input class="main-input"
-                         type="checkbox"
-                         v-model="isDateRange"
-                         @change="toggleDateSelection('range')"
-                         :checked="isDateRange"
-                  />
-                  Przedział dat
-                </label>
-
-              </div>
-
-              <div v-if="notExactDate" class="date-inputs">
-                <label for="exactDateInput">Niedokładna data</label>
-                <input class="date-input" type="number" placeholder="Dzień" id="day" v-model="day" min="1" max="31" />
-                <input class="date-input" type="number" placeholder="Miesiąc" id="month" v-model="month" min="1" max="12" />
-                <input class="date-input" type="number" placeholder="Rok" id="year" v-model="year" min="1000" max="3000" /><span class="required-asterisk">*</span>
-              </div>
-
-              <div v-if="isDateRange" class="data-section">
-                <label for="startDate">Data początkowa</label>
-                <input class="main-input" type="date" id="startDate" v-model="startDate" />
-
-                <label class="end-date" for="endDate">Data końcowa</label>
-                <input class="main-input" type="date" id="endDate" v-model="endDate" />
-              </div>
-
-            </section>
-
-          </div>
-
-          <div v-if="document.path" class="right-site-details">
-            <img :src="`/${document.path}`" alt="Zdjęcie dokumentu" @click="showPhoto" class="document-image-edit"/>
-          </div>
-
-        </section>
-
-        <section class="advanced-section-adding">
-
-          <strong>Miejsce <span class="required-asterisk">*</span></strong>
-
-          <div class="address-section">
-            <input class="main-input" type="text" placeholder="Kraj" id="country" v-model="country" />
-            <input class="main-input" type="text" placeholder="Województwo" id="voivodeship" v-model="voivodeship" />
-            <input class="main-input" type="text" placeholder="Gmina/Powiat" id="community" v-model="community" />
-            <input class="main-input" type="text" placeholder="Miasto" id="city" v-model="city" />
-          </div>
-
-          <div class="address-section">
-            <input class="address-input" type="text" placeholder="Adres" id="address" v-model="address" />
-            <input class="main-input" type="text" placeholder="Kod pocztowy" id="postalCode" v-model="postalCode" />
-          </div>
-
-          <button class="advanced-address" @click="showAdvancedAddress = !showAdvancedAddress">{{ showAdvancedAddress ? 'Ukryj dodatkowe informacje' : 'Więcej informacji o adresie' }}</button>
-
-          <section :class="['advanced-fields', { 'is-visible': showAdvancedAddress }]">
-
-            <div class="parish-section">
-              <label >Parafia</label>
-              <input class="main-input" type="text" placeholder="Parafia" id="parish" v-model="parish" />
+              <textarea class="edit-textarea"
+                        id="description"
+                        v-model="description"
+                        @input="autoResize"
+                        :placeholder="description ? '' : 'Wpisz opis dokumentu'"
+              ></textarea>
             </div>
 
-            <div class="parish-section">
-              <label >Przynależność świecka</label>
-              <input class="main-input" type="text" placeholder="Przynależność" id="secular" v-model="secular" />
+            <div class="coordinates-section">
+              <label><strong>Rodzaj daty</strong></label>
+              <label>
+                <input class="main-input"
+                       type="checkbox"
+                       v-model="notExactDate"
+                       @change="toggleDateSelection('exact')"
+                       :checked="notExactDate"
+                />
+                Niedokładna data
+              </label>
+
+              <label>
+                <input class="main-input"
+                       type="checkbox"
+                       v-model="isDateRange"
+                       @change="toggleDateSelection('range')"
+                       :checked="isDateRange"
+                />
+                Przedział dat
+              </label>
+
             </div>
 
-            <div class="coordinates-section-adding">
-              <label >Współrzędne geograficzne</label>
-              <input class="main-input" type="text" placeholder="Szerokość" id="latitude" v-model="latitude" />
-              <input class="main-input" type="text" placeholder="Długość" id="parish" v-model="longitude" />
+            <div v-if="notExactDate" class="date-inputs">
+              <label for="exactDateInput">Niedokładna data</label>
+              <input class="date-input" type="number" placeholder="Dzień" id="day" v-model="day" min="1" max="31" />
+              <input class="date-input" type="number" placeholder="Miesiąc" id="month" v-model="month" min="1" max="12" />
+              <input class="date-input" type="number" placeholder="Rok" id="year" v-model="year" min="1000" max="3000" /><span class="required-asterisk">*</span>
+            </div>
+
+            <div v-if="isDateRange" class="data-section">
+              <label for="startDate">Data początkowa</label>
+              <input class="main-input" type="date" id="startDate" v-model="startDate" />
+
+              <label class="end-date" for="endDate">Data końcowa</label>
+              <input class="main-input" type="date" id="endDate" v-model="endDate" />
             </div>
 
           </section>
 
+        </div>
+
+        <div v-if="document.path" class="right-site-details">
+          <img :src="`/${document.path}`" alt="Zdjęcie dokumentu" @click="showPhoto" class="document-image-edit"/>
+        </div>
+
+      </section>
+
+      <section v-if="document.path" class="advanced-section-adding">
+
+        <strong>Miejsce <span class="required-asterisk">*</span></strong>
+
+        <div class="address-section">
+          <input class="main-input" type="text" placeholder="Kraj" id="country" v-model="country" />
+          <input class="main-input" type="text" placeholder="Województwo" id="voivodeship" v-model="voivodeship" />
+          <input class="main-input" type="text" placeholder="Gmina/Powiat" id="community" v-model="community" />
+          <input class="main-input" type="text" placeholder="Miasto" id="city" v-model="city" />
+        </div>
+
+        <div class="address-section">
+          <input class="address-input" type="text" placeholder="Adres" id="address" v-model="address" />
+          <input class="main-input" type="text" placeholder="Kod pocztowy" id="postalCode" v-model="postalCode" />
+        </div>
+
+        <button class="advanced-address" @click="showAdvancedAddress = !showAdvancedAddress">{{ showAdvancedAddress ? 'Ukryj dodatkowe informacje' : 'Więcej informacji o adresie' }}</button>
+
+        <section :class="['advanced-fields', { 'is-visible': showAdvancedAddress }]">
+
+          <div class="parish-section">
+            <label >Parafia</label>
+            <input class="main-input" type="text" placeholder="Parafia" id="parish" v-model="parish" />
+          </div>
+
+          <div class="parish-section">
+            <label >Przynależność świecka</label>
+            <input class="main-input" type="text" placeholder="Przynależność" id="secular" v-model="secular" />
+          </div>
+
+          <div class="coordinates-section-adding">
+            <label >Współrzędne geograficzne</label>
+            <input class="main-input" type="text" placeholder="Szerokość" id="latitude" v-model="latitude" />
+            <input class="main-input" type="text" placeholder="Długość" id="parish" v-model="longitude" />
+          </div>
+
         </section>
-      </div>
+
+      </section>
 
     </section>
   </section>

@@ -335,11 +335,11 @@ const showMapModal = async () => {
               <strong>Rodzaj: </strong> {{ document.type.name }}
             </div>
 
-            <div v-if="document.description" class="detail">
+            <div v-if="document.description" class="detail-small">
               <strong>Opis: </strong> {{ document.description }}
             </div>
 
-            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail">
+            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail-small">
               <strong>Miejsce: </strong>
               <div>
                 {{ formatPlace(document.place) }}
@@ -351,7 +351,7 @@ const showMapModal = async () => {
                 <p v-if="document.place.parish"> Przynależność parafialna: {{document.place.parish}}</p>
                 <p v-if="document.place.secular"> Przynależność świecka: {{document.place.secular}}</p>
 
-                <button v-if="document.place.latitude && document.place.longitude" class="button-modal" @click="showMapModal">
+                <button v-if="document.place.latitude && document.place.longitude" class="button-modal-small" @click="showMapModal">
                   Pokaż na mapie
                 </button>
 
