@@ -40,8 +40,8 @@ const address = ref('');
 const postalCode = ref('');
 const parish = ref('');
 const secular = ref('');
-const longitude = ref('');
-const latitude = ref('');
+const longitude = ref(null);
+const latitude = ref(null);
 const additionalFields = ref([]);
 
 const decodeJWT = (token) => {
@@ -139,9 +139,9 @@ onMounted(async () => {
 
       title.value = document.value.title;
       description.value = document.value.description || '';
-      year.value = document.value.date.year || '';
-      month.value = document.value.date.month || '';
-      day.value = document.value.date.day || '';
+      year.value = document.value.date?.year || '';
+      month.value = document.value.date?.month || '';
+      day.value = document.value.date?.day || '';
       startDate.value = document.value.startDate ? formDate(document.value.startDate) : null;
       endDate.value = document.value.endDate ? formDate(document.value.endDate) : null;
       country.value = document.value.place.country || '';
@@ -152,8 +152,8 @@ onMounted(async () => {
       postalCode.value = document.value.place.postalCode || '';
       parish.value = document.value.place.parish || '';
       secular.value = document.value.place.secular || '';
-      longitude.value = document.value.place.longitude || '';
-      latitude.value = document.value.place.latitude || '';
+      longitude.value = document.value.place?.longitude ?? null;
+      latitude.value = document.value.place?.latitude ?? null;
       additionalFields.value = document.value.additionalFields || [];
 
       if(document.value.date)
@@ -161,6 +161,10 @@ onMounted(async () => {
 
       if(document.value.startDate || document.value.endDate)
         isDateRange.value = true
+
+      // Przekształcenie dat na format 'YYYY-MM-DD'
+      startDate.value = document.value.startDate ? document.value.startDate.split('T')[0] : null;
+      endDate.value = document.value.endDate ? document.value.endDate.split('T')[0] : null;
 
     } else {
       console.error("Nie udało się pobrać dokumentu");
@@ -204,6 +208,8 @@ const editDocument = async() => {
         city: city.value || null,
         address: address.value || null,
         postalCode: postalCode.value || null,
+        longitude: longitude.value !== null ? longitude.value : null,
+        latitude: latitude.value !== null ? latitude.value : null,
         parish: parish.value || null,
         secular: secular.value || null
       }
@@ -336,9 +342,9 @@ const editDocument = async() => {
 
         <div v-if="notExactDate" class="date-inputs">
           <label for="exactDateInput">Niedokładna data</label>
-          <input class="date-input" type="number" placeholder="Dzień" id="day" v-model="day" min="1" max="31" />
-          <input class="date-input" type="number" placeholder="Miesiąc" id="month" v-model="month" min="1" max="12" />
-          <input class="date-input" type="number" placeholder="Rok" id="year" v-model="year" min="1000" max="3000" /><span class="required-asterisk">*</span>
+          <input class="date-input" type="number" :placeholder="day ? '' : 'Dzień'" id="day" v-model="day" min="1" max="31" />
+          <input class="date-input" type="number" :placeholder="month ? '' : 'Miesiąc'" id="month" v-model="month" min="1" max="12" />
+          <input class="date-input" type="number" :placeholder="year ? '' : 'Rok'" id="year" v-model="year" min="1000" max="3000" /><span class="required-asterisk">*</span>
         </div>
 
         <div v-if="isDateRange" class="data-section">
@@ -352,10 +358,10 @@ const editDocument = async() => {
         <strong>Miejsce <span class="required-asterisk">*</span></strong>
 
         <div class="address-section">
-          <input class="main-input" type="text" placeholder="Kraj" id="country" v-model="country" />
-          <input class="main-input" type="text" placeholder="Województwo" id="voivodeship" v-model="voivodeship" />
-          <input class="main-input" type="text" placeholder="Gmina/Powiat" id="community" v-model="community" />
-          <input class="main-input" type="text" placeholder="Miasto" id="city" v-model="city" />
+          <input class="main-input" type="text" :placeholder="country ? '' : 'Kraj'" id="country" v-model="country" />
+          <input class="main-input" type="text" :placeholder="voivodeship ? '' : 'Województwo'" id="voivodeship" v-model="voivodeship" />
+          <input class="main-input" type="text" :placeholder="community ? '' : 'Gmina/Powiat'" id="community" v-model="community" />
+          <input class="main-input" type="text" :placeholder="city ? '' : 'Miasto'" id="city" v-model="city" />
         </div>
 
         <div class="address-section">
@@ -379,8 +385,8 @@ const editDocument = async() => {
 
           <div class="coordinates-section-adding">
             <label >Współrzędne geograficzne</label>
-            <input class="main-input" type="text" placeholder="Szerokość" id="latitude" v-model="latitude" />
-            <input class="main-input" type="text" placeholder="Długość" id="parish" v-model="longitude" />
+            <input class="main-input" type="number" placeholder="Szerokość" id="latitude" v-model="latitude" />
+            <input class="main-input" type="number" placeholder="Długość" id="parish" v-model="longitude" />
           </div>
 
         </section>
@@ -390,7 +396,6 @@ const editDocument = async() => {
 <!--            <strong>{{ fieldName }}: </strong> {{ fieldValue }}-->
 <!--          </div>-->
 <!--        </div>-->
-
 <!--        <div v-if="additionalFields.length > 0" :class="['template-fields-section', { 'is-visible': additionalFields.length > 0 }]">-->
 
 <!--          <div class="separator"></div>-->
@@ -454,9 +459,9 @@ const editDocument = async() => {
 
             <div v-if="notExactDate" class="date-inputs">
               <label for="exactDateInput">Niedokładna data</label>
-              <input class="date-input" type="number" placeholder="Dzień" id="day" v-model="day" min="1" max="31" />
-              <input class="date-input" type="number" placeholder="Miesiąc" id="month" v-model="month" min="1" max="12" />
-              <input class="date-input" type="number" placeholder="Rok" id="year" v-model="year" min="1000" max="3000" /><span class="required-asterisk">*</span>
+              <input class="date-input" type="number" :placeholder="day ? '' : 'Dzień'" id="day" v-model="day" min="1" max="31" />
+              <input class="date-input" type="number" :placeholder="month ? '' : 'Miesiąc'" id="month" v-model="month" min="1" max="12" />
+              <input class="date-input" type="number" :placeholder="year ? '' : 'Rok'" id="year" v-model="year" min="1000" max="3000" /><span class="required-asterisk">*</span>
             </div>
 
             <div v-if="isDateRange" class="data-section">
@@ -482,10 +487,10 @@ const editDocument = async() => {
         <strong>Miejsce <span class="required-asterisk">*</span></strong>
 
         <div class="address-section">
-          <input class="main-input" type="text" placeholder="Kraj" id="country" v-model="country" />
-          <input class="main-input" type="text" placeholder="Województwo" id="voivodeship" v-model="voivodeship" />
-          <input class="main-input" type="text" placeholder="Gmina/Powiat" id="community" v-model="community" />
-          <input class="main-input" type="text" placeholder="Miasto" id="city" v-model="city" />
+          <input class="main-input" type="text" :placeholder="country ? '' : 'Kraj'" id="country" v-model="country" />
+          <input class="main-input" type="text" :placeholder="voivodeship ? '' : 'Województwo'" id="voivodeship" v-model="voivodeship" />
+          <input class="main-input" type="text" :placeholder="community ? '' : 'Gmina/Powiat'" id="community" v-model="community" />
+          <input class="main-input" type="text" :placeholder="city ? '' : 'Miasto'" id="city" v-model="city" />
         </div>
 
         <div class="address-section">
@@ -509,8 +514,8 @@ const editDocument = async() => {
 
           <div class="coordinates-section-adding">
             <label >Współrzędne geograficzne</label>
-            <input class="main-input" type="text" placeholder="Szerokość" id="latitude" v-model="latitude" />
-            <input class="main-input" type="text" placeholder="Długość" id="parish" v-model="longitude" />
+            <input class="main-input" type="number" placeholder="Szerokość" id="latitude" v-model="latitude" />
+            <input class="main-input" type="number" placeholder="Długość" id="parish" v-model="longitude" />
           </div>
 
         </section>

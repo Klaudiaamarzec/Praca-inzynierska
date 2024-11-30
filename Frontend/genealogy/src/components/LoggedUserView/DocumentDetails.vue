@@ -426,7 +426,7 @@ const showMapModal = async () => {
             </div>
 
             <div v-if="document.additionalFields">
-              <div v-for="(fieldValue, fieldName) in document.additionalFields" :key="fieldName" class="detail">
+              <div v-for="(fieldValue, fieldName) in document.additionalFields" :key="fieldName" class="detail-small">
                 <strong>{{ fieldName }}: </strong> {{ fieldValue }}
               </div>
             </div>

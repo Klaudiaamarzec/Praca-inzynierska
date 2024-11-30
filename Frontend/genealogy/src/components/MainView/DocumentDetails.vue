@@ -232,7 +232,7 @@ const convertLongitude = (longitude) => {
               <strong>Rodzaj: </strong> {{ document.type.name }}
             </div>
 
-            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail">
+            <div v-if="document.place.country || document.place.voivodeship || document.place.city" class="detail-small">
               <strong>Miejsce: </strong>
               <div>
                 {{ formatPlace(document.place) }}
@@ -244,9 +244,9 @@ const convertLongitude = (longitude) => {
                 <p v-if="document.place.parish"> Przynależność parafialna: {{document.place.parish}}</p>
                 <p v-if="document.place.secular"> Przynależność świecka: {{document.place.secular}}</p>
 
-                <div v-if="document.place.latitude && document.place.longitude" class="end-section">
-                  <button  class="advanced-search" @click="showMapModal">Pokaż na mapie</button>
-                </div>
+                <button v-if="document.place.latitude && document.place.longitude" class="button-modal-small" @click="showMapModal">
+                  Pokaż na mapie
+                </button>
 
               </div>
             </div>
@@ -319,7 +319,7 @@ const convertLongitude = (longitude) => {
             </div>
 
             <div v-if="document.additionalFields">
-              <div v-for="(fieldValue, fieldName) in document.additionalFields" :key="fieldName" class="additional-detail">
+              <div v-for="(fieldValue, fieldName) in document.additionalFields" :key="fieldName" class="detail-small">
                 <strong>{{ fieldName }}: </strong> {{ fieldValue }}
               </div>
             </div>

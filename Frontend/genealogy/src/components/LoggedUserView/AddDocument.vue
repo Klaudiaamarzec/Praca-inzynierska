@@ -46,8 +46,8 @@ const address = ref('');
 const postalCode = ref('');
 const parish = ref('');
 const secular = ref('');
-const longitude = ref('');
-const latitude = ref('');
+const longitude = ref(null);
+const latitude = ref(null);
 
 onMounted(async () => {
   try {
@@ -160,6 +160,9 @@ const addDocument = async () => {
       additionalFields
 
     }
+
+    if (longitude.value !== null) documentData.append('longitude', longitude.value);
+    if (latitude.value !== null) documentData.append('latitude', latitude.value);
 
     const token = localStorage.getItem('jwtToken');
 
@@ -350,8 +353,8 @@ const uploadPhoto = async (docId, photoFile) => {
 
         <div class="coordinates-section-adding">
           <label >Współrzędne geograficzne</label>
-          <input class="main-input" type="text" placeholder="Szerokość" id="latitude" v-model="latitude" />
-          <input class="main-input" type="text" placeholder="Długość" id="parish" v-model="longitude" />
+          <input class="main-input" type="number" placeholder="Szerokość" id="latitude" v-model="latitude" />
+          <input class="main-input" type="number" placeholder="Długość" id="parish" v-model="longitude" />
         </div>
 
       </section>

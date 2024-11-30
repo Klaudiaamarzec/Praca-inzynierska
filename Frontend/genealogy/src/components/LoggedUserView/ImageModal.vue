@@ -74,7 +74,8 @@ const saveTags = () => {
 <style scoped>
 
 .document-image-fullscreen {
-  max-width: 40%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
   margin: auto;
   border: 2px solid var(--dark-brown);
@@ -85,7 +86,12 @@ const saveTags = () => {
 }
 
 .container-image {
+  max-width: 100%;
+  max-height: 88%;
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .tag {
