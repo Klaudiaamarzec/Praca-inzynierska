@@ -38,6 +38,7 @@ import UserAddPerson from "@/views/GenealogistView/AddPerson.vue";
 import GenealogistAddPerson from "@/views/GenealogistView/AddPerson.vue";
 import UserMyLocalizations from "@/views/UserView/MyLocalizations.vue";
 import GenealogistMyLocalizations from "@/views/GenealogistView/MyLocalizations.vue";
+import PasswordReset from "@/views/MainView/PasswordReset.vue";
 
 const routes = [
   {
@@ -50,6 +51,13 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: LoginView
+  },
+
+  {
+    path: '/auth/reset-password',
+    name: 'reset-password',
+    component: PasswordReset,
+    props: route => ({ token: route.query.token }),
   },
 
   {

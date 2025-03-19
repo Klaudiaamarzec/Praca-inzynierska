@@ -35,10 +35,11 @@ public class PasswordResetController {
         String token = userService.createPasswordResetToken(user);
         userService.sendResetPasswordEmail(user.getMail(), token);
 
-        return ResponseEntity.ok("Link do resetowania hasła został wysłany.");
+        return ResponseEntity.ok("Link do zmiany hasła został wysłany na podany adres e-mail.");
     }
 
     // Endpoint do resetowania hasła
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/ResetPassword")
     public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
 

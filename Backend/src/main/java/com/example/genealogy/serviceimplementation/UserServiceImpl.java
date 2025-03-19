@@ -141,7 +141,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void sendResetPasswordEmail(String email, String token) {
 
-        String resetLink = "http://localhost:8080/auth/reset-password?token=" + token; // Adres URL do resetowania hasła
+        String resetLink = "http://localhost:5173/auth/reset-password?token=" + token; // Adres URL do resetowania hasła
         String subject = "Resetowanie hasła";
         String body = "Kliknij poniższy link, aby zresetować swoje hasło:\n" + resetLink;
 
